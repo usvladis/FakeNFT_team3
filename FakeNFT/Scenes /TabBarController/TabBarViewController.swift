@@ -7,47 +7,49 @@
 
 import UIKit
 
-class TabBarViewController: UITabBarController{
+final class TabBarController: UITabBarController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        configureTabBar()
-        tabBar.unselectedItemTintColor = .buttonColor
+        generateTabBar()
     }
     
-    private func configureTabBar() {
-        let profileViewController = ProfileViewController()
-        let catalogViewController = CatalogViewController()
-        let cartViewController = CartViewController()
-        let statisticsViewController = StatisticsViewController()
+    private func generateTabBar() {
+        let profileViewController = UINavigationController(rootViewController: ProfileViewController())
+        let catalogViewController = UINavigationController(rootViewController: CatalogViewController())
+        let cartViewController = UINavigationController(rootViewController: CartViewController())
+        let statisticsViewController = UINavigationController(rootViewController: StatisticsViewController())
         
-        profileViewController.tabBarItem = UITabBarItem(
-            title:  NSLocalizedString("profile", comment: ""),
-            image: UIImage(named: "profile_tab"),
-            selectedImage: nil
-        )
+        tabBar.tintColor = .blueUniversal
+        tabBar.unselectedItemTintColor = .buttonColor
+        viewControllers = [
+            generateVC(viewController: profileViewController,
+                       title: NSLocalizedString("profile", comment: ""),
+                       image: UIImage(named: "profile_tab")
+                      ),
+            generateVC(viewController: catalogViewController,
+                       title: NSLocalizedString("catalog", comment: ""),
+                       image: UIImage(named: "catalog_tab")
+                      ),
+            generateVC(viewController: cartViewController,
+                       title: NSLocalizedString("cart", comment: ""),
+                       image: UIImage(named: "cart_tab")
+                      ),
+            generateVC(viewController: statisticsViewController,
+                       title: NSLocalizedString("statistics", comment: ""),
+                       image: UIImage(named: "stats_tab")
+                      )
+        ]
+    }
+    
+    private func generateVC(viewController: UIViewController, title: String, image: UIImage?) -> UIViewController {
+        viewController.tabBarItem.title = title
+        viewController.tabBarItem.image = image
         
-        catalogViewController.tabBarItem = UITabBarItem(
-            title:  NSLocalizedString("catalog", comment: ""),
-            image: UIImage(named: "catalog_tab"),
-            selectedImage: nil
-        )
+        let attributes = [NSAttributedString.Key.font: UIFont.systemFont(ofSize: 10, weight: .medium)]
+        viewController.tabBarItem.setTitleTextAttributes(attributes, for: .normal)
+        viewController.tabBarItem.setTitleTextAttributes(attributes, for: .selected)
         
-        cartViewController.tabBarItem = UITabBarItem(
-            title:  NSLocalizedString("cart", comment: ""),
-            image: UIImage(named: "cart_tab"),
-            selectedImage: nil
-        )
-        
-        statisticsViewController.tabBarItem = UITabBarItem(
-            title:  NSLocalizedString("statistics", comment: ""),
-            image: UIImage(named: "stats_tab"),
-            selectedImage: nil
-        )
-        
-        let cartNavigationViewController = UINavigationController(rootViewController: cartViewController)
-        
-        
-        setViewControllers([profileViewController, catalogViewController, cartNavigationViewController, statisticsViewController], animated: true)
+        return viewController
     }
 }
