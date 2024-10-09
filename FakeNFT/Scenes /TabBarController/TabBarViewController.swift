@@ -12,7 +12,7 @@ class TabBarViewController: UITabBarController{
     override func viewDidLoad() {
         super.viewDidLoad()
         configureTabBar()
-        tabBar.unselectedItemTintColor = .black
+        tabBar.unselectedItemTintColor = .buttonColor
     }
     
     private func configureTabBar() {
