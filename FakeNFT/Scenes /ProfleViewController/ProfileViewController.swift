@@ -6,6 +6,14 @@
 //
 
 import UIKit
+import SwiftUI
+
+// MARK: - Preview
+struct ProfileViewControllerPreview: PreviewProvider {
+    static var previews: some View {
+        ProfileViewController().showPreview()
+    }
+}
 
 final class ProfileViewController: UIViewController {
     
