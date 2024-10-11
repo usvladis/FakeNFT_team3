@@ -42,7 +42,8 @@
 "removeButtonTitle" = "Удалить";
 "goBackButtonTitle" = "Вернуться";
 "paymentMethodTitle" = "Выберите способ оплаты";
-"warningUserAgreement" = "Совершая покупку, вы соглашаетесь с условиями \n Пользовательского соглашения";
+"warningUserAgreement" = "Совершая покупку, вы соглашаетесь с условиями";
+"warningUserButton" = "Пользовательского соглашения";
 "pay" = "Оплатить";
 "sortingByPrice" = "По цене";
 "sortingByRating" = "По рейтингу";

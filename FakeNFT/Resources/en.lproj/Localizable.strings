@@ -42,7 +42,8 @@
 "removeButtonTitle" = "Remove";
 "goBackButtonTitle" = "Go back";
 "paymentMethodTitle" = "Select payment method";
-"warningUserAgreement" = "By making a purchase, you agree to the terms \n of the User Agreement";
+"warningUserAgreement" = "By making a purchase, you agree to the terms";
+"warningUserButton" = "of the User Agreement";
 "pay" = "Pay";
 "sortingByPrice" = "By price";
 "sortingByRating" = "By rating";
