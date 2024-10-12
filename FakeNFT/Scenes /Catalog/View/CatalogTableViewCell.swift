@@ -25,11 +25,11 @@ final class CatalogTableViewCell: UITableViewCell {
         return image
     }()
     
-    private lazy var nameAndCountLable: UILabel = {
-        let nameAndCountLable = UILabel()
-        nameAndCountLable.translatesAutoresizingMaskIntoConstraints = false
-        nameAndCountLable.font = .bodyBold
-        return nameAndCountLable
+    private lazy var nameAndCountLabel: UILabel = {
+        let nameAndCountLabel = UILabel()
+        nameAndCountLabel.translatesAutoresizingMaskIntoConstraints = false
+        nameAndCountLabel.font = .bodyBold
+        return nameAndCountLabel
     }()
     
     // MARK: - Initializers
@@ -47,7 +47,7 @@ final class CatalogTableViewCell: UITableViewCell {
     
     private func addSubViews() {
         contentView.addSubview(topImage)
-        contentView.addSubview(nameAndCountLable)
+        contentView.addSubview(nameAndCountLabel)
         
         let heightCell = contentView.heightAnchor.constraint(equalToConstant: 179)
         heightCell.priority = .defaultHigh
@@ -59,10 +59,10 @@ final class CatalogTableViewCell: UITableViewCell {
             topImage.trailingAnchor.constraint(equalTo: contentView.trailingAnchor),
             topImage.heightAnchor.constraint(equalToConstant: 140),
             
-            nameAndCountLable.topAnchor.constraint(equalTo: topImage.bottomAnchor, constant: 4),
-            nameAndCountLable.leadingAnchor.constraint(equalTo: topImage.leadingAnchor),
-            nameAndCountLable.trailingAnchor.constraint(equalTo: topImage.trailingAnchor),
-            nameAndCountLable.bottomAnchor.constraint(equalTo: contentView.bottomAnchor, constant: -13),
+            nameAndCountLabel.topAnchor.constraint(equalTo: topImage.bottomAnchor, constant: 4),
+            nameAndCountLabel.leadingAnchor.constraint(equalTo: topImage.leadingAnchor),
+            nameAndCountLabel.trailingAnchor.constraint(equalTo: topImage.trailingAnchor),
+            nameAndCountLabel.bottomAnchor.constraint(equalTo: contentView.bottomAnchor, constant: -13),
         ])
     }
     
@@ -70,6 +70,6 @@ final class CatalogTableViewCell: UITableViewCell {
     
     func configCell(name: String, count: Int, image: UIImage) {
         topImage.image = image
-        nameAndCountLable.text = "\(name) (\(count))"
+        nameAndCountLabel.text = "\(name) (\(count))"
     }
 }

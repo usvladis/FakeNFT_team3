@@ -93,9 +93,19 @@ final class CatalogViewController: UIViewController {
     }
     
 }
+
 extension CatalogViewController: UITableViewDelegate {
-    
+    func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        let collectionVC = CollectionViewController()
+        
+        let navController = UINavigationController(rootViewController: collectionVC)
+        navController.modalPresentationStyle = .fullScreen
+        
+        present(navController, animated: true, completion: nil)
+    }
 }
+
+
 extension CatalogViewController: UITableViewDataSource {
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         viewModel.numberOfCollections()
@@ -113,6 +123,3 @@ extension CatalogViewController: UITableViewDataSource {
     }
 }
 
-//private enum Constants {
-//    static let testNftId = "7773e33c-ec15-4230-a102-92426a3a6d5a"
-//}

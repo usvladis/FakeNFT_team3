@@ -1,5 +1,5 @@
 //
-//  NFTRowForTableView.swift
+//  NFTRowModel.swift
 //  FakeNFT
 //
 //  Created by Кирилл Марьясов on 10.10.2024.
@@ -7,7 +7,7 @@
 
 import UIKit
 
-struct NFTRowForTableView {
+struct NFTRowModel {
     
     let image: UIImage
     let name: String

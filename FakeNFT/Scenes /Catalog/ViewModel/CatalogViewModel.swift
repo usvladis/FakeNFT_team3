@@ -9,26 +9,30 @@ import UIKit
 
 class CatalogViewModel {
     
-    private var collections: [NFTRowForTableView] = []
+    private var collections: [NFTRowModel] = []
     
     func fetchCollections(completion: @escaping () -> Void) {
-        // Тут будет запрос к сервису для загрузки данных
-        // После загрузки данных обновим массив Сollections
-        guard let image = UIImage(named: "FrameMock") else {return}
-        collections = [
-            NFTRowForTableView(image: image, name: "Peach", count: 11),
-            NFTRowForTableView(image: image, name: "Peach", count: 11),
-            NFTRowForTableView(image: image, name: "Peach", count: 11),
-            NFTRowForTableView(image: image, name: "Peach", count: 11),
-            NFTRowForTableView(image: image, name: "Peach", count: 11)
-        ]
+        
+        // Здесь будет запрос к сервису для загрузки данных
+        
+        // После загрузки данных обновим массив collections
+        DispatchQueue.main.async {
+            
+        }
+        guard let image = UIImage(named: "CollectionPreviewMock") else {return}
+        collections = [NFTRowModel(image: image, name: "Peach", count: 11),
+                       NFTRowModel(image: image, name: "Peach", count: 11),
+                       NFTRowModel(image: image, name: "Peach", count: 11),
+                       NFTRowModel(image: image, name: "Peach", count: 11),
+                       NFTRowModel(image: image, name: "Peach", count: 11)]
         completion()
     }
     
     func numberOfCollections() -> Int {
         return collections.count
     }
-    func collection(at index: Int) -> NFTRowForTableView {
+    
+    func collection(at index: Int) -> NFTRowModel {
         return collections[index]
     }
 }
