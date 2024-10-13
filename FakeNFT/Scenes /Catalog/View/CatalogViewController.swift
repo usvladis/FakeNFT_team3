@@ -21,14 +21,6 @@ final class CatalogViewController: UIViewController {
     private let viewModel = CatalogViewModel()
     private var servicesAssembly: ServicesAssembly?
     
-    private lazy var sortButton: UIButton = {
-        let button = UIButton()
-        button.translatesAutoresizingMaskIntoConstraints = false
-        button.setImage(UIImage(named: "filter_button"), for: .normal)
-        button.addTarget(self, action: #selector(sortButtonTupped), for: .touchUpInside)
-        return button
-    }()
-    
     private lazy var NFTTableView: UITableView = {
         let tableView = UITableView(frame: .zero)
         tableView.translatesAutoresizingMaskIntoConstraints = false
@@ -53,24 +45,30 @@ final class CatalogViewController: UIViewController {
         view.backgroundColor = .systemBackground
         addSubvies()
         loadData()
+        configureNavBar()
     }
     
+    private func configureNavBar() {
+             let sortButton = UIBarButtonItem(
+                 image: UIImage(named: "filter_button"),
+                 style: .plain,
+                 target: self,
+                 action: #selector(sortButtonTupped)
+             )
+            sortButton.tintColor = .black
+             navigationItem.rightBarButtonItem = sortButton
+         }
+    
     private func addSubvies() {
-        view.addSubview(sortButton)
-        view.addSubview(NFTTableView)
-        
-        NSLayoutConstraint.activate([
-            sortButton.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: 2),
-            sortButton.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor, constant: -9),
-            sortButton.heightAnchor.constraint(equalToConstant: 42),
-            sortButton.widthAnchor.constraint(equalToConstant: 42),
-            
-            NFTTableView.topAnchor.constraint(equalTo: sortButton.bottomAnchor, constant: 20),
-            NFTTableView.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor, constant: 16),
-            NFTTableView.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor, constant: -16),
-            NFTTableView.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor)
-        ])
-    }
+            view.addSubview(NFTTableView)
+
+            NSLayoutConstraint.activate([
+                NFTTableView.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: 20),
+                NFTTableView.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor, constant: 16),
+                NFTTableView.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor, constant: -16),
+                NFTTableView.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor)
+            ])
+        }
     
     private func loadData() {
         viewModel.fetchCollections {
