@@ -1,5 +1,5 @@
 //
-//  CustomAlertController.swift
+//  AlertController.swift
 //  FakeNFT
 //
 //  Created by Кирилл Марьясов on 10.10.2024.
@@ -7,7 +7,7 @@
 
 import UIKit
 
-class CustomAlertControllerForSort: UIAlertController {
+final class AlertController: UIAlertController {
     
     private var customDimmingColor: UIColor?
     

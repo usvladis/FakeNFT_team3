@@ -8,14 +8,6 @@
 import UIKit
 import SwiftUI
 
-// MARK: - Preview
-struct CatalogViewControllerPreview: PreviewProvider {
-    
-    static var previews: some View {
-        CatalogViewController().showPreview()
-    }
-}
-
 final class CatalogViewController: UIViewController {
     
     private let viewModel = CatalogViewModel()
@@ -42,24 +34,19 @@ final class CatalogViewController: UIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        navigationItem.rightBarButtonItem = UIBarButtonItem(
+            image: UIImage(named: "filter_button"),
+            style: .done,
+            target: self,
+            action: #selector(sortButtonTupped)
+        )
+        
         view.backgroundColor = .systemBackground
-        addSubvies()
+        addSubviews()
         loadData()
-        configureNavBar()
     }
     
-    private func configureNavBar() {
-             let sortButton = UIBarButtonItem(
-                 image: UIImage(named: "filter_button"),
-                 style: .plain,
-                 target: self,
-                 action: #selector(sortButtonTupped)
-             )
-            sortButton.tintColor = .black
-             navigationItem.rightBarButtonItem = sortButton
-         }
-    
-    private func addSubvies() {
+    private func addSubviews() {
             view.addSubview(NFTTableView)
 
             NSLayoutConstraint.activate([
@@ -80,7 +67,7 @@ final class CatalogViewController: UIViewController {
     
     @objc private func sortButtonTupped() {
         
-        let alert = CustomAlertControllerForSort(title: localizedString(key:"sorting"), message: nil, preferredStyle: .actionSheet)
+        let alert = AlertController(title: localizedString(key:"sorting"), message: nil, preferredStyle: .actionSheet)
         let cancelAction = UIAlertAction(title: localizedString(key:"close"), style: .cancel, handler: nil)
         let sortByTitle = UIAlertAction(title: localizedString(key:"sortingByName"), style: .default, handler: nil)
         let sortByNumber = UIAlertAction(title: localizedString(key:"sortingByNumber"), style: .default, handler: nil)
@@ -95,7 +82,7 @@ final class CatalogViewController: UIViewController {
 
 extension CatalogViewController: UITableViewDelegate {
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        let collectionVC = CollectionViewController()
+        let collectionVC = CatalogDetailsScreenViewController()
         
         navigationController?.pushViewController(collectionVC, animated: true)
     }
@@ -123,3 +110,10 @@ extension CatalogViewController: UITableViewDataSource {
     }
 }
 
+// MARK: - Preview
+struct CatalogViewControllerPreview: PreviewProvider {
+    
+    static var previews: some View {
+        CatalogViewController().showPreview()
+    }
+}

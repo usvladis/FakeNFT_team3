@@ -43,6 +43,14 @@ final class CatalogTableViewCell: UITableViewCell {
         fatalError("init(coder:) has not been implemented")
     }
     
+    // MARK: - Configuration
+    
+    func configCell(name: String, count: Int, image: UIImage) {
+        topImage.image = image
+        nameAndCountLabel.text = "\(name) (\(count))"
+    }
+    
+    
     // MARK: - Layout Setup
     
     private func addSubViews() {
@@ -63,12 +71,5 @@ final class CatalogTableViewCell: UITableViewCell {
             nameAndCountLabel.leadingAnchor.constraint(equalTo: topImage.leadingAnchor),
             nameAndCountLabel.trailingAnchor.constraint(equalTo: topImage.trailingAnchor),
         ])
-    }
-    
-    // MARK: - Configuration
-    
-    func configCell(name: String, count: Int, image: UIImage) {
-        topImage.image = image
-        nameAndCountLabel.text = "\(name) (\(count))"
     }
 }

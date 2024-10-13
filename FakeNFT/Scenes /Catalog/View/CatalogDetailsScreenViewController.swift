@@ -1,5 +1,5 @@
 //
-//  CollectionViewController.swift
+//  CatalogDetailsScreenViewController.swift
 //  FakeNFT
 //
 //  Created by Кирилл Марьясов on 10.10.2024.
@@ -7,7 +7,7 @@
 
 import UIKit
 
-final class CollectionViewController: UIViewController {
+final class CatalogDetailsScreenViewController: UIViewController {
     
     private let viewModel = CollectionViewModel()
     
@@ -143,7 +143,7 @@ final class CollectionViewController: UIViewController {
         topImage.image = UIImage(named: "CollectionCoverMock")
         nameLabel.text = "Peach"
         firstAuthorLabel.text = localizedString(key:"collectionAuthor")
-        urlButton.setTitle("John Do", for: .normal)
+        urlButton.setTitle("John Doe", for: .normal)
         descriptionLabel.text = "Персиковый — как облака над закатным солнцем в океане. Бла-бла-бла, кто-нибудь это читает? Всем насрать на этот текст, все хотят просто поднять бабла на NFT и уехать на сказочное Бали"
     }
     
@@ -195,20 +195,20 @@ final class CollectionViewController: UIViewController {
             collectionView.trailingAnchor.constraint(equalTo: contentView.trailingAnchor),
             collectionView.bottomAnchor.constraint(equalTo: contentView.bottomAnchor)
         ])
-                
-                collectionViewHeightConstraint = collectionView.heightAnchor.constraint(equalToConstant: 800)
-                collectionViewHeightConstraint?.isActive = true
-            }
-            
-            func updateCollectionViewHeight() {
-                let numberOfItems = collectionView.numberOfItems(inSection: 0)
-                let rows = CGFloat((numberOfItems / 3) + (numberOfItems % 3 == 0 ? 0 : 1))
-                let itemHeight: CGFloat = 192
-                let verticalSpacing: CGFloat = 8
-                
-                let totalHeight = rows * itemHeight + (rows - 1) * verticalSpacing
-                collectionViewHeightConstraint?.constant = totalHeight
-            }
+        
+        collectionViewHeightConstraint = collectionView.heightAnchor.constraint(equalToConstant: 800)
+        collectionViewHeightConstraint?.isActive = true
+    }
+    
+    func updateCollectionViewHeight() {
+        let numberOfItems = collectionView.numberOfItems(inSection: 0)
+        let rows = CGFloat((numberOfItems / 3) + (numberOfItems % 3 == 0 ? 0 : 1))
+        let itemHeight: CGFloat = 192
+        let verticalSpacing: CGFloat = 8
+        
+        let totalHeight = rows * itemHeight + (rows - 1) * verticalSpacing
+        collectionViewHeightConstraint?.constant = totalHeight
+    }
     
     @objc func dismissViewController() {
         dismiss(animated: true, completion: nil)
@@ -224,10 +224,10 @@ final class CollectionViewController: UIViewController {
     
     
 }
-extension CollectionViewController: UICollectionViewDelegate {
+extension CatalogDetailsScreenViewController: UICollectionViewDelegate {
     
 }
-extension CollectionViewController: UICollectionViewDataSource {
+extension CatalogDetailsScreenViewController: UICollectionViewDataSource {
     
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
         viewModel.numberOfCollections()
@@ -236,9 +236,8 @@ extension CollectionViewController: UICollectionViewDataSource {
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         
         guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: NFTCellForCollectionView.reuseIdentifier,
-                                                            for: indexPath) as? NFTCellForCollectionView
-        else {
-            print("Не прошёл каст")
+                                                            for: indexPath) as? NFTCellForCollectionView else {
+            assertionFailure("Не удалось dequeued ячейку с идентификатором \(NFTCellForCollectionView.reuseIdentifier) или привести ее к NFTCellForCollectionView")
             return UICollectionViewCell()
         }
         
@@ -247,9 +246,10 @@ extension CollectionViewController: UICollectionViewDataSource {
         
         return cell
     }
-    
 }
-extension CollectionViewController: UICollectionViewDelegateFlowLayout {
+
+
+extension CatalogDetailsScreenViewController: UICollectionViewDelegateFlowLayout {
     
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
         return CGSize(width: 108, height: 192)
