@@ -35,6 +35,7 @@ final class CatalogViewController: UIViewController {
         tableView.delegate = self
         tableView.dataSource = self
         tableView.register(CatalogTableViewCell.self, forCellReuseIdentifier: CatalogTableViewCell.identifier)
+        tableView.separatorStyle = .none
         return tableView
     }()
     
@@ -98,10 +99,11 @@ extension CatalogViewController: UITableViewDelegate {
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         let collectionVC = CollectionViewController()
         
-        let navController = UINavigationController(rootViewController: collectionVC)
-        navController.modalPresentationStyle = .fullScreen
-        
-        present(navController, animated: true, completion: nil)
+        navigationController?.pushViewController(collectionVC, animated: true)
+    }
+    
+    func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
+        return 187
     }
 }
 

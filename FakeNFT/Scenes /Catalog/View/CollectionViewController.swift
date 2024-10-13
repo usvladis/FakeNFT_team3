@@ -43,11 +43,19 @@ final class CollectionViewController: UIViewController {
         return label
     }()
     
-    private lazy var secondAuthorLabel: UILabel = {
-        let label = UILabel()
-        label.translatesAutoresizingMaskIntoConstraints = false
-        label.font = .caption1
-        return label
+    private lazy var urlButton: UIButton = {
+        let button = UIButton(type: .system)
+        button.translatesAutoresizingMaskIntoConstraints = false
+        let font = UIFont.caption1
+        let attributes: [NSAttributedString.Key: Any] = [
+            .font: font,
+            .foregroundColor: UIColor.systemBlue
+        ]
+        let attributedTitle = NSAttributedString(string: "", attributes: attributes)
+        button.setAttributedTitle(attributedTitle, for: .normal)
+        button.addTarget(self, action: #selector(goToAuthorURL), for: .touchUpInside)
+        button.contentHorizontalAlignment = .left
+        return button
     }()
     
     private lazy var descriptionLabel: UILabel = {
@@ -73,6 +81,7 @@ final class CollectionViewController: UIViewController {
         addSubviews()
         addConstraints()
         loadData()
+        configureNavBar()
     }
     
     private func loadData() {
@@ -83,24 +92,35 @@ final class CollectionViewController: UIViewController {
         }
     }
     
+    private func configureNavBar() {
+        let backButton = UIBarButtonItem(
+            image: UIImage(named: "back_button"),
+            style: .plain,
+            target: self,
+            action: #selector(backButtonTapped)
+        )
+        backButton.tintColor = .black
+        navigationItem.leftBarButtonItem = backButton
+    }
+    
+    @objc private func backButtonTapped() {
+        navigationController?.popViewController(animated: true)
+    }
+    
     private func addSubviews() {
-        let closeButton = UIBarButtonItem(image: UIImage(named: "back_button"), style: .plain, target: self, action: #selector(dismissViewController))
-            closeButton.tintColor = .blackUniversal
-            navigationItem.leftBarButtonItem = closeButton
-            
-            view.addSubview(topImage)
-            view.addSubview(topView)
-            topView.addSubview(nameLabel)
-            topView.addSubview(firstAuthorLabel)
-            topView.addSubview(secondAuthorLabel)
-            view.addSubview(descriptionLabel)
-            view.addSubview(collectionView)
-            
-            topImage.image = UIImage(named: "CollectionCoverMock")
-            nameLabel.text = "Peach"
+        view.addSubview(topImage)
+        view.addSubview(topView)
+        topView.addSubview(nameLabel)
+        topView.addSubview(firstAuthorLabel)
+        topView.addSubview(urlButton)
+        view.addSubview(descriptionLabel)
+        view.addSubview(collectionView)
+        
+        topImage.image = UIImage(named: "CollectionCoverMock")
+        nameLabel.text = "Peach"
         firstAuthorLabel.text = localizedString(key:"collectionAuthor")
-            secondAuthorLabel.text = "John Doe"
-            descriptionLabel.text = "Персиковый — как облака над закатным солнцем в океане. Бла-бла-бла, кто-нибудь это читает? Всем насрать на этот текст, все хотят просто навариться на NFT"
+        urlButton.setTitle("John Do", for: .normal)
+        descriptionLabel.text = "Персиковый — как облака над закатным солнцем в океане. Бла-бла-бла, кто-нибудь это читает? Всем насрать на этот текст, все хотят просто навариться на NFT"
     }
     
     private func addConstraints() {
@@ -122,13 +142,13 @@ final class CollectionViewController: UIViewController {
             
             firstAuthorLabel.bottomAnchor.constraint(equalTo: topView.bottomAnchor, constant: -5),
             firstAuthorLabel.leadingAnchor.constraint(equalTo: nameLabel.leadingAnchor),
-            firstAuthorLabel.widthAnchor.constraint(equalToConstant: 115),
+            firstAuthorLabel.widthAnchor.constraint(equalToConstant: 120),
             firstAuthorLabel.heightAnchor.constraint(equalToConstant: 18),
             
-            secondAuthorLabel.leadingAnchor.constraint(equalTo: firstAuthorLabel.trailingAnchor, constant: 4),
-            secondAuthorLabel.heightAnchor.constraint(equalToConstant: 28),
-            secondAuthorLabel.bottomAnchor.constraint(equalTo: topView.bottomAnchor),
-            secondAuthorLabel.trailingAnchor.constraint(equalTo: topView.trailingAnchor, constant: -16),
+            urlButton.leadingAnchor.constraint(equalTo: firstAuthorLabel.trailingAnchor, constant: 4),
+            urlButton.heightAnchor.constraint(equalToConstant: 28),
+            urlButton.bottomAnchor.constraint(equalTo: topView.bottomAnchor),
+            urlButton.trailingAnchor.constraint(equalTo: topView.trailingAnchor, constant: -16),
             
             descriptionLabel.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor, constant: 16),
             descriptionLabel.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor, constant: -16),
@@ -143,8 +163,12 @@ final class CollectionViewController: UIViewController {
     }
     
     @objc func dismissViewController() {
-            dismiss(animated: true, completion: nil)
-        }
+        dismiss(animated: true, completion: nil)
+    }
+    
+    @objc func goToAuthorURL() {
+        
+    }
     
     func configure(with collection: CollectionModel) {
         self.collection = collection
@@ -156,12 +180,15 @@ extension CollectionViewController: UICollectionViewDelegate {
     
 }
 extension CollectionViewController: UICollectionViewDataSource {
+    
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
         viewModel.numberOfCollections()
     }
     
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
-        guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: NFTCellForCollectionView.reuseIdentifier, for: indexPath) as? NFTCellForCollectionView
+        
+        guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: NFTCellForCollectionView.reuseIdentifier,
+                                                            for: indexPath) as? NFTCellForCollectionView
         else {
             print("Не прошёл каст")
             return UICollectionViewCell()

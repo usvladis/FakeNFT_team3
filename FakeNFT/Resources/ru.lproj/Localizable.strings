@@ -36,7 +36,7 @@
 "close" = "Закрыть";
 "price" = "Цена";
 "addToCart" = "Добавить в корзину";
-"collectionAuthor" = "Автор коллекции: ";
+"collectionAuthor" = "Автор коллекции:";
 "titleButtonSellerWebsite" = "Перейти на сайт продавца";
 "toPayButtonTitle" = "К оплате";
 "removeQuestionText" = "Вы уверены, что хотите \n удалить объект из корзины?";
