@@ -71,7 +71,7 @@ final class CatalogViewController: UIViewController {
         let cancelAction = UIAlertAction(title: localizedString(key:"close"), style: .cancel, handler: nil)
         let sortByTitle = UIAlertAction(title: localizedString(key:"sortingByName"), style: .default, handler: nil)
         let sortByNumber = UIAlertAction(title: localizedString(key:"sortingByNumber"), style: .default, handler: nil)
-        alert.setDimmingColor(UIColor.black.withAlphaComponent(0.5))
+        alert.setDimmingColor(UIColor.sortCellBackgroundColor.withAlphaComponent(0.5))
         alert.addAction(cancelAction)
         alert.addAction(sortByTitle)
         alert.addAction(sortByNumber)

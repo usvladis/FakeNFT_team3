@@ -23,7 +23,7 @@ final class NFTCellForCollectionView: UICollectionViewCell {
     private lazy var nameLabel: UILabel = {
         let label = UILabel()
         label.font = .bodyBold
-        label.textColor = .blackUniversal
+        label.textColor = .fontColor
         label.translatesAutoresizingMaskIntoConstraints = false
         return label
     }()
@@ -31,7 +31,7 @@ final class NFTCellForCollectionView: UICollectionViewCell {
     private lazy var ethLabel: UILabel = {
         let label = UILabel()
         label.font = .cartFont1
-        label.textColor = .blackUniversal
+        label.textColor = .fontColor
         label.translatesAutoresizingMaskIntoConstraints = false
         return label
     }()
@@ -75,7 +75,7 @@ final class NFTCellForCollectionView: UICollectionViewCell {
         let imageForLike = nft.isLike ? UIImage(named: "heart_fill") ?? UIImage() : UIImage(named: "heart") ?? UIImage()
         favoriteButton.setImage(imageForLike, for: .normal)
         
-        let imageForCart = nft.inCart ? UIImage(named: "CartDelete")?.withTintColor(UIColor.blackUniversal, renderingMode: .alwaysOriginal) : UIImage(named: "CartAdd")?.withTintColor(UIColor.blackUniversal, renderingMode: .alwaysOriginal)
+        let imageForCart = nft.inCart ? UIImage(named: "CartDelete")?.withTintColor(UIColor.buttonColor, renderingMode: .alwaysOriginal) : UIImage(named: "CartAdd")?.withTintColor(UIColor.buttonColor, renderingMode: .alwaysOriginal)
         
         cartButton.setImage(imageForCart, for: .normal)
         ethLabel.text = "\(nft.cost) \("ETH")"
