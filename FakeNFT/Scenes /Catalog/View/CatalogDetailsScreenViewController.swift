@@ -88,6 +88,7 @@ final class CatalogDetailsScreenViewController: UIViewController {
         collection.dataSource = self
         collection.register(NFTCellForCollectionView.self, forCellWithReuseIdentifier: NFTCellForCollectionView.reuseIdentifier)
         collection.isScrollEnabled = false
+        collection.backgroundColor = .catalogBackgroundColor
         return collection
     }()
     

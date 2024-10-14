@@ -21,6 +21,7 @@ final class CatalogViewController: UIViewController {
         tableView.dataSource = self
         tableView.register(CatalogTableViewCell.self, forCellReuseIdentifier: CatalogTableViewCell.identifier)
         tableView.separatorStyle = .none
+        tableView.backgroundColor = .catalogBackgroundColor
         return tableView
     }()
     
@@ -124,7 +125,15 @@ extension CatalogViewController: UITableViewDataSource {
         let nft = viewModel.collection(at: indexPath.row)
         cell.configCell(name: nft.name, count: nft.count, image: nft.image)
         cell.selectionStyle = .none
+        cell.backgroundColor = .clear
         return cell
     }
 }
 
+// MARK: - Preview
+struct CatalogViewControllerPreview: PreviewProvider {
+
+    static var previews: some View {
+        CatalogViewController().showPreview()
+    }
+}

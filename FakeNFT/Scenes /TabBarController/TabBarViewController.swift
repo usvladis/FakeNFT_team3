@@ -11,6 +11,7 @@ final class TabBarController: UITabBarController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        view.backgroundColor = .catalogBackgroundColor
         generateTabBar()
     }
     
@@ -22,6 +23,10 @@ final class TabBarController: UITabBarController {
         
         tabBar.tintColor = .blueUniversal
         tabBar.unselectedItemTintColor = .buttonColor
+        
+        tabBar.barTintColor = .catalogBackgroundColor
+        tabBar.isTranslucent = false
+        
         viewControllers = [
             generateVC(viewController: profileViewController,
                        title: NSLocalizedString("profile", comment: ""),
