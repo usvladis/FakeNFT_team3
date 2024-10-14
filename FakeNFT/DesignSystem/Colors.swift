@@ -14,12 +14,21 @@ extension UIColor {
     static var yellowUniversal: UIColor { #colorLiteral(red: 0.9960784314, green: 0.937254902, blue: 0.05098039216, alpha: 1) }
     static var bordersColor: UIColor { #colorLiteral(red: 0.2352941176, green: 0.2352941176, blue: 0.262745098, alpha: 0.36) }
     static var alertBackgroundColor: UIColor { #colorLiteral(red: 0.9490196078, green: 0.9490196078, blue: 0.9490196078, alpha: 0.8) }
+    static var catalogBackgroundDark: UIColor { #colorLiteral(red: 0.1019607843, green: 0.1058823529, blue: 0.1294117647, alpha: 1) }
+    
+    static var catalogBackgroundColor: UIColor {
+        return UIColor { traitCollection in
+            return traitCollection.userInterfaceStyle == .dark ?
+                .catalogBackgroundDark   :  // Цвет для тёмной темы
+                .whiteUniversal  // Цвет для светлой темы
+        }
+    }
     
     
     static var backgroudColor: UIColor {
         return UIColor { traitCollection in
             return traitCollection.userInterfaceStyle == .dark ?
-                .blackUniversal   :  // Цвет для тёмной темы
+                .lightGrayNight   :  // Цвет для тёмной темы
                 .whiteUniversal  // Цвет для светлой темы
         }
     }
