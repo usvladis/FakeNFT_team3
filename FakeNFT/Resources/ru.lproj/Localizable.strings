@@ -1,0 +1,82 @@
+/* 
+  Localizable.strings
+  FakeNFT
+
+  Created by Владислав Усачев on 09.10.2024.
+  
+*/
+"signIn" = "Вход";
+"email" = "Email";
+"password" = "Пароль";
+"enter" = "Войти";
+"fogotPassword" = "Забыли пароль?";
+"signUp" = "Зарегистрироваться";
+"ok" = "OK";
+"signInError" = "Введен неверный логин или пароль";
+"alertSignInHeading" = "Что-то пошло не так(";
+"alertSignInText" = "Не удалось войти в систему";
+"register" = "Регистрация";
+"registerError" = "Данное имя пользователя занято";
+"passwordResetTitle" = "Сброс пароля";
+"resetPasswordButton" = "Сбросить пароль";
+"instructionRecoverPassword" = "Инструкции по восстановлению пароля высланы \n на указанный email";
+"firstOnbordingTitle" = "Исследуйте";
+"firstOnboardingText" = "Присоединяйтесь и откройте новый мир \n уникальных NFT для коллекционеров";
+"secondOnboardingTitle" = "Коллекционируйте";
+"secondOnboardingText" = "Пополняйте свою коллекцию эксклюзивными \n картинками, созданными нейросетью!";
+"thirdOnboardingTitle" = "Состязайтесь";
+"thirdOnboardingText" = "Смотрите статистику других и покажите всем, \n что у вас самая ценная коллекция";
+"profile" = "Профиль";
+"catalog" = "Каталог";
+"cart" = "Корзина";
+"statistics" = "Статистика";
+"sorting" = "Сортировка";
+"sortingByName" = "По названию";
+"sortingByNumber" = "По количеству NFT";
+"close" = "Закрыть";
+"price" = "Цена";
+"addToCart" = "Добавить в корзину";
+"titleButtonSellerWebsite" = "Перейти на сайт продавца";
+"toPayButtonTitle" = "К оплате";
+"removeQuestionText" = "Вы уверены, что хотите \n удалить объект из корзины?";
+"removeButtonTitle" = "Удалить";
+"goBackButtonTitle" = "Вернуться";
+"paymentMethodTitle" = "Выберите способ оплаты";
+"warningUserAgreement" = "Совершая покупку, вы соглашаетесь с условиями";
+"warningUserButton" = "Пользовательского соглашения";
+"pay" = "Оплатить";
+"sortingByPrice" = "По цене";
+"sortingByRating" = "По рейтингу";
+"successPayment" = "Успех! Оплата прошла, \n поздравляем с покупкой!";
+"returnToCatalogButtonText" = "Вернуться в каталог";
+"paymentErrorAlertTitle" = "Не удалось произвести \n оплату";
+"cancel" = "Отмена";
+"retry" = "Повторить";
+"cartIsEmpty" = "Корзина пуста";
+"myNFT" = "Мои NFT";
+"faforiteNFT" = "Избранные NFT";
+"aboutTheDeveloper" = "О разработчике";
+"name" = "Имя";
+"description" = "Описание";
+"website" = "Сайт";
+"changePhoto" = "Сменить \n фото";
+"uploadImage" = "Загрузить изображение";
+"from" = "от";
+"don'tHaveNFT" = "У Вас ещё нет NFT";
+"don'tHaveFavoriteNFT" = "У Вас ещё нет избранных NFT";
+"userWebsite" = "Перейти на сайт пользователя";
+"colectionNFT" = "Коллекция NFT";
+"alertErrorData" = "Не удалось получить \n данные";
+"reviewAllertTitle" = "Review Store Review Controller?";
+"reviewAllertText" = "Tap a star to rate it on the App Store";
+"notNoButtonTitle" = "Не сейчас";
+"estimateButtonTitle" = "Оценить";
+"peach" = "Peach";
+"brown" = "Brown";
+"white" = "White";
+"gray" = "Gray";
+"yellow" = "Yellow";
+"green" = "Green";
+"blue" = "Blue";
+"beige" = "Beige";
+"pink" = "Pink";
