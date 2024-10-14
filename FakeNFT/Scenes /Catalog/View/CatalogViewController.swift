@@ -12,6 +12,7 @@ final class CatalogViewController: UIViewController {
     
     private let viewModel = CatalogViewModel()
     private var servicesAssembly: ServicesAssembly?
+    private var filterButton: UIBarButtonItem!
     
     private lazy var NFTTableView: UITableView = {
         let tableView = UITableView(frame: .zero)
@@ -34,28 +35,45 @@ final class CatalogViewController: UIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        navigationItem.rightBarButtonItem = UIBarButtonItem(
-            image: UIImage(named: "filter_button"),
-            style: .done,
+        view.backgroundColor = .catalogBackgroundColor
+        addSubviews()
+        loadData()
+        configureNavBar()
+    }
+    
+    private func configureNavBar() {
+        let filterImage = UIImage(named: "filter_button")?.withRenderingMode(.alwaysTemplate)
+        
+        filterButton = UIBarButtonItem(
+            image: filterImage,
+            style: .plain,
             target: self,
             action: #selector(sortButtonTupped)
         )
         
-        view.backgroundColor = .systemBackground
-        addSubviews()
-        loadData()
+        filterButton.tintColor = .buttonColor
+        
+        navigationItem.rightBarButtonItem = filterButton
+        
+        if let navigationBar = navigationController?.navigationBar {
+            navigationBar.setBackgroundImage(UIImage(), for: .default)
+            navigationBar.shadowImage = UIImage()
+            navigationBar.backgroundColor = .clear
+            navigationBar.isTranslucent = true
+        }
     }
     
+    
     private func addSubviews() {
-            view.addSubview(NFTTableView)
-
-            NSLayoutConstraint.activate([
-                NFTTableView.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: 20),
-                NFTTableView.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor, constant: 16),
-                NFTTableView.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor, constant: -16),
-                NFTTableView.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor)
-            ])
-        }
+        view.addSubview(NFTTableView)
+        
+        NSLayoutConstraint.activate([
+            NFTTableView.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: 0),
+            NFTTableView.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor, constant: 16),
+            NFTTableView.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor, constant: -16),
+            NFTTableView.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor)
+        ])
+    }
     
     private func loadData() {
         viewModel.fetchCollections {
@@ -110,10 +128,3 @@ extension CatalogViewController: UITableViewDataSource {
     }
 }
 
-// MARK: - Preview
-struct CatalogViewControllerPreview: PreviewProvider {
-    
-    static var previews: some View {
-        CatalogViewController().showPreview()
-    }
-}

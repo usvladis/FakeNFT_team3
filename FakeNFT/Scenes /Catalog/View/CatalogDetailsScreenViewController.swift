@@ -93,7 +93,7 @@ final class CatalogDetailsScreenViewController: UIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        view.backgroundColor = .systemBackground
+        view.backgroundColor = .catalogBackgroundColor
         addSubviews()
         addConstraints()
         loadData()
