@@ -43,9 +43,9 @@ final class ProfileViewModel {
     init(profile: ProfileModel) {
         self.profile = profile
         self.items = [
-            ProfileItem(categoryName: "Мои NFT", count: myNFTNames.count),
-            ProfileItem(categoryName: "Избранные NFT", count: myNFTNames.count),
-            ProfileItem(categoryName: "О разработчике")
+            ProfileItem(categoryName: localizedString(key: "myNFT"), count: myNFTNames.count),
+            ProfileItem(categoryName: localizedString(key: "faforiteNFT"), count: myNFTNames.count),
+            ProfileItem(categoryName: localizedString(key: "aboutTheDeveloper"))
         ]
     }
     
