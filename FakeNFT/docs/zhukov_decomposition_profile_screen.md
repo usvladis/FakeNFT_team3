@@ -5,7 +5,19 @@
 **Ссылка на доску ** (https://github.com/users/usvladis/projects/4/views/1) **
 ---
 
- 
+ # Декомпозиция эпика Профиль
+
+## Модуль 1: Верстка
+
+### Интерфейс профиля
+- Создать модель профиля ProfileModel
+  **est:** 5 мин; **fact:** x мин 
+- Создать ProfileViewModel и настроить ее
+  **est:** 15 мин; **fact:** x мин 
+- Создать экран ProfileViewController и настроить его согласно макета Figma 
+  **est:** 30 мин; **fact:** x мин 
+- Создать модель ProfileAction
+  **est:** 5 мин; **fact:** x мин
 
 ## Модуль 2: Нстройка экранов "Мой NFT" и "Избранные NFT" 
 
