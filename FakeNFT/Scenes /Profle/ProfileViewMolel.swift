@@ -9,14 +9,13 @@ import UIKit
 
 final class ProfileViewModel {
     
-    // MARK: - Properties
+    // MARK: - Public Properties
     var profile: ProfileModel {
         didSet {
             profileUpdated?()
         }
     }
     
-    // MARK: - Public Properties
     var profileImage: String {
         return profile.profileImage
     }
@@ -33,14 +32,12 @@ final class ProfileViewModel {
         return profile.userWebsite
     }
     
-    // Callback для обновления UI
-        var profileUpdated: (() -> Void)?
-    
+    var profileUpdated: (() -> Void)?
+
+    // MARK: - Data for UITable
+    var items: [ProfileItem] = []
     var myNFTNames = ["Piper","Archie","Zeus", "Lucky"]
     var favoriteNFTNames = ["Piper","Archie","Zeus", "Lucky"]
-    
-    // Данные для таблицы
-    var items: [ProfileItem] = []
     
     // MARK: - Initializer
     init(profile: ProfileModel) {
@@ -50,6 +47,20 @@ final class ProfileViewModel {
             ProfileItem(categoryName: "Избранные NFT", count: myNFTNames.count),
             ProfileItem(categoryName: "О разработчике")
         ]
+    }
+    
+    // MARK: - Логика обработки нажатий на ячейки
+    func didSelectItem(at index: Int) -> ProfileAction {
+        switch index {
+        case 0:
+            return .navigateToMyNFTs
+        case 1:
+            return .navigateToFavorites
+        case 2:
+            return .openUserWebsite
+        default:
+            return .none
+        }
     }
 }
 
