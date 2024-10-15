@@ -92,7 +92,7 @@ final class ProfileTableViewCell: UITableViewCell, ViewConfigurable {
         if let count = count {
             countLabel.text = "(\(count))"
         } else {
-            countLabel.text = "" // Или вы можете установить какое-то другое значение, если count отсутствует
+            countLabel.text = ""
         }
     }
 }
