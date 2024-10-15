@@ -9,12 +9,6 @@ import UIKit
 import SwiftUI
 
 // MARK: - Preview
-struct CartViewControllerPreview: PreviewProvider {
-    static var previews: some View {
-        CartViewController().showPreview()
-    }
-}
-
 final class CartViewController: UIViewController {
     
     private var nftItems: [NFTItem] = NFTItem.mockData()
@@ -48,9 +42,10 @@ final class CartViewController: UIViewController {
     private let checkoutButton: UIButton = {
         let button = UIButton(type: .system)
         button.setTitle(localizedString(key: "toPayButtonTitle"), for: .normal)
+        button.titleLabel?.font = UIFont.boldSystemFont(ofSize: 17)
         button.backgroundColor = .buttonColor
         button.setTitleColor(.backgroudColor, for: .normal)
-        button.layer.cornerRadius = 8
+        button.layer.cornerRadius = 16
         button.translatesAutoresizingMaskIntoConstraints = false
         return button
     }()
@@ -85,7 +80,7 @@ final class CartViewController: UIViewController {
     private func setupTableView() {
         view.addSubview(tableView)
         NSLayoutConstraint.activate([
-            tableView.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor),
+            tableView.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: 20),
             tableView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
             tableView.trailingAnchor.constraint(equalTo: view.trailingAnchor),
             tableView.bottomAnchor.constraint(equalTo: view.bottomAnchor, constant: -100)

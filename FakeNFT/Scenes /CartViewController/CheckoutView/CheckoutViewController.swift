@@ -59,7 +59,7 @@ final class CheckoutViewController: UIViewController {
         button.titleLabel?.font = UIFont.boldSystemFont(ofSize: 17)
         button.backgroundColor = .buttonColor
         button.setTitleColor(.backgroudColor, for: .normal)
-        button.layer.cornerRadius = 8
+        button.layer.cornerRadius = 16
         button.translatesAutoresizingMaskIntoConstraints = false
         return button
     }()
