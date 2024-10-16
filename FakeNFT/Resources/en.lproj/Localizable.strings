@@ -1,0 +1,84 @@
+/* 
+  Localizable.strings
+  FakeNFT
+
+  Created by Владислав Усачев on 09.10.2024.
+  
+*/
+"signIn" = "Sign in";
+"email" = "Email";
+"password" = "Password";
+"enter" = "Enter";
+"fogotPassword" = "Forgot your password?";
+"signUp" = "Sign up";
+"ok" = "OK";
+"signInError" = "Invalid username or password.";
+"alertSignInHeading" = "Something went wrong(";
+"alertSignInText" = "Failed to log in";
+"register" = "Register";
+"registerError" = "This username is already taken";
+"passwordResetTitle" = "Password reset";
+"resetPasswordButton" = "Reset password";
+"instructionRecoverPassword" = "Instructions to recover your password have been sent to \n the provided email";
+"firstOnbordingTitle" = "Explore";
+"firstOnboardingText" = "Join and open a new world \n of unique NFTs for collectors";
+"secondOnboardingTitle" = "Collect";
+"secondOnboardingText" = "Fill your collection with exclusive \n images created by AI!";
+"thirdOnboardingTitle" = "Compete";
+"thirdOnboardingText" = "View the statistics of others and show everyone \n that you have the most valuable collection";
+"profile" = "Profile";
+"catalog" = "Catalog";
+"cart" = "Cart";
+"statistics" = "Statistics";
+"sorting" = "Sorting";
+"sortingByName" = "By name";
+"sortingByNumber" = "By number of NFTs";
+"close" = "Close";
+"price" = "Price";
+"addToCart" = "Add to cart";
+"titleButtonSellerWebsite" = "Go to seller’s website";
+"toPayButtonTitle" = "To pay";
+"removeQuestionText" = "Are you sure you want \n to remove the item from the cart?";
+"removeButtonTitle" = "Remove";
+"goBackButtonTitle" = "Go back";
+"paymentMethodTitle" = "Select payment method";
+"warningUserAgreement" = "By making a purchase, you agree to the terms";
+"warningUserButton" = "of the User Agreement";
+"pay" = "Pay";
+"sortingByPrice" = "By price";
+"sortingByRating" = "By rating";
+"successPayment" = "Success! Payment was successful, \n congratulations on your purchase!";
+"returnToCatalogButtonText" = "Return to catalog";
+"paymentErrorAlertTitle" = "Payment failed";
+"cancel" = "Cancel";
+"retry" = "Retry";
+"cartIsEmpty" = "Cart is empty";
+"myNFT" = "My NFTs";
+"faforiteNFT" = "Favorite NFTs";
+"aboutTheDeveloper" = "About the developer";
+"name" = "Name";
+"description" = "Description";
+"website" = "Website";
+"changePhoto" = "Change photo";
+"uploadImage" = "Upload image";
+"from" = "from";
+"don'tHaveNFT" = "You do not have any NFTs yet";
+"don'tHaveFavoriteNFT" = "You do not have any favorite NFTs yet";
+"userWebsite" = "Go to user’s website";
+"colectionNFT" = "NFT collection";
+"alertErrorData" = "Failed to retrieve \n data";
+"reviewAllertTitle" = "Review Store Review Controller?";
+"reviewAllertText" = "Tap a star to rate it on the App Store";
+"notNoButtonTitle" = "Not now";
+"estimateButtonTitle" = "Estimate";
+"peach" = "Peach";
+"brown" = "Brown";
+"white" = "White";
+"gray" = "Gray";
+"yellow" = "Yellow";
+"green" = "Green";
+"blue" = "Blue";
+"beige" = "Beige";
+"pink" = "Pink";
+
+
