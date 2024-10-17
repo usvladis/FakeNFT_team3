@@ -57,6 +57,7 @@ class DeleteConfirmationViewController: UIViewController {
     // Публичная функция для установки изображения NFT
     func configure(with image: UIImage, nftId: UUID) {
         nftImageView.image = image
+        self.nftId = nftId
     }
 
     override func viewDidLoad() {
