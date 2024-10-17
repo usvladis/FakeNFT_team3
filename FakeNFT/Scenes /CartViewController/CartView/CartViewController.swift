@@ -56,6 +56,23 @@ final class CartViewController: UIViewController {
         return button
     }()
     
+    private let bottomView: UIView = {
+        let view = UIView()
+        view.backgroundColor = .greyColor
+        view.translatesAutoresizingMaskIntoConstraints = false
+        return view
+    }()
+    
+    private let placeholderLabel: UILabel = {
+        let label = UILabel()
+        label.text = localizedString(key: "cartIsEmpty")
+        label.textColor = .fontColor
+        label.font = UIFont.boldSystemFont(ofSize: 17)
+        label.textAlignment = .center
+        label.translatesAutoresizingMaskIntoConstraints = false
+        return label
+    }()
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         
@@ -71,7 +88,9 @@ final class CartViewController: UIViewController {
         
         setupTableView()
         setupBottomView()
+        setupPlaceholder()
         setupCartInformation()
+        updateViewVisibility()
         
         tableView.dataSource = self
         tableView.delegate = self
@@ -88,34 +107,66 @@ final class CartViewController: UIViewController {
     }
     
     private func setupBottomView() {
-        let bottomContainer = UIView()
-        bottomContainer.backgroundColor = .greyColor
-        bottomContainer.translatesAutoresizingMaskIntoConstraints = false
-        view.addSubview(bottomContainer)
+        view.addSubview(bottomView)
         
         checkoutButton.addTarget(self, action: #selector(checkoutButtonTapped), for: .touchUpInside)
         
-        bottomContainer.addSubview(totalAmountLabel)
-        bottomContainer.addSubview(totalNFTLabel)
-        bottomContainer.addSubview(checkoutButton)
+        bottomView.addSubview(totalAmountLabel)
+        bottomView.addSubview(totalNFTLabel)
+        bottomView.addSubview(checkoutButton)
         
         NSLayoutConstraint.activate([
-            bottomContainer.leadingAnchor.constraint(equalTo: view.leadingAnchor),
-            bottomContainer.trailingAnchor.constraint(equalTo: view.trailingAnchor),
-            bottomContainer.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor),
-            bottomContainer.heightAnchor.constraint(equalToConstant: 76),
+            bottomView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
+            bottomView.trailingAnchor.constraint(equalTo: view.trailingAnchor),
+            bottomView.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor),
+            bottomView.heightAnchor.constraint(equalToConstant: 76),
             
-            totalNFTLabel.leadingAnchor.constraint(equalTo: bottomContainer.leadingAnchor, constant: 16),
-            totalNFTLabel.topAnchor.constraint(equalTo: bottomContainer.topAnchor, constant: 16),
+            totalNFTLabel.leadingAnchor.constraint(equalTo: bottomView.leadingAnchor, constant: 16),
+            totalNFTLabel.topAnchor.constraint(equalTo: bottomView.topAnchor, constant: 16),
             
-            totalAmountLabel.leadingAnchor.constraint(equalTo: bottomContainer.leadingAnchor, constant: 16),
+            totalAmountLabel.leadingAnchor.constraint(equalTo: bottomView.leadingAnchor, constant: 16),
             totalAmountLabel.topAnchor.constraint(equalTo: totalNFTLabel.bottomAnchor, constant: 2),
             
-            checkoutButton.trailingAnchor.constraint(equalTo: bottomContainer.trailingAnchor, constant: -16),
-            checkoutButton.centerYAnchor.constraint(equalTo: bottomContainer.centerYAnchor),
+            checkoutButton.trailingAnchor.constraint(equalTo: bottomView.trailingAnchor, constant: -16),
+            checkoutButton.centerYAnchor.constraint(equalTo: bottomView.centerYAnchor),
             checkoutButton.leadingAnchor.constraint(equalTo: totalAmountLabel.trailingAnchor, constant: 24),
             checkoutButton.heightAnchor.constraint(equalToConstant: 44)
         ])
+    }
+    
+    private func setupPlaceholder() {
+        view.addSubview(placeholderLabel)
+        
+        NSLayoutConstraint.activate([
+            placeholderLabel.centerXAnchor.constraint(equalTo: view.centerXAnchor),
+            placeholderLabel.centerYAnchor.constraint(equalTo: view.centerYAnchor)
+        ])
+    }
+    
+    private func updateViewVisibility() {
+        if nftItems.isEmpty {
+            // Показываем плейсхолдер
+            placeholderLabel.isHidden = false
+            
+            // Скрываем таблицу и нижнюю панель с информацией
+            navigationController?.setNavigationBarHidden(true, animated: false)
+            tableView.isHidden = true
+            bottomView.isHidden = true
+            checkoutButton.isHidden = true
+            totalNFTLabel.isHidden = true
+            totalAmountLabel.isHidden = true
+        } else {
+            // Скрываем плейсхолдер
+            placeholderLabel.isHidden = true
+            
+            // Показываем таблицу и нижнюю панель с информацией
+            navigationController?.setNavigationBarHidden(false, animated: false)
+            tableView.isHidden = false
+            bottomView.isHidden = false
+            checkoutButton.isHidden = false
+            totalNFTLabel.isHidden = false
+            totalAmountLabel.isHidden = false
+        }
     }
     
     private func setupCartInformation() {
@@ -182,7 +233,8 @@ final class CartViewController: UIViewController {
         if let index = nftItems.firstIndex(where: { $0.id == id }) {
             nftItems.remove(at: index)
             tableView.reloadData()
-            setupCartInformation() // обновляем интерфейс после удаления
+            setupCartInformation()
+            updateViewVisibility() // обновляем интерфейс после удаления
         }
     }
     
