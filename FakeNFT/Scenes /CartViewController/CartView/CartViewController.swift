@@ -32,7 +32,6 @@ final class CartViewController: UIViewController {
     
     private let totalAmountLabel: UILabel = {
         let label = UILabel()
-        label.text = "5.34 ETH" // Mocked data
         label.font = UIFont.boldSystemFont(ofSize: 17)
         label.textColor = .greenUniversal
         label.translatesAutoresizingMaskIntoConstraints = false
@@ -96,6 +95,8 @@ final class CartViewController: UIViewController {
         checkoutButton.addTarget(self, action: #selector(checkoutButtonTapped), for: .touchUpInside)
         
         totalNFTLabel.text = "\(nftItems.count) NFT"
+        var totalPrice = nftItems.reduce(0) { $0 + $1.price }
+        totalAmountLabel.text = "\(totalPrice) ETH"
         bottomContainer.addSubview(totalAmountLabel)
         bottomContainer.addSubview(totalNFTLabel)
         bottomContainer.addSubview(checkoutButton)
@@ -135,13 +136,19 @@ final class CartViewController: UIViewController {
         let alertController = UIAlertController(title: localizedString(key: "sorting"), message: nil, preferredStyle: .actionSheet)
         
         // Добавляем действие для сортировки по цене
-        let sortByPriceAction = UIAlertAction(title: localizedString(key: "sortingByPrice"), style: .default)
+        let sortByPriceAction = UIAlertAction(title: localizedString(key: "sortingByPrice"), style: .default) { [weak self] _ in
+            self?.sortByPrice()
+        }
         
         // Добавляем действие для сортировки по рейтингу
-        let sortByRatingAction = UIAlertAction(title: localizedString(key: "sortingByRating"), style: .default)
+        let sortByRatingAction = UIAlertAction(title: localizedString(key: "sortingByRating"), style: .default) { [weak self] _ in
+            self?.sortByRating()
+        }
         
         // Добавляем действие для сортировки по названию
-        let sortByNameAction = UIAlertAction(title: localizedString(key: "sortingByName"), style: .default)
+        let sortByNameAction = UIAlertAction(title: localizedString(key: "sortingByName"), style: .default) { [weak self] _ in
+            self?.sortByName()
+        }
         
         // Добавляем действие для отмены
         let closeAction = UIAlertAction(title: localizedString(key: "close"), style: .cancel)
@@ -162,6 +169,24 @@ final class CartViewController: UIViewController {
         deleteConfirmationVC.modalPresentationStyle = .overFullScreen
         deleteConfirmationVC.modalTransitionStyle = .crossDissolve
         present(deleteConfirmationVC, animated: true, completion: nil)
+    }
+    
+    func sortByPrice() {
+        nftItems.sort { $0.price < $1.price }
+        // Обновляем интерфейс, например перезагружаем таблицу
+        tableView.reloadData()
+    }
+    
+    func sortByRating() {
+        nftItems.sort { $0.rating > $1.rating }
+        // Обновляем интерфейс
+        tableView.reloadData()
+    }
+    
+    func sortByName() {
+        nftItems.sort { $0.title < $1.title }
+        // Обновляем интерфейс
+        tableView.reloadData()
     }
 }
 
