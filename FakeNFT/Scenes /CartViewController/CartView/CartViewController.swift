@@ -71,6 +71,7 @@ final class CartViewController: UIViewController {
         
         setupTableView()
         setupBottomView()
+        setupCartInformation()
         
         tableView.dataSource = self
         tableView.delegate = self
@@ -94,9 +95,6 @@ final class CartViewController: UIViewController {
         
         checkoutButton.addTarget(self, action: #selector(checkoutButtonTapped), for: .touchUpInside)
         
-        totalNFTLabel.text = "\(nftItems.count) NFT"
-        var totalPrice = nftItems.reduce(0) { $0 + $1.price }
-        totalAmountLabel.text = "\(totalPrice) ETH"
         bottomContainer.addSubview(totalAmountLabel)
         bottomContainer.addSubview(totalNFTLabel)
         bottomContainer.addSubview(checkoutButton)
@@ -118,6 +116,12 @@ final class CartViewController: UIViewController {
             checkoutButton.leadingAnchor.constraint(equalTo: totalAmountLabel.trailingAnchor, constant: 24),
             checkoutButton.heightAnchor.constraint(equalToConstant: 44)
         ])
+    }
+    
+    private func setupCartInformation() {
+        totalNFTLabel.text = "\(nftItems.count) NFT"
+        var totalPrice = nftItems.reduce(0) { $0 + $1.price }
+        totalAmountLabel.text = "\(totalPrice) ETH"
     }
     
     @objc
@@ -163,12 +167,23 @@ final class CartViewController: UIViewController {
         present(alertController, animated: true, completion: nil)
     }
     
-    func presentDeleteConfirmationDialog(with image: UIImage) {
+    func presentDeleteConfirmationDialog(with image: UIImage, nftId: UUID) {
         let deleteConfirmationVC = DeleteConfirmationViewController()
-        deleteConfirmationVC.configure(with: image)
+        deleteConfirmationVC.configure(with: image, nftId: nftId) // передаем картинку и id
         deleteConfirmationVC.modalPresentationStyle = .overFullScreen
         deleteConfirmationVC.modalTransitionStyle = .crossDissolve
+        deleteConfirmationVC.onDeleteConfirmed = { [weak self] nftId in
+            self?.deleteNFT(withId: nftId) // вызываем метод удаления NFT
+        }
         present(deleteConfirmationVC, animated: true, completion: nil)
+    }
+    
+    func deleteNFT(withId id: UUID) {
+        if let index = nftItems.firstIndex(where: { $0.id == id }) {
+            nftItems.remove(at: index)
+            tableView.reloadData()
+            setupCartInformation() // обновляем интерфейс после удаления
+        }
     }
     
     func sortByPrice() {
@@ -203,7 +218,7 @@ extension CartViewController: UITableViewDataSource, UITableViewDelegate {
         let nftItem = nftItems[indexPath.row]
         cell.configure(with: nftItem)
         cell.buttonAction = { [weak self] in
-            self?.presentDeleteConfirmationDialog(with: nftItem.image)
+            self?.presentDeleteConfirmationDialog(with: nftItem.image, nftId: nftItem.id)
         }
         return cell
     }
