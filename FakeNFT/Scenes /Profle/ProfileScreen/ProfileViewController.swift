@@ -15,7 +15,7 @@ struct ProfileViewControllerPreview: PreviewProvider {
     }
 }
 
-final class ProfileViewController: UIViewController, ViewConfigurable {
+final class ProfileViewController: UIViewController {
     
     // MARK: - ViewModel
     private let viewModel = ProfileViewModel(
@@ -138,44 +138,46 @@ final class ProfileViewController: UIViewController, ViewConfigurable {
             break
         }
     }
-        
-        // MARK: - ViewConfigurable Methods
-        func addConstraints() {
-            NSLayoutConstraint.activate([
-                changeProfileButton.widthAnchor.constraint(equalToConstant: 42),
-                changeProfileButton.heightAnchor.constraint(equalToConstant: 42),
-                
-                profileImage.widthAnchor.constraint(equalToConstant: 70),
-                profileImage.heightAnchor.constraint(equalToConstant: 70),
-                profileImage.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor, constant: 16),
-                profileImage.topAnchor.constraint(equalTo: view.topAnchor, constant: 108),
-                
-                nameLabel.leadingAnchor.constraint(equalTo: profileImage.trailingAnchor, constant: 16),
-                nameLabel.topAnchor.constraint(equalTo: profileImage.topAnchor, constant: 21),
-                
-                informationLabel.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 16),
-                informationLabel.topAnchor.constraint(equalTo: profileImage.bottomAnchor, constant: 20),
-                informationLabel.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -16),
-                
-                profileLink.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 16),
-                profileLink.topAnchor.constraint(equalTo: informationLabel.bottomAnchor, constant: 8),
-                
-                tableView.topAnchor.constraint(equalTo: profileLink.bottomAnchor, constant: 40),
-                tableView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
-                tableView.trailingAnchor.constraint(equalTo: view.trailingAnchor),
-                tableView.bottomAnchor.constraint(equalTo: view.bottomAnchor)
-            ])
-        }
-        
-        func addSubviews() {
-            let subViews = [
-                profileImage,
-                nameLabel,
-                informationLabel,
-                profileLink,
-                tableView
-            ]
-            subViews.forEach { view.addSubview($0) }
+}
+
+// MARK: - ViewConfigurable
+extension ProfileViewController: ViewConfigurable {
+    func addConstraints() {
+        NSLayoutConstraint.activate([
+            changeProfileButton.widthAnchor.constraint(equalToConstant: 42),
+            changeProfileButton.heightAnchor.constraint(equalToConstant: 42),
+            
+            profileImage.widthAnchor.constraint(equalToConstant: 70),
+            profileImage.heightAnchor.constraint(equalToConstant: 70),
+            profileImage.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor, constant: 16),
+            profileImage.topAnchor.constraint(equalTo: view.topAnchor, constant: 108),
+            
+            nameLabel.leadingAnchor.constraint(equalTo: profileImage.trailingAnchor, constant: 16),
+            nameLabel.topAnchor.constraint(equalTo: profileImage.topAnchor, constant: 21),
+            
+            informationLabel.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 16),
+            informationLabel.topAnchor.constraint(equalTo: profileImage.bottomAnchor, constant: 20),
+            informationLabel.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -16),
+            
+            profileLink.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 16),
+            profileLink.topAnchor.constraint(equalTo: informationLabel.bottomAnchor, constant: 8),
+            
+            tableView.topAnchor.constraint(equalTo: profileLink.bottomAnchor, constant: 40),
+            tableView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
+            tableView.trailingAnchor.constraint(equalTo: view.trailingAnchor),
+            tableView.bottomAnchor.constraint(equalTo: view.bottomAnchor)
+        ])
+    }
+    
+    func addSubviews() {
+        let subViews = [
+            profileImage,
+            nameLabel,
+            informationLabel,
+            profileLink,
+            tableView
+        ]
+        subViews.forEach { view.addSubview($0) }
     }
 }
 

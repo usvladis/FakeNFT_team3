@@ -7,7 +7,7 @@
 
 import UIKit
 
-final class ProfileTableViewCell: UITableViewCell, ViewConfigurable {
+final class ProfileTableViewCell: UITableViewCell {
     // MARK: - Public Properties
     static let identifier = "ProfileCell"
     
@@ -55,7 +55,20 @@ final class ProfileTableViewCell: UITableViewCell, ViewConfigurable {
         fatalError("init(coder:) has not been implemented")
     }
     
-    // MARK: - ViewConfigurable Methods
+    // MARK: - Public Methods
+    func configure(with category: String, count: String?) {
+        categoryLabel.text = category
+        if let count = count {
+            countLabel.text = "(\(count))"
+        } else {
+            countLabel.text = ""
+        }
+    }
+}
+
+// MARK: - ViewConfigurable
+extension ProfileTableViewCell: ViewConfigurable {
+    
     func addSubviews() {
         let subViews = [
             categoryLabel,
@@ -83,16 +96,5 @@ final class ProfileTableViewCell: UITableViewCell, ViewConfigurable {
      func configureView() {
         addSubviews()
         addConstraints()
-    }
-    
-    
-    // MARK: - Public Methods
-    func configure(with category: String, count: String?) {
-        categoryLabel.text = category
-        if let count = count {
-            countLabel.text = "(\(count))"
-        } else {
-            countLabel.text = ""
-        }
     }
 }
