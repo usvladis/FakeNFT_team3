@@ -54,7 +54,7 @@
 "retry" = "Повторить";
 "cartIsEmpty" = "Корзина пуста";
 "myNFT" = "Мои NFT";
-"faforiteNFT" = "Избранные NFT";
+"favoriteNFT" = "Избранные NFT";
 "aboutTheDeveloper" = "О разработчике";
 "name" = "Имя";
 "description" = "Описание";
