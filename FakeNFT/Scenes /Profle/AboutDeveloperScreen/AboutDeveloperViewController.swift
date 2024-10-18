@@ -28,8 +28,16 @@ final class AboutDeveloperViewController: UIViewController {
     
     private lazy var webView: WKWebView = {
         let webView = WKWebView(frame: self.view.bounds)
+        webView.navigationDelegate = self
         webView.translatesAutoresizingMaskIntoConstraints = false
         return webView
+    }()
+    
+    private lazy var progressView: UIProgressView = {
+        let progressView = UIProgressView(progressViewStyle: .default)
+        progressView.translatesAutoresizingMaskIntoConstraints = false
+        progressView.isHidden = true
+        return progressView
     }()
     
     // MARK: - Life Cicle
@@ -39,6 +47,41 @@ final class AboutDeveloperViewController: UIViewController {
         loadURL()
     }
     
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        webView.addObserver(
+            self,
+            forKeyPath: #keyPath(WKWebView.estimatedProgress),
+            options: .new,
+            context: nil
+        )
+    }
+    
+    override func viewWillDisappear(_ animated: Bool) {
+        super.viewWillDisappear(animated)
+        webView.removeObserver(
+            self,
+            forKeyPath: #keyPath(WKWebView.estimatedProgress)
+        )
+    }
+    
+    override func observeValue(
+        forKeyPath keyPath: String?,
+        of object: Any?,
+        change: [NSKeyValueChangeKey : Any]?,
+        context: UnsafeMutableRawPointer?
+    ) {
+        if keyPath == #keyPath(WKWebView.estimatedProgress) {
+            updateProgress()
+        } else {
+            super.observeValue(
+                forKeyPath: keyPath,
+                of: object,
+                change: change,
+                context: context
+            )
+        }
+    }
     // MARK: - Private Methods
     @objc
     private func didTapBackButton() {
@@ -57,12 +100,18 @@ final class AboutDeveloperViewController: UIViewController {
         let request = URLRequest(url: url)
         webView.load(request)
     }
+    
+    private func updateProgress() {
+        progressView.progress = Float(webView.estimatedProgress)
+        progressView.isHidden = fabs(webView.estimatedProgress - 1.0) <= 0.0001
+    }
 }
 
 // MARK: - ViewConfigurable
 extension AboutDeveloperViewController: ViewConfigurable {
     func addSubviews() {
-        view.addSubview(webView)
+        let subViews = [webView, progressView]
+        subViews.forEach { view.addSubview($0) }
     }
     
     func addConstraints() {
@@ -70,7 +119,12 @@ extension AboutDeveloperViewController: ViewConfigurable {
             webView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
             webView.trailingAnchor.constraint(equalTo: view.trailingAnchor),
             webView.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor),
-            webView.bottomAnchor.constraint(equalTo: view.bottomAnchor)
+            webView.bottomAnchor.constraint(equalTo: view.bottomAnchor),
+            
+            progressView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
+            progressView.trailingAnchor.constraint(equalTo: view.trailingAnchor),
+            progressView.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor),
+            progressView.heightAnchor.constraint(equalToConstant: 2)
         ])
     }
     
@@ -78,5 +132,17 @@ extension AboutDeveloperViewController: ViewConfigurable {
         view.backgroundColor = .backgroudColor
         setupNavBar()
         configureView()
+    }
+}
+
+// MARK: - WKNavigationDelegate
+extension AboutDeveloperViewController: WKNavigationDelegate {
+    func webView(_ webView: WKWebView, didFinish navigation: WKNavigation!) {
+        updateProgress()
+    }
+    
+    func webView(_ webView: WKWebView, didFail navigation: WKNavigation!, withError error: Error) {
+        updateProgress()
+        print("Ошибка загрузки: \(error.localizedDescription)")
     }
 }
