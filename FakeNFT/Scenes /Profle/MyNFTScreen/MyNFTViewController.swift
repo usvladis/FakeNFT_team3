@@ -6,6 +6,14 @@
 //
 
 import UIKit
+import SwiftUI
+
+// MARK: - Preview
+struct MyNFTViewControllerPreview: PreviewProvider {
+    static var previews: some View {
+        MyNFTViewController().showPreview()
+    }
+}
 
 class MyNFTViewController: UIViewController {
     //MARK: - ViewModel
@@ -30,7 +38,7 @@ class MyNFTViewController: UIViewController {
         if let imageButton = UIImage(named: "filter_button")?.withRenderingMode(.alwaysTemplate) {
             button.setImage(imageButton, for: .normal)
             button.tintColor = .buttonColor
-             button.addTarget(self, action: #selector(sortingButtonTapped), for: .touchUpInside)
+            button.addTarget(self, action: #selector(sortingButtonTapped), for: .touchUpInside)
         }
         button.widthAnchor.constraint(equalToConstant: 42).isActive = true
         button.heightAnchor.constraint(equalToConstant: 42).isActive = true
@@ -78,7 +86,7 @@ class MyNFTViewController: UIViewController {
     
     @objc
     private func sortingButtonTapped(_ sender: UIButton) {
-            showSortingAlert()
+        showSortingAlert()
     }
     
     private func update() {
@@ -88,26 +96,26 @@ class MyNFTViewController: UIViewController {
             print("viewModel is nil")
         }
     }
-
-        private func showSortingAlert() {
-            let alertController = UIAlertController(title: "Сортировка", message: nil, preferredStyle: .actionSheet)
-            
-            alertController.addAction(UIAlertAction(title: "По цене", style: .default) { _ in
-                print("Сортировка по цене выбрана")
-            })
-
-            alertController.addAction(UIAlertAction(title: "По рейтингу", style: .default) { _ in
-                print("Сортировка по рейтингу выбрана")
-            })
-
-            alertController.addAction(UIAlertAction(title: "По названию", style: .default) { _ in
-                print("Сортировка по названию выбрана")
-                self.viewModel?.sortByName()
-                self.tableView.reloadData()
-            })
-            alertController.addAction(UIAlertAction(title: "Закрыть", style: .cancel, handler: nil))
-            present(alertController, animated: true, completion: nil)
-        }
+    
+    private func showSortingAlert() {
+        let alertController = UIAlertController(title: "Сортировка", message: nil, preferredStyle: .actionSheet)
+        
+        alertController.addAction(UIAlertAction(title: "По цене", style: .default) { _ in
+            print("Сортировка по цене выбрана")
+        })
+        
+        alertController.addAction(UIAlertAction(title: "По рейтингу", style: .default) { _ in
+            print("Сортировка по рейтингу выбрана")
+        })
+        
+        alertController.addAction(UIAlertAction(title: "По названию", style: .default) { _ in
+            print("Сортировка по названию выбрана")
+            self.viewModel?.sortByName()
+            self.tableView.reloadData()
+        })
+        alertController.addAction(UIAlertAction(title: "Закрыть", style: .cancel, handler: nil))
+        present(alertController, animated: true, completion: nil)
+    }
 }
 
 // MARK: - ViewConfigurable

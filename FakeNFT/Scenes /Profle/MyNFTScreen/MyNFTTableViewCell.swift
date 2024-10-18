@@ -12,7 +12,7 @@ final class MyNFTTableViewCell: UITableViewCell {
     static let identifier = "MyNFTCell"
     
     // MARK: - UI Elements
-     lazy var nftImageView: UIImageView = {
+    lazy var nftImageView: UIImageView = {
         let imageView = UIImageView()
         imageView.layer.cornerRadius = 12
         imageView.layer.masksToBounds = true
@@ -29,7 +29,7 @@ final class MyNFTTableViewCell: UITableViewCell {
         return button
     }()
     
-     lazy var nameLabel: UILabel = {
+    lazy var nameLabel: UILabel = {
         let label = UILabel()
         label.textColor = .fontColor
         label.font = .bodyBold
@@ -106,7 +106,7 @@ extension MyNFTTableViewCell: ViewConfigurable {
         subViews.forEach { contentView.addSubview($0) }
     }
     
-     func addConstraints() {
+    func addConstraints() {
         NSLayoutConstraint.activate([
             nftImageView.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 16),
             nftImageView.centerYAnchor.constraint(equalTo: contentView.centerYAnchor),
@@ -137,7 +137,7 @@ extension MyNFTTableViewCell: ViewConfigurable {
         ])
     }
     
-     func configureView() {
+    func configureView() {
         addSubviews()
         addConstraints()
     }

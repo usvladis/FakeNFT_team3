@@ -78,7 +78,7 @@ extension ProfileTableViewCell: ViewConfigurable {
         subViews.forEach { contentView.addSubview($0) }
     }
     
-     func addConstraints() {
+    func addConstraints() {
         NSLayoutConstraint.activate([
             categoryLabel.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 16),
             categoryLabel.centerYAnchor.constraint(equalTo: contentView.centerYAnchor),
@@ -93,7 +93,7 @@ extension ProfileTableViewCell: ViewConfigurable {
         ])
     }
     
-     func configureView() {
+    func configureView() {
         addSubviews()
         addConstraints()
     }

@@ -33,7 +33,7 @@ final class ProfileViewModel {
     }
     
     var profileUpdated: (() -> Void)?
-
+    
     // MARK: - Data for UITable
     var items: [ProfileItem] = []
     var myNFTNames = ["Piper","Archie","Zeus", "Lucky"]
@@ -78,7 +78,7 @@ final class ProfileViewModel {
     }
     
     func sortByName() {
-            myNFTNames.sort()
-        }
+        myNFTNames.sort()
+    }
 }
 
