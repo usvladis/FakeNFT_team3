@@ -127,7 +127,10 @@ final class ProfileViewController: UIViewController {
     private func handleAction(_ action: ProfileAction) {
         switch action {
         case .navigateToMyNFTs:
-            print("Переходим на экран Мои NFT")
+            let myNFTVC = MyNFTViewController()
+            myNFTVC.viewModel = viewModel
+            myNFTVC.hidesBottomBarWhenPushed = true
+            navigationController?.pushViewController(myNFTVC, animated: true)
             
         case .navigateToFavorites:
             print("Переходим на экран Избранные NFT")
