@@ -36,15 +36,15 @@ final class ProfileViewModel {
     
     // MARK: - Data for UITable
     var items: [ProfileItem] = []
-    var myNFTNames = ["Piper","Archie","Zeus", "Lucky"]
-    var favoriteNFTNames = ["Piper","Archie","Zeus", "Lucky"]
+    var myNFTNames: [String] = ["Piper","Archie","Zeus", "Lucky"]
+    var favoriteNFTNames: [String] = ["Piper","Archie","Zeus", "Lucky"]
     
     // MARK: - Initializer
     init(profile: ProfileModel) {
         self.profile = profile
         self.items = [
             ProfileItem(categoryName: localizedString(key: "myNFT"), count: myNFTNames.count),
-            ProfileItem(categoryName: localizedString(key: "faforiteNFT"), count: myNFTNames.count),
+            ProfileItem(categoryName: localizedString(key: "favoriteNFT"), count: favoriteNFTNames.count),
             ProfileItem(categoryName: localizedString(key: "aboutTheDeveloper"))
         ]
     }

@@ -133,7 +133,10 @@ final class ProfileViewController: UIViewController {
             navigationController?.pushViewController(myNFTVC, animated: true)
             
         case .navigateToFavorites:
-            print("Переходим на экран Избранные NFT")
+            let favoritesVC = FavoriteNFTViewController()
+            favoritesVC.viewModel = viewModel
+            favoritesVC.hidesBottomBarWhenPushed = true
+            navigationController?.pushViewController(favoritesVC, animated: true)
             
         case .openUserWebsite:
             print("Переходим на экран О разработчике")

@@ -92,6 +92,7 @@ class MyNFTViewController: UIViewController {
     private func update() {
         if viewModel != nil {
             tableView.reloadData()
+            checkIfTableIsEmpty()
         } else {
             print("viewModel is nil")
         }
@@ -115,6 +116,22 @@ class MyNFTViewController: UIViewController {
         })
         alertController.addAction(UIAlertAction(title: "Закрыть", style: .cancel, handler: nil))
         present(alertController, animated: true, completion: nil)
+    }
+    
+    private func showPlaceHolder() {
+        let backgroundView = PlaceHolderView(frame: view.frame)
+        backgroundView.setupNoNFTState()
+        view.addSubview(backgroundView)
+    }
+    
+    private func checkIfTableIsEmpty() {
+        if viewModel?.myNFTNames.isEmpty == true {
+            print("Показываем PlaceHolder")
+            showPlaceHolder()
+        } else {
+            print("Данные есть, скрываем PlaceHolder")
+            tableView.backgroundView = nil
+        }
     }
 }
 
