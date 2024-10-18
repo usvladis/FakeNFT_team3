@@ -32,7 +32,7 @@ final class ProfileViewController: UIViewController {
         )
     )
     
-    // MARK: - Private Priorities
+    // MARK: - UI Elements
     private lazy var changeProfileButton: UIButton = {
         let button = UIButton()
         if let imageButton = UIImage(named: "edit_button")?.withRenderingMode(.alwaysTemplate) {

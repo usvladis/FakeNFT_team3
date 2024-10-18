@@ -92,7 +92,6 @@ final class MyNFTTableViewCell: UITableViewCell {
 
 // MARK: - ViewConfigurable
 extension MyNFTTableViewCell: ViewConfigurable {
-    
     func addSubviews() {
         let subViews = [
             nftImageView,

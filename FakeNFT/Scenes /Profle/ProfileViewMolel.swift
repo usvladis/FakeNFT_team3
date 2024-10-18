@@ -37,7 +37,7 @@ final class ProfileViewModel {
     // MARK: - Data for UITable
     var items: [ProfileItem] = []
     var myNFTNames: [String] = ["Piper","Archie","Zeus", "Lucky"]
-    var favoriteNFTNames: [String] = ["Piper","Archie","Zeus", "Lucky"]
+    var favoriteNFTNames: [String] = ["Piper","Archie","Zeus", "Lucky", "Piper","Archie"]
     
     // MARK: - Initializer
     init(profile: ProfileModel) {

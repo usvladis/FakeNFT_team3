@@ -61,8 +61,7 @@ class MyNFTViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         view.backgroundColor = .backgroudColor
-        setupNavBar()
-        configureView()
+        setupView()
         update()
     }
     
@@ -70,7 +69,7 @@ class MyNFTViewController: UIViewController {
     private func setupNavBar() {
         navigationItem.leftBarButtonItem = UIBarButtonItem(customView: backButton)
         navigationItem.rightBarButtonItem = UIBarButtonItem(customView: sortingButton)
-        navigationItem.title = "Мои NFT"
+        navigationItem.title = localizedString(key: "myNFT")
         let customFont = UIFont.bodyBold
         let attributes: [NSAttributedString.Key: Any] = [
             .font: customFont,
@@ -99,22 +98,21 @@ class MyNFTViewController: UIViewController {
     }
     
     private func showSortingAlert() {
-        let alertController = UIAlertController(title: "Сортировка", message: nil, preferredStyle: .actionSheet)
+        let alertController = UIAlertController(title: localizedString(key: "sorting"), message: nil, preferredStyle: .actionSheet)
         
-        alertController.addAction(UIAlertAction(title: "По цене", style: .default) { _ in
+        alertController.addAction(UIAlertAction(title: localizedString(key: "sortingByPrice"), style: .default) { _ in
             print("Сортировка по цене выбрана")
         })
         
-        alertController.addAction(UIAlertAction(title: "По рейтингу", style: .default) { _ in
+        alertController.addAction(UIAlertAction(title: localizedString(key: "sortingByRating"), style: .default) { _ in
             print("Сортировка по рейтингу выбрана")
         })
         
-        alertController.addAction(UIAlertAction(title: "По названию", style: .default) { _ in
-            print("Сортировка по названию выбрана")
+        alertController.addAction(UIAlertAction(title: localizedString(key: "sortingByName"), style: .default) { _ in
             self.viewModel?.sortByName()
             self.tableView.reloadData()
         })
-        alertController.addAction(UIAlertAction(title: "Закрыть", style: .cancel, handler: nil))
+        alertController.addAction(UIAlertAction(title: localizedString(key: "close"), style: .cancel, handler: nil))
         present(alertController, animated: true, completion: nil)
     }
     
@@ -126,11 +124,7 @@ class MyNFTViewController: UIViewController {
     
     private func checkIfTableIsEmpty() {
         if viewModel?.myNFTNames.isEmpty == true {
-            print("Показываем PlaceHolder")
             showPlaceHolder()
-        } else {
-            print("Данные есть, скрываем PlaceHolder")
-            tableView.backgroundView = nil
         }
     }
 }
@@ -148,6 +142,10 @@ extension MyNFTViewController: ViewConfigurable {
             tableView.trailingAnchor.constraint(equalTo: view.trailingAnchor),
             tableView.bottomAnchor.constraint(equalTo: view.bottomAnchor)
         ])
+    }
+    private func setupView() {
+        setupNavBar()
+        configureView()
     }
 }
 
