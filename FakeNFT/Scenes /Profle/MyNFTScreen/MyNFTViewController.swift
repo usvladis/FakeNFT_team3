@@ -38,11 +38,24 @@ class MyNFTViewController: UIViewController {
         return button
     }()
     
+    private lazy var tableView: UITableView = {
+        let tableView = UITableView()
+        tableView.translatesAutoresizingMaskIntoConstraints = false
+        tableView.separatorStyle = .none
+        tableView.backgroundColor = .backgroudColor
+        tableView.dataSource = self
+        tableView.delegate = self
+        tableView.register(MyNFTTableViewCell.self, forCellReuseIdentifier: MyNFTTableViewCell.identifier)
+        return tableView
+    }()
+    
     //MARK: - LifeCicle
     override func viewDidLoad() {
         super.viewDidLoad()
         view.backgroundColor = .backgroudColor
         setupNavBar()
+        configureView()
+        update()
     }
     
     //MARK: - Private Methods
@@ -66,7 +79,15 @@ class MyNFTViewController: UIViewController {
     @objc
     private func sortingButtonTapped(_ sender: UIButton) {
             showSortingAlert()
+    }
+    
+    private func update() {
+        if viewModel != nil {
+            tableView.reloadData()
+        } else {
+            print("viewModel is nil")
         }
+    }
 
         private func showSortingAlert() {
             let alertController = UIAlertController(title: "Сортировка", message: nil, preferredStyle: .actionSheet)
@@ -81,8 +102,59 @@ class MyNFTViewController: UIViewController {
 
             alertController.addAction(UIAlertAction(title: "По названию", style: .default) { _ in
                 print("Сортировка по названию выбрана")
+                self.viewModel?.sortByName()
+                self.tableView.reloadData()
             })
             alertController.addAction(UIAlertAction(title: "Закрыть", style: .cancel, handler: nil))
             present(alertController, animated: true, completion: nil)
         }
+}
+
+// MARK: - ViewConfigurable
+extension MyNFTViewController: ViewConfigurable {
+    func addSubviews() {
+        view.addSubview(tableView)
+    }
+    
+    func addConstraints() {
+        NSLayoutConstraint.activate([
+            tableView.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor),
+            tableView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
+            tableView.trailingAnchor.constraint(equalTo: view.trailingAnchor),
+            tableView.bottomAnchor.constraint(equalTo: view.bottomAnchor)
+        ])
+    }
+}
+
+// MARK: - UITableViewDataSource
+extension MyNFTViewController: UITableViewDataSource {
+    func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+        return viewModel?.myNFTNames.count ?? 0
+    }
+    
+    func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
+        guard let cell = tableView.dequeueReusableCell(withIdentifier: MyNFTTableViewCell.identifier, for: indexPath) as? MyNFTTableViewCell else {
+            return UITableViewCell()
+        }
+        
+        if let nftData = viewModel?.configureNFT(for: indexPath.item, from: .myNFT) {
+            
+            cell.nftImageView.image = nftData.image
+            cell.nameLabel.text = nftData.name
+        }
+        return cell
+    }
+    
+}
+
+// MARK: - UITableViewDelegate
+extension MyNFTViewController: UITableViewDelegate {
+    
+    func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
+        return 140
+    }
+    
+    func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        
+    }
 }

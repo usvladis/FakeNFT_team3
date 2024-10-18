@@ -62,5 +62,23 @@ final class ProfileViewModel {
             return .none
         }
     }
+    
+    func configureNFT(for index: Int, from source: NFTSource) -> (image: UIImage?, name: String) {
+        let nftName: String
+        
+        switch source {
+        case .myNFT:
+            nftName = myNFTNames[index]
+        case .favoriteNFT:
+            nftName = favoriteNFTNames[index]
+        }
+        let nftImage = UIImage(named: nftName)
+        
+        return (image: nftImage, name: nftName)
+    }
+    
+    func sortByName() {
+            myNFTNames.sort()
+        }
 }
 
