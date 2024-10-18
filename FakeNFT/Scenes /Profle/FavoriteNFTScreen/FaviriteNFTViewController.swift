@@ -47,7 +47,6 @@ class FavoriteNFTViewController: UIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        view.backgroundColor = .backgroudColor
         collectionView.delegate = self
         collectionView.dataSource = self
         setupView()
@@ -110,6 +109,7 @@ extension FavoriteNFTViewController: ViewConfigurable {
     }
     
     private func setupView() {
+        view.backgroundColor = .backgroudColor
         setupNavBar()
         configureView()
     }

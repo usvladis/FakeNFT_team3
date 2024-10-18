@@ -57,7 +57,7 @@ final class ProfileViewModel {
         case 1:
             return .navigateToFavorites
         case 2:
-            return .openUserWebsite
+            return .openUserWebsite(url: "https://practicum.yandex.ru/ios-developer/?from=catalog")
         default:
             return .none
         }

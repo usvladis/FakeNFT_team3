@@ -56,7 +56,7 @@ final class FavoriteNFTCollectionViewCell: UICollectionViewCell {
         fatalError("init(coder:) has not been implemented")
     }
 }
-    
+
 // MARK: - ViewConfigurable
 extension FavoriteNFTCollectionViewCell: ViewConfigurable {
     func addSubviews() {
@@ -69,7 +69,7 @@ extension FavoriteNFTCollectionViewCell: ViewConfigurable {
         subViews.forEach { contentView.addSubview($0) }
     }
     
-     func addConstraints() {
+    func addConstraints() {
         NSLayoutConstraint.activate([
             nftImageView.leadingAnchor.constraint(equalTo: contentView.leadingAnchor),
             nftImageView.centerYAnchor.constraint(equalTo: contentView.centerYAnchor),
@@ -92,7 +92,7 @@ extension FavoriteNFTCollectionViewCell: ViewConfigurable {
         ])
     }
     
-     func configureView() {
+    func configureView() {
         addSubviews()
         addConstraints()
     }

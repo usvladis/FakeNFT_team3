@@ -96,9 +96,7 @@ final class ProfileViewController: UIViewController {
     // MARK: - LifeCycle
     override func viewDidLoad() {
         super.viewDidLoad()
-        view.backgroundColor = .backgroudColor
-        configureView()
-        setupNavigationBar()
+        setupView()
         setupBindings()
     }
     
@@ -116,6 +114,7 @@ final class ProfileViewController: UIViewController {
     private func profileLinkTapped() {
         print("Переходим по ссылке")
     }
+    
     private func setupBindings() {
         viewModel.profileUpdated = { [weak self] in
             self?.nameLabel.text = self?.viewModel.userName
@@ -138,8 +137,11 @@ final class ProfileViewController: UIViewController {
             favoritesVC.hidesBottomBarWhenPushed = true
             navigationController?.pushViewController(favoritesVC, animated: true)
             
-        case .openUserWebsite:
-            print("Переходим на экран О разработчике")
+        case .openUserWebsite(let url):
+            let webViewController = AboutDeveloperViewController()
+            webViewController.urlString = url
+            webViewController.hidesBottomBarWhenPushed = true
+            navigationController?.pushViewController(webViewController, animated: true)
         default:
             break
         }
@@ -184,6 +186,12 @@ extension ProfileViewController: ViewConfigurable {
             tableView
         ]
         subViews.forEach { view.addSubview($0) }
+    }
+    
+    private func setupView() {
+        view.backgroundColor = .backgroudColor
+        configureView()
+        setupNavigationBar()
     }
 }
 

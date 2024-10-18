@@ -98,21 +98,34 @@ class MyNFTViewController: UIViewController {
     }
     
     private func showSortingAlert() {
-        let alertController = UIAlertController(title: localizedString(key: "sorting"), message: nil, preferredStyle: .actionSheet)
-        
-        alertController.addAction(UIAlertAction(title: localizedString(key: "sortingByPrice"), style: .default) { _ in
+        let alertController = UIAlertController(
+            title: localizedString(key: "sorting"),
+            message: nil,
+            preferredStyle: .actionSheet
+        )
+        alertController.addAction(UIAlertAction(
+            title: localizedString(key: "sortingByPrice"),
+            style: .default
+        ) { _ in
             print("Сортировка по цене выбрана")
         })
-        
-        alertController.addAction(UIAlertAction(title: localizedString(key: "sortingByRating"), style: .default) { _ in
+        alertController.addAction(UIAlertAction(
+            title: localizedString(key: "sortingByRating"),
+            style: .default
+        ) { _ in
             print("Сортировка по рейтингу выбрана")
         })
-        
-        alertController.addAction(UIAlertAction(title: localizedString(key: "sortingByName"), style: .default) { _ in
+        alertController.addAction(UIAlertAction(
+            title: localizedString(key: "sortingByName"),
+            style: .default
+        ) { _ in
             self.viewModel?.sortByName()
             self.tableView.reloadData()
         })
-        alertController.addAction(UIAlertAction(title: localizedString(key: "close"), style: .cancel, handler: nil))
+        alertController.addAction(UIAlertAction(
+            title: localizedString(key: "close"),
+            style: .cancel, handler: nil
+        ))
         present(alertController, animated: true, completion: nil)
     }
     
