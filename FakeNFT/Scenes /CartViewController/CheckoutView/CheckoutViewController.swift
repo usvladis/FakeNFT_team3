@@ -14,14 +14,14 @@ final class CheckoutViewController: UIViewController {
     
     private let collectionView: UICollectionView = {
         let layout = UICollectionViewFlowLayout()
-        let sideInset: CGFloat = 16    // Отступ от view справа и слева
-        let interItemSpacing: CGFloat = 7 // Расстояние между ячейками
-        let itemHeight: CGFloat = 46   // Высота ячейки
+        let sideInset: CGFloat = 16
+        let interItemSpacing: CGFloat = 7
+        let itemHeight: CGFloat = 46
         
         let totalWidth = UIScreen.main.bounds.width
-        let availableWidth = totalWidth - (sideInset * 2) - interItemSpacing  // Общая доступная ширина для ячеек с учетом отступов и расстояний
+        let availableWidth = totalWidth - (sideInset * 2) - interItemSpacing
         
-        let itemWidth = availableWidth / 2 // Два элемента в строку
+        let itemWidth = availableWidth / 2
         
         layout.minimumLineSpacing = interItemSpacing
         layout.minimumInteritemSpacing = interItemSpacing
@@ -84,7 +84,8 @@ final class CheckoutViewController: UIViewController {
         navigationItem.leftBarButtonItem = backButton
     }
     
-    @objc private func handleBackButton() {
+    @objc
+    private func handleBackButton() {
         dismiss(animated: true)
     }
     
@@ -108,6 +109,7 @@ final class CheckoutViewController: UIViewController {
         bottomContainer.addSubview(agreementButton)
         bottomContainer.addSubview(payButton)
         
+        agreementButton.addTarget(self, action:  #selector(agreementButtonTapped), for: .touchUpInside)
         payButton.addTarget(self, action: #selector(handlePayButton), for: .touchUpInside)
         
         NSLayoutConstraint.activate([
@@ -130,11 +132,20 @@ final class CheckoutViewController: UIViewController {
     }
     
     @objc
-    func handlePayButton() {
+    private func handlePayButton() {
         let successViewController = SuccessPaymentViewController()
         successViewController.modalPresentationStyle = .fullScreen
         
         present(successViewController, animated: false)
+    }
+    
+    @objc
+    private func agreementButtonTapped() {
+        let webViewController = WebViewViewController()
+        let navigationWebViewController = UINavigationController(rootViewController: webViewController)
+        navigationWebViewController.modalPresentationStyle = .fullScreen
+        
+        present(navigationWebViewController, animated: true)
     }
 }
 
@@ -149,14 +160,14 @@ extension CheckoutViewController: UICollectionViewDataSource, UICollectionViewDe
             return UICollectionViewCell()
         }
         let method = paymentMethods[indexPath.row]
-        let isSelected = selectedPaymentMethodIndex == indexPath // Определяем, выбрана ли ячейка
+        let isSelected = selectedPaymentMethodIndex == indexPath
         cell.configure(with: method, isSelected: isSelected)
         return cell
     }
     
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
         selectedPaymentMethodIndex = indexPath
-        collectionView.reloadData() // Обновляем коллекцию для отображения выбранной ячейки
+        collectionView.reloadData() 
     }
 }
 

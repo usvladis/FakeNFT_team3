@@ -7,7 +7,12 @@
 
 import UIKit
 
-class DeleteConfirmationViewController: UIViewController {
+final class DeleteConfirmationViewController: UIViewController {
+    
+    private var nftId: UUID?
+        
+    var onDeleteConfirmed: ((UUID) -> Void)? // Callback для передачи ID обратно
+
     
     private let nftImageView: UIImageView = {
         let imageView = UIImageView()
@@ -50,8 +55,9 @@ class DeleteConfirmationViewController: UIViewController {
     }()
     
     // Публичная функция для установки изображения NFT
-    func configure(with image: UIImage) {
+    func configure(with image: UIImage, nftId: UUID) {
         nftImageView.image = image
+        self.nftId = nftId
     }
 
     override func viewDidLoad() {
@@ -116,10 +122,10 @@ class DeleteConfirmationViewController: UIViewController {
     }
     
     @objc private func handleDelete() {
-        // Действие на удаление объекта
-        dismiss(animated: true, completion: {
-            // Здесь можно вызвать метод удаления объекта
-            print("Объект удален")
+        dismiss(animated: true, completion: { [weak self] in
+            if let nftId = self?.nftId {
+                self?.onDeleteConfirmed?(nftId) // Передаем ID обратно
+            }
         })
     }
     

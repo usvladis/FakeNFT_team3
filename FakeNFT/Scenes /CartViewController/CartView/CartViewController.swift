@@ -32,7 +32,6 @@ final class CartViewController: UIViewController {
     
     private let totalAmountLabel: UILabel = {
         let label = UILabel()
-        label.text = "5.34 ETH" // Mocked data
         label.font = UIFont.boldSystemFont(ofSize: 17)
         label.textColor = .greenUniversal
         label.translatesAutoresizingMaskIntoConstraints = false
@@ -57,24 +56,48 @@ final class CartViewController: UIViewController {
         return button
     }()
     
+    private let bottomView: UIView = {
+        let view = UIView()
+        view.backgroundColor = .greyColor
+        view.translatesAutoresizingMaskIntoConstraints = false
+        return view
+    }()
+    
+    private let placeholderLabel: UILabel = {
+        let label = UILabel()
+        label.text = localizedString(key: "cartIsEmpty")
+        label.textColor = .fontColor
+        label.font = UIFont.boldSystemFont(ofSize: 17)
+        label.textAlignment = .center
+        label.translatesAutoresizingMaskIntoConstraints = false
+        return label
+    }()
+    
     override func viewDidLoad() {
         super.viewDidLoad()
+        // Добавляем таргет на нажатие кнопки sortButton
+        sortButton.target = self
+        sortButton.action = #selector(sortButtonTapped)
         
+        setupView()
+        applySavedSortType()
+        updateViewVisibility()
+        
+        tableView.dataSource = self
+        tableView.delegate = self
+    }
+    
+    private func setupView() {
         // View setup
         view.backgroundColor = .backgroudColor
         navigationItem.rightBarButtonItem = sortButton
         navigationController?.navigationBar.barTintColor = .backgroudColor
         navigationController?.navigationBar.tintColor = .buttonColor
         
-        // Добавляем таргет на нажатие кнопки sortButton
-        sortButton.target = self
-        sortButton.action = #selector(sortButtonTapped)
-        
         setupTableView()
         setupBottomView()
-        
-        tableView.dataSource = self
-        tableView.delegate = self
+        setupPlaceholder()
+        setupCartInformation()
     }
     
     private func setupTableView() {
@@ -88,35 +111,72 @@ final class CartViewController: UIViewController {
     }
     
     private func setupBottomView() {
-        let bottomContainer = UIView()
-        bottomContainer.backgroundColor = .greyColor
-        bottomContainer.translatesAutoresizingMaskIntoConstraints = false
-        view.addSubview(bottomContainer)
+        view.addSubview(bottomView)
         
         checkoutButton.addTarget(self, action: #selector(checkoutButtonTapped), for: .touchUpInside)
         
-        totalNFTLabel.text = "\(nftItems.count) NFT"
-        bottomContainer.addSubview(totalAmountLabel)
-        bottomContainer.addSubview(totalNFTLabel)
-        bottomContainer.addSubview(checkoutButton)
+        bottomView.addSubview(totalAmountLabel)
+        bottomView.addSubview(totalNFTLabel)
+        bottomView.addSubview(checkoutButton)
         
         NSLayoutConstraint.activate([
-            bottomContainer.leadingAnchor.constraint(equalTo: view.leadingAnchor),
-            bottomContainer.trailingAnchor.constraint(equalTo: view.trailingAnchor),
-            bottomContainer.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor),
-            bottomContainer.heightAnchor.constraint(equalToConstant: 76),
+            bottomView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
+            bottomView.trailingAnchor.constraint(equalTo: view.trailingAnchor),
+            bottomView.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor),
+            bottomView.heightAnchor.constraint(equalToConstant: 76),
             
-            totalNFTLabel.leadingAnchor.constraint(equalTo: bottomContainer.leadingAnchor, constant: 16),
-            totalNFTLabel.topAnchor.constraint(equalTo: bottomContainer.topAnchor, constant: 16),
+            totalNFTLabel.leadingAnchor.constraint(equalTo: bottomView.leadingAnchor, constant: 16),
+            totalNFTLabel.topAnchor.constraint(equalTo: bottomView.topAnchor, constant: 16),
             
-            totalAmountLabel.leadingAnchor.constraint(equalTo: bottomContainer.leadingAnchor, constant: 16),
+            totalAmountLabel.leadingAnchor.constraint(equalTo: bottomView.leadingAnchor, constant: 16),
             totalAmountLabel.topAnchor.constraint(equalTo: totalNFTLabel.bottomAnchor, constant: 2),
             
-            checkoutButton.trailingAnchor.constraint(equalTo: bottomContainer.trailingAnchor, constant: -16),
-            checkoutButton.centerYAnchor.constraint(equalTo: bottomContainer.centerYAnchor),
+            checkoutButton.trailingAnchor.constraint(equalTo: bottomView.trailingAnchor, constant: -16),
+            checkoutButton.centerYAnchor.constraint(equalTo: bottomView.centerYAnchor),
             checkoutButton.leadingAnchor.constraint(equalTo: totalAmountLabel.trailingAnchor, constant: 24),
             checkoutButton.heightAnchor.constraint(equalToConstant: 44)
         ])
+    }
+    
+    private func setupPlaceholder() {
+        view.addSubview(placeholderLabel)
+        
+        NSLayoutConstraint.activate([
+            placeholderLabel.centerXAnchor.constraint(equalTo: view.centerXAnchor),
+            placeholderLabel.centerYAnchor.constraint(equalTo: view.centerYAnchor)
+        ])
+    }
+    
+    private func updateViewVisibility() {
+        if nftItems.isEmpty {
+            // Показываем плейсхолдер
+            placeholderLabel.isHidden = false
+            
+            // Скрываем таблицу и нижнюю панель с информацией
+            navigationController?.setNavigationBarHidden(true, animated: false)
+            tableView.isHidden = true
+            bottomView.isHidden = true
+            checkoutButton.isHidden = true
+            totalNFTLabel.isHidden = true
+            totalAmountLabel.isHidden = true
+        } else {
+            // Скрываем плейсхолдер
+            placeholderLabel.isHidden = true
+            
+            // Показываем таблицу и нижнюю панель с информацией
+            navigationController?.setNavigationBarHidden(false, animated: false)
+            tableView.isHidden = false
+            bottomView.isHidden = false
+            checkoutButton.isHidden = false
+            totalNFTLabel.isHidden = false
+            totalAmountLabel.isHidden = false
+        }
+    }
+    
+    private func setupCartInformation() {
+        totalNFTLabel.text = "\(nftItems.count) NFT"
+        var totalPrice = nftItems.reduce(0) { $0 + $1.price }
+        totalAmountLabel.text = "\(totalPrice) ETH"
     }
     
     @objc
@@ -135,13 +195,19 @@ final class CartViewController: UIViewController {
         let alertController = UIAlertController(title: localizedString(key: "sorting"), message: nil, preferredStyle: .actionSheet)
         
         // Добавляем действие для сортировки по цене
-        let sortByPriceAction = UIAlertAction(title: localizedString(key: "sortingByPrice"), style: .default)
+        let sortByPriceAction = UIAlertAction(title: localizedString(key: "sortingByPrice"), style: .default) { [weak self] _ in
+            self?.sortByPrice()
+        }
         
         // Добавляем действие для сортировки по рейтингу
-        let sortByRatingAction = UIAlertAction(title: localizedString(key: "sortingByRating"), style: .default)
+        let sortByRatingAction = UIAlertAction(title: localizedString(key: "sortingByRating"), style: .default) { [weak self] _ in
+            self?.sortByRating()
+        }
         
         // Добавляем действие для сортировки по названию
-        let sortByNameAction = UIAlertAction(title: localizedString(key: "sortingByName"), style: .default)
+        let sortByNameAction = UIAlertAction(title: localizedString(key: "sortingByName"), style: .default) { [weak self] _ in
+            self?.sortByName()
+        }
         
         // Добавляем действие для отмены
         let closeAction = UIAlertAction(title: localizedString(key: "close"), style: .cancel)
@@ -156,12 +222,60 @@ final class CartViewController: UIViewController {
         present(alertController, animated: true, completion: nil)
     }
     
-    func presentDeleteConfirmationDialog(with image: UIImage) {
+    private func presentDeleteConfirmationDialog(with image: UIImage, nftId: UUID) {
         let deleteConfirmationVC = DeleteConfirmationViewController()
-        deleteConfirmationVC.configure(with: image)
+        deleteConfirmationVC.configure(with: image, nftId: nftId) // передаем картинку и id
         deleteConfirmationVC.modalPresentationStyle = .overFullScreen
         deleteConfirmationVC.modalTransitionStyle = .crossDissolve
+        deleteConfirmationVC.onDeleteConfirmed = { [weak self] nftId in
+            self?.deleteNFT(withId: nftId) // вызываем метод удаления NFT
+        }
         present(deleteConfirmationVC, animated: true, completion: nil)
+    }
+    
+    func deleteNFT(withId id: UUID) {
+        if let index = nftItems.firstIndex(where: { $0.id == id }) {
+            nftItems.remove(at: index)
+            tableView.reloadData()
+            setupCartInformation()
+            updateViewVisibility() // обновляем интерфейс после удаления
+        }
+    }
+    
+    private func sortByPrice() {
+        nftItems.sort { $0.price < $1.price }
+        UserDefaults.standard.set("price", forKey: "selectedSortType")
+        tableView.reloadData()
+        updateViewVisibility()
+    }
+    
+    private func sortByRating() {
+        nftItems.sort { $0.rating > $1.rating }
+        UserDefaults.standard.set("rating", forKey: "selectedSortType")
+        tableView.reloadData()
+        updateViewVisibility()
+    }
+    
+    private func sortByName() {
+        nftItems.sort { $0.title < $1.title }
+        UserDefaults.standard.set("name", forKey: "selectedSortType")
+        tableView.reloadData()
+        updateViewVisibility()
+    }
+    
+    private func applySavedSortType() {
+        let savedSortType = UserDefaults.standard.string(forKey: "selectedSortType") ?? "price"
+        
+        switch savedSortType {
+        case "price":
+            sortByPrice()
+        case "rating":
+            sortByRating()
+        case "name":
+            sortByName()
+        default:
+            sortByPrice()
+        }
     }
 }
 
@@ -178,7 +292,7 @@ extension CartViewController: UITableViewDataSource, UITableViewDelegate {
         let nftItem = nftItems[indexPath.row]
         cell.configure(with: nftItem)
         cell.buttonAction = { [weak self] in
-            self?.presentDeleteConfirmationDialog(with: nftItem.image)
+            self?.presentDeleteConfirmationDialog(with: nftItem.image, nftId: nftItem.id)
         }
         return cell
     }
