@@ -7,7 +7,7 @@
 
 import UIKit
 
-class NFTItemCell: UITableViewCell {
+final class NFTItemCell: UITableViewCell {
     
     static let identifier = "NFTItemCell"
     

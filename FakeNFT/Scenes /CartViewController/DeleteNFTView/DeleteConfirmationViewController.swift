@@ -7,7 +7,7 @@
 
 import UIKit
 
-class DeleteConfirmationViewController: UIViewController {
+final class DeleteConfirmationViewController: UIViewController {
     
     private var nftId: UUID?
         

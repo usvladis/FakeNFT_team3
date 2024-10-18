@@ -75,25 +75,29 @@ final class CartViewController: UIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        // Добавляем таргет на нажатие кнопки sortButton
+        sortButton.target = self
+        sortButton.action = #selector(sortButtonTapped)
         
+        setupView()
+        applySavedSortType()
+        updateViewVisibility()
+        
+        tableView.dataSource = self
+        tableView.delegate = self
+    }
+    
+    private func setupView() {
         // View setup
         view.backgroundColor = .backgroudColor
         navigationItem.rightBarButtonItem = sortButton
         navigationController?.navigationBar.barTintColor = .backgroudColor
         navigationController?.navigationBar.tintColor = .buttonColor
         
-        // Добавляем таргет на нажатие кнопки sortButton
-        sortButton.target = self
-        sortButton.action = #selector(sortButtonTapped)
-        
         setupTableView()
         setupBottomView()
         setupPlaceholder()
         setupCartInformation()
-        updateViewVisibility()
-        
-        tableView.dataSource = self
-        tableView.delegate = self
     }
     
     private func setupTableView() {
@@ -218,7 +222,7 @@ final class CartViewController: UIViewController {
         present(alertController, animated: true, completion: nil)
     }
     
-    func presentDeleteConfirmationDialog(with image: UIImage, nftId: UUID) {
+    private func presentDeleteConfirmationDialog(with image: UIImage, nftId: UUID) {
         let deleteConfirmationVC = DeleteConfirmationViewController()
         deleteConfirmationVC.configure(with: image, nftId: nftId) // передаем картинку и id
         deleteConfirmationVC.modalPresentationStyle = .overFullScreen
@@ -238,22 +242,40 @@ final class CartViewController: UIViewController {
         }
     }
     
-    func sortByPrice() {
+    private func sortByPrice() {
         nftItems.sort { $0.price < $1.price }
-        // Обновляем интерфейс, например перезагружаем таблицу
+        UserDefaults.standard.set("price", forKey: "selectedSortType")
         tableView.reloadData()
+        updateViewVisibility()
     }
     
-    func sortByRating() {
+    private func sortByRating() {
         nftItems.sort { $0.rating > $1.rating }
-        // Обновляем интерфейс
+        UserDefaults.standard.set("rating", forKey: "selectedSortType")
         tableView.reloadData()
+        updateViewVisibility()
     }
     
-    func sortByName() {
+    private func sortByName() {
         nftItems.sort { $0.title < $1.title }
-        // Обновляем интерфейс
+        UserDefaults.standard.set("name", forKey: "selectedSortType")
         tableView.reloadData()
+        updateViewVisibility()
+    }
+    
+    private func applySavedSortType() {
+        let savedSortType = UserDefaults.standard.string(forKey: "selectedSortType") ?? "price"
+        
+        switch savedSortType {
+        case "price":
+            sortByPrice()
+        case "rating":
+            sortByRating()
+        case "name":
+            sortByName()
+        default:
+            sortByPrice()
+        }
     }
 }
 

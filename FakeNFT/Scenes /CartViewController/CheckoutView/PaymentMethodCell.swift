@@ -7,7 +7,7 @@
 
 import UIKit
 
-class PaymentMethodCell: UICollectionViewCell {
+final class PaymentMethodCell: UICollectionViewCell {
     
     static let identifier = "PaymentMethodCell"
     
