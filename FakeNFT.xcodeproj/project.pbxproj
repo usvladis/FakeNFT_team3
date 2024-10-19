@@ -115,7 +115,7 @@
 		47391CD92CC26AA800717286 /* FaviriteNFTViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FaviriteNFTViewController.swift; sourceTree = "<group>"; };
 		47391CDB2CC26C8800717286 /* PlaceHolderView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PlaceHolderView.swift; sourceTree = "<group>"; };
 		47391CDD2CC2762800717286 /* FavoriteNFTCollectionViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FavoriteNFTCollectionViewCell.swift; sourceTree = "<group>"; };
-		47391CE32CC2831200717286 /* AboutDeveloperViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = AboutDeveloperViewController.swift; path = AboutDeveloperScreen/AboutDeveloperViewController.swift; sourceTree = "<group>"; };
+		47391CE32CC2831200717286 /* AboutDeveloperViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AboutDeveloperViewController.swift; sourceTree = "<group>"; };
 		47391CE52CC2898700717286 /* ProfileItem.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProfileItem.swift; sourceTree = "<group>"; };
 		47733EC32CB7005800F2F406 /* PreviewVCExtention.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PreviewVCExtention.swift; sourceTree = "<group>"; };
 		47733EC52CB706C100F2F406 /* ViewConfigurableProtocol.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewConfigurableProtocol.swift; sourceTree = "<group>"; };
@@ -181,7 +181,6 @@
 				47391CCF2CC24F8C00717286 /* MyNFTScreen */,
 				47391CD82CC26A8200717286 /* FavoriteNFTScreen */,
 				47391CE12CC2819A00717286 /* AboutDeveloperScreen */,
-				47391CE32CC2831200717286 /* AboutDeveloperViewController.swift */,
 			);
 			path = Profle;
 			sourceTree = "<group>";
@@ -372,6 +371,7 @@
 		47391CE12CC2819A00717286 /* AboutDeveloperScreen */ = {
 			isa = PBXGroup;
 			children = (
+				47391CE32CC2831200717286 /* AboutDeveloperViewController.swift */,
 			);
 			path = AboutDeveloperScreen;
 			sourceTree = "<group>";
