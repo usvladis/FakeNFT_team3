@@ -17,7 +17,7 @@ final class CatalogModel {
         self.networkClient = networkClient
     }
     
-    func loadCatalog(completion: NFTsModelCatalogCompletion) {
+    func loadCatalog(completion: @escaping NFTsModelCatalogCompletion) {
         let request = CatalogRequest()
         networkClient.send(request: request, type: NFTsModelCatalog.self) { result in
             switch result {
@@ -30,7 +30,9 @@ final class CatalogModel {
     }
     
 }
+
 struct CatalogRequest: NetworkRequest {
+    
     var endpoint: URL? {
         URL(string: "\(RequestConstants.baseURL)/api/v1/collections")
     }

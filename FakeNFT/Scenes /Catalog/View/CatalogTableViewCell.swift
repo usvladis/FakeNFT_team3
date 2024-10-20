@@ -6,6 +6,7 @@
 //
 
 import UIKit
+import Kingfisher
 
 // MARK: - CatalogTableViewCell
 
@@ -48,8 +49,9 @@ final class CatalogTableViewCell: UITableViewCell {
     func configCell(name: String, count: Int, image: String) {
             let urlForImage = URL(string: image)
             topImage.kf.setImage(with: urlForImage)
-            nameAndCountLabel.text = "\(name) (\(count))"
-        }
+        nameAndCountLabel.text = "\(name) (\(count))"
+    }
+    
     
     // MARK: - Layout Setup
     
