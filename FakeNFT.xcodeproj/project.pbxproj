@@ -46,7 +46,7 @@
 		4F6B4C542CBA6E1A008B712A /* CatalogViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4F6B4C532CBA6E0E008B712A /* CatalogViewModel.swift */; };
 		4F6B4C562CBA6E2A008B712A /* CollectionViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4F6B4C552CBA6E28008B712A /* CollectionViewModel.swift */; };
 		4F6B4C582CBA6E41008B712A /* NFTCellForCollectionView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4F6B4C572CBA6E40008B712A /* NFTCellForCollectionView.swift */; };
-		4F6B4C5A2CBA6E58008B712A /* NFTRowModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4F6B4C592CBA6E57008B712A /* NFTRowModel.swift */; };
+		4F6B4C5A2CBA6E58008B712A /* NFTModelCatalog.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4F6B4C592CBA6E57008B712A /* NFTModelCatalog.swift */; };
 		4F6B4C5C2CBA75BB008B712A /* LocalizedString.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4F6B4C5B2CBA75B8008B712A /* LocalizedString.swift */; };
 		4F6B4C602CBABF6E008B712A /* CollectionModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4F6B4C5F2CBABF6D008B712A /* CollectionModel.swift */; };
 		4F6B4C622CBAC111008B712A /* NFTCellModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4F6B4C612CBAC110008B712A /* NFTCellModel.swift */; };
@@ -115,7 +115,7 @@
 		4F6B4C532CBA6E0E008B712A /* CatalogViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CatalogViewModel.swift; sourceTree = "<group>"; };
 		4F6B4C552CBA6E28008B712A /* CollectionViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CollectionViewModel.swift; sourceTree = "<group>"; };
 		4F6B4C572CBA6E40008B712A /* NFTCellForCollectionView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NFTCellForCollectionView.swift; sourceTree = "<group>"; };
-		4F6B4C592CBA6E57008B712A /* NFTRowModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NFTRowModel.swift; sourceTree = "<group>"; };
+		4F6B4C592CBA6E57008B712A /* NFTModelCatalog.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NFTModelCatalog.swift; sourceTree = "<group>"; };
 		4F6B4C5B2CBA75B8008B712A /* LocalizedString.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LocalizedString.swift; sourceTree = "<group>"; };
 		4F6B4C5F2CBABF6D008B712A /* CollectionModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CollectionModel.swift; sourceTree = "<group>"; };
 		4F6B4C612CBAC110008B712A /* NFTCellModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NFTCellModel.swift; sourceTree = "<group>"; };
@@ -168,9 +168,8 @@
 		214C8D462CB6DE3C00219D6E /* Catalog */ = {
 			isa = PBXGroup;
 			children = (
-				4F6B4C492CBA6D2E008B712A /* Model */,
-				4F6B4C482CBA6D25008B712A /* View */,
-				4F6B4C472CBA6D19008B712A /* ViewModel */,
+				4F5D5E3F2CC66AD500AEE3C7 /* Collection Screen  */,
+				4F5D5E3C2CC66AAC00AEE3C7 /* Catalog Screen */,
 			);
 			path = Catalog;
 			sourceTree = "<group>";
@@ -331,14 +330,57 @@
 			path = Requests;
 			sourceTree = "<group>";
 		};
+		4F5D5E3C2CC66AAC00AEE3C7 /* Catalog Screen */ = {
+			isa = PBXGroup;
+			children = (
+				4F6B4C492CBA6D2E008B712A /* Model */,
+				4F6B4C482CBA6D25008B712A /* View */,
+				4F6B4C472CBA6D19008B712A /* ViewModel */,
+			);
+			path = "Catalog Screen";
+			sourceTree = "<group>";
+		};
+		4F5D5E3F2CC66AD500AEE3C7 /* Collection Screen  */ = {
+			isa = PBXGroup;
+			children = (
+				4F5D5E422CC66C1800AEE3C7 /* ViewModel */,
+				4F5D5E412CC66C0F00AEE3C7 /* View */,
+				4F5D5E402CC66C0800AEE3C7 /* Model */,
+			);
+			path = "Collection Screen ";
+			sourceTree = "<group>";
+		};
+		4F5D5E402CC66C0800AEE3C7 /* Model */ = {
+			isa = PBXGroup;
+			children = (
+				4F6B4C5F2CBABF6D008B712A /* CollectionModel.swift */,
+			);
+			path = Model;
+			sourceTree = "<group>";
+		};
+		4F5D5E412CC66C0F00AEE3C7 /* View */ = {
+			isa = PBXGroup;
+			children = (
+				4F6B4C4F2CBA6D96008B712A /* CatalogDetailsScreenViewController.swift */,
+				4F6B4C572CBA6E40008B712A /* NFTCellForCollectionView.swift */,
+			);
+			path = View;
+			sourceTree = "<group>";
+		};
+		4F5D5E422CC66C1800AEE3C7 /* ViewModel */ = {
+			isa = PBXGroup;
+			children = (
+				4F6B4C612CBAC110008B712A /* NFTCellModel.swift */,
+				4F6B4C552CBA6E28008B712A /* CollectionViewModel.swift */,
+			);
+			path = ViewModel;
+			sourceTree = "<group>";
+		};
 		4F6B4C472CBA6D19008B712A /* ViewModel */ = {
 			isa = PBXGroup;
 			children = (
 				4F5D5E382CC65C3F00AEE3C7 /* SortEnum.swift */,
 				4F6B4C532CBA6E0E008B712A /* CatalogViewModel.swift */,
-				4F6B4C552CBA6E28008B712A /* CollectionViewModel.swift */,
-				4F6B4C612CBAC110008B712A /* NFTCellModel.swift */,
-				4F6B4C592CBA6E57008B712A /* NFTRowModel.swift */,
 			);
 			path = ViewModel;
 			sourceTree = "<group>";
@@ -348,9 +390,7 @@
 			children = (
 				4F6B4C4C2CBA6D71008B712A /* CatalogTableViewCell.swift */,
 				214C8D542CB6E1A900219D6E /* CatalogViewController.swift */,
-				4F6B4C4F2CBA6D96008B712A /* CatalogDetailsScreenViewController.swift */,
 				4F6B4C512CBA6DED008B712A /* AlertController.swift */,
-				4F6B4C572CBA6E40008B712A /* NFTCellForCollectionView.swift */,
 			);
 			path = View;
 			sourceTree = "<group>";
@@ -358,9 +398,9 @@
 		4F6B4C492CBA6D2E008B712A /* Model */ = {
 			isa = PBXGroup;
 			children = (
-				4F5D5E3A2CC65E6200AEE3C7 /* CatalogRequest.swift */,
-				4F6B4C5F2CBABF6D008B712A /* CollectionModel.swift */,
 				4F6B4C4A2CBA6D4A008B712A /* CatalogModel.swift */,
+				4F5D5E3A2CC65E6200AEE3C7 /* CatalogRequest.swift */,
+				4F6B4C592CBA6E57008B712A /* NFTModelCatalog.swift */,
 			);
 			path = Model;
 			sourceTree = "<group>";
@@ -552,7 +592,7 @@
 				4F5D5E3B2CC65E6300AEE3C7 /* CatalogRequest.swift in Sources */,
 				3F6806D329CBBE9600B4F915 /* NetworkRequest.swift in Sources */,
 				214C8D572CB6E1D900219D6E /* ProfileViewController.swift in Sources */,
-				4F6B4C5A2CBA6E58008B712A /* NFTRowModel.swift in Sources */,
+				4F6B4C5A2CBA6E58008B712A /* NFTModelCatalog.swift in Sources */,
 				3F6806D129CBBE6B00B4F915 /* NetworkClient.swift in Sources */,
 				4F6B4C5C2CBA75BB008B712A /* LocalizedString.swift in Sources */,
 				0C79EE632A76DD1900EE90EA /* RequestConstants.swift in Sources */,
