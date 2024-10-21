@@ -1,67 +1,84 @@
 import UIKit
 
 extension UIColor {
-    // Creates color from a hex string
-    convenience init(hexString: String) {
-        let hex = hexString.trimmingCharacters(in: CharacterSet.alphanumerics.inverted)
-        var int = UInt64()
-        Scanner(string: hex).scanHexInt64(&int)
-        let alpha, red, green, blue: UInt64
-        switch hex.count {
-        case 3: // RGB (12-bit)
-            (alpha, red, green, blue) = (255, (int >> 8) * 17, (int >> 4 & 0xF) * 17, (int & 0xF) * 17)
-        case 6: // RGB (24-bit)
-            (alpha, red, green, blue) = (255, int >> 16, int >> 8 & 0xFF, int & 0xFF)
-        case 8: // ARGB (32-bit)
-            (alpha, red, green, blue) = (int >> 24, int >> 16 & 0xFF, int >> 8 & 0xFF, int & 0xFF)
-        default:
-            (alpha, red, green, blue) = (255, 0, 0, 0)
+    
+    static var blackUniversal: UIColor { #colorLiteral(red: 0.1019607843, green: 0.1058823529, blue: 0.1333333333, alpha: 1) }
+    static var whiteUniversal: UIColor { #colorLiteral(red: 1, green: 1, blue: 1, alpha: 1) }
+    static var lightGrayDay: UIColor { #colorLiteral(red: 0.968627451, green: 0.968627451, blue: 0.9725490196, alpha: 1) }
+    static var lightGrayNight: UIColor { #colorLiteral(red: 0.1725490196, green: 0.1725490196, blue: 0.1803921569, alpha: 1) }
+    static var grayUniversal: UIColor { #colorLiteral(red: 0.3843137255, green: 0.3607843137, blue: 0.3607843137, alpha: 1) }
+    static var redUniversal: UIColor { #colorLiteral(red: 0.9607843137, green: 0.4196078431, blue: 0.4235294118, alpha: 1) }
+    static var backgroundUniversal: UIColor { #colorLiteral(red: 0.1019607843, green: 0.1058823529, blue: 0.1333333333, alpha: 0.5) }
+    static var greenUniversal: UIColor { #colorLiteral(red: 0.1098039216, green: 0.6235294118, blue: 0, alpha: 1) }
+    static var blueUniversal: UIColor { #colorLiteral(red: 0.03921568627, green: 0.5176470588, blue: 1, alpha: 1) }
+    static var yellowUniversal: UIColor { #colorLiteral(red: 0.9960784314, green: 0.937254902, blue: 0.05098039216, alpha: 1) }
+    static var bordersColor: UIColor { #colorLiteral(red: 0.2352941176, green: 0.2352941176, blue: 0.262745098, alpha: 0.36) }
+    static var alertBackgroundColor: UIColor { #colorLiteral(red: 0.9490196078, green: 0.9490196078, blue: 0.9490196078, alpha: 0.8) }
+    static var catalogBackgroundDark: UIColor { #colorLiteral(red: 0.1019607843, green: 0.1058823529, blue: 0.1294117647, alpha: 1) }
+    
+    static var catalogBackgroundColor: UIColor {
+        return UIColor { traitCollection in
+            return traitCollection.userInterfaceStyle == .dark ?
+                .catalogBackgroundDark   :  // Цвет для тёмной темы
+                .whiteUniversal  // Цвет для светлой темы
         }
-        self.init(
-            red: CGFloat(red) / 255,
-            green: CGFloat(green) / 255,
-            blue: CGFloat(blue) / 255,
-            alpha: CGFloat(alpha) / 255
-        )
     }
-
-    // Ниже приведены примеры цветов, настоящие цвета надо взять из фигмы
-
-    // Primary Colors
-    static let primary = UIColor(red: 0 / 255, green: 122 / 255, blue: 255 / 255, alpha: 1.0)
-
-    // Secondary Colors
-    static let secondary = UIColor(red: 255 / 255, green: 193 / 255, blue: 7 / 255, alpha: 1.0)
-
-    // Background Colors
-    static let background = UIColor.white
-
-    // Text Colors
-    static let textPrimary = UIColor.black
-    static let textSecondary = UIColor.gray
-    static let textOnPrimary = UIColor.white
-    static let textOnSecondary = UIColor.black
-
-    private static let yaBlackLight = UIColor(hexString: "1A1B22")
-    private static let yaBlackDark = UIColor.white
-    private static let yaLightGrayLight = UIColor(hexString: "#F7F7F8")
-    private static let yaLightGrayDark = UIColor(hexString: "#2C2C2E")
-
-    static let segmentActive = UIColor { traits in
-        return traits.userInterfaceStyle == .dark
-        ? .yaBlackDark
-        : .yaBlackLight
+    
+    
+    static var backgroudColor: UIColor {
+        return UIColor { traitCollection in
+            return traitCollection.userInterfaceStyle == .dark ?
+                .lightGrayNight   :  // Цвет для тёмной темы
+                .whiteUniversal  // Цвет для светлой темы
+        }
     }
-
-    static let segmentInactive = UIColor { traits in
-        return traits.userInterfaceStyle == .dark
-        ? .yaLightGrayDark
-        : .yaLightGrayLight
+    
+    static var fontColor: UIColor {
+        return UIColor { traitCollection in
+            return traitCollection.userInterfaceStyle == .dark ?
+                .whiteUniversal   :  // Цвет для тёмной темы
+                .blackUniversal  // Цвет для светлой темы
+        }
     }
-
-    static let closeButton = UIColor { traits in
-        return traits.userInterfaceStyle == .dark
-        ? .yaBlackDark
-        : .yaBlackLight
+    
+    static var buttonColor: UIColor {
+        return UIColor { traitCollection in
+            return traitCollection.userInterfaceStyle == .dark ?
+                .whiteUniversal   :  // Цвет для тёмной темы
+                .blackUniversal  // Цвет для светлой темы
+        }
+    }
+    
+    static var greyColor: UIColor {
+        return UIColor { traitCollection in
+            return traitCollection.userInterfaceStyle == .dark ?
+                .lightGrayNight   :  // Цвет для тёмной темы
+                .lightGrayDay  // Цвет для светлой темы
+        }
+    }
+    
+    static var sortCellBackgroundColor: UIColor {
+        return UIColor { traitCollection in
+            return traitCollection.userInterfaceStyle == .dark ?
+            #colorLiteral(red: 0.09411764706, green: 0.09411764706, blue: 0.09411764706, alpha: 0.7)   :  // Цвет для тёмной темы
+            #colorLiteral(red: 0.9607843137, green: 0.9607843137, blue: 0.9607843137, alpha: 0.7)  // Цвет для светлой темы
+        }
+    }
+    
+    static var fontSortColor: UIColor {
+        return UIColor { traitCollection in
+            return traitCollection.userInterfaceStyle == .dark ?
+            #colorLiteral(red: 0.9215686275, green: 0.9215686275, blue: 0.9607843137, alpha: 0.6)   :  // Цвет для тёмной темы
+            #colorLiteral(red: 0.2352941176, green: 0.2352941176, blue: 0.262745098, alpha: 0.6)  // Цвет для светлой темы
+        }
+    }
+    
+    static var estimationBackgroundColor: UIColor {
+        return UIColor { traitCollection in
+            return traitCollection.userInterfaceStyle == .dark ?
+            #colorLiteral(red: 0.1098039216, green: 0.1098039216, blue: 0.1176470588, alpha: 0.75)   :  // Цвет для тёмной темы
+            #colorLiteral(red: 0.9490196078, green: 0.9490196078, blue: 0.9490196078, alpha: 0.75)  // Цвет для светлой темы
+        }
     }
 }
+
