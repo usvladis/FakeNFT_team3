@@ -48,14 +48,14 @@ final class CatalogTableViewCell: UITableViewCell {
     // MARK: - Configuration
     
     func configCell(name: String, count: Int, image: String) {
-            let urlForImage = URL(string: image)
-            topImage.kf.setImage(
-                    with: urlForImage,
-                    options: [
-                        .transition(.fade(1)),
-                        .cacheOriginalImage
-                    ]
-                )
+        let urlForImage = URL(string: image)
+        topImage.kf.setImage(
+            with: urlForImage,
+            options: [
+                .transition(.fade(1)),
+                .cacheOriginalImage
+            ]
+        )
         nameAndCountLabel.text = "\(name) (\(count))"
     }
     

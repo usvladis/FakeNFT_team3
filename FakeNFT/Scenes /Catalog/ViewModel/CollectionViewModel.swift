@@ -9,13 +9,11 @@ import UIKit
 import ProgressHUD
 
 protocol CollectionViewModelProtocol: AnyObject {
-    
     func fetchCollections(completion: @escaping () -> Void)
     func numberOfCollections() -> Int
     func collection(at index: Int) -> Nft
     func getPickedCollection() -> NFTModelCatalog
     func fetchNFTs(completion: @escaping () -> Void)
-    
 }
 
 final class CollectionViewModel: CollectionViewModelProtocol {
@@ -54,10 +52,10 @@ final class CollectionViewModel: CollectionViewModelProtocol {
     
     func fetchNFTs(completion: @escaping () -> Void) {
         
-            let dispatchGroup = DispatchGroup()
-            
-            ProgressHUD.show()
-            ProgressHUD.animationType = .circleSpinFade
+        let dispatchGroup = DispatchGroup()
+        
+        ProgressHUD.show()
+        ProgressHUD.animationType = .circleSpinFade
         
         let idArray = pickedCollection.nfts
         var nftsArray: Nfts = []
@@ -76,7 +74,7 @@ final class CollectionViewModel: CollectionViewModelProtocol {
                 dispatchGroup.leave()
             }
         }
-            
+        
         dispatchGroup.notify(queue: .main) {
             print(nftsArray.count)
             ProgressHUD.dismiss()

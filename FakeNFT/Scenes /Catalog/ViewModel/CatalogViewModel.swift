@@ -10,17 +10,19 @@ import ProgressHUD
 
 protocol CatalogViewModelProtocol: AnyObject {
     func fetchCollections(completion: @escaping () -> Void)
-    
     func numberOfCollections() -> Int
     func collection(at index: Int) -> NFTModelCatalog
-    
+    var reloadTableView: (() -> Void)? { get set }
+    func sortByName()
+    func sortByCount()
 }
 
 class CatalogViewModel: CatalogViewModelProtocol {
-    
     private let catalogModel = CatalogModel(networkClient: DefaultNetworkClient(), storage: NftStorageImpl())
-
+    private let sortOptionKey = "sortOptionKey"
     private var catalog: [NFTModelCatalog] = []
+    var reloadTableView: (() -> Void)?
+    
     
     func fetchCollections(completion: @escaping () -> Void) {
         let dispatchGroup = DispatchGroup()
@@ -33,6 +35,7 @@ class CatalogViewModel: CatalogViewModelProtocol {
             switch result {
             case .success(let catalog):
                 self.catalog = catalog
+                self.applySavedSortOption()
                 ProgressHUD.dismiss()
                 completion()
             case .failure(let error):
@@ -49,5 +52,33 @@ class CatalogViewModel: CatalogViewModelProtocol {
     
     func collection(at index: Int) -> NFTModelCatalog {
         return catalog[index]
+    }
+    
+    func sortByName() {
+        catalog.sort { $0.name < $1.name }
+        saveSortOption(.name)
+        reloadTableView?()
+    }
+    
+    func sortByCount() {
+        catalog.sort { $0.nfts.count > $1.nfts.count }
+        saveSortOption(.count)
+        reloadTableView?()
+    }
+    
+    private func saveSortOption(_ option: SortOption) {
+        UserDefaults.standard.set(option.rawValue, forKey: sortOptionKey)
+    }
+    
+    private func applySavedSortOption() {
+        let savedOption = UserDefaults.standard.string(forKey: sortOptionKey)
+        switch savedOption {
+        case SortOption.name.rawValue:
+            sortByName()
+        case SortOption.count.rawValue:
+            sortByCount()
+        default:
+            break
+        }
     }
 }

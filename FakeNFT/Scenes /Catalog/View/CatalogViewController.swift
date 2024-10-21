@@ -40,6 +40,13 @@ final class CatalogViewController: UIViewController {
         addSubviews()
         loadData()
         configureNavBar()
+        setUpBinding()
+    }
+    
+    private func setUpBinding() {
+        viewModel.reloadTableView = { [weak self] in
+            self?.NFTTableView.reloadData()
+        }
     }
     
     private func configureNavBar() {
@@ -88,8 +95,13 @@ final class CatalogViewController: UIViewController {
         
         let alert = AlertController(title: localizedString(key:"sorting"), message: nil, preferredStyle: .actionSheet)
         let cancelAction = UIAlertAction(title: localizedString(key:"close"), style: .cancel, handler: nil)
-        let sortByTitle = UIAlertAction(title: localizedString(key:"sortingByName"), style: .default, handler: nil)
-        let sortByNumber = UIAlertAction(title: localizedString(key:"sortingByNumber"), style: .default, handler: nil)
+        let sortByTitle = UIAlertAction(title: localizedString(key:"sortingByName"), style: .default) {[weak self] _ in
+            self?.viewModel.sortByName()
+            
+        }
+        let sortByNumber = UIAlertAction(title: localizedString(key:"sortingByNumber"), style: .default) {[weak self] _ in
+            self?.viewModel.sortByCount()
+        }
         alert.setDimmingColor(UIColor.sortCellBackgroundColor.withAlphaComponent(0.5))
         alert.addAction(cancelAction)
         alert.addAction(sortByTitle)
@@ -136,7 +148,7 @@ extension CatalogViewController: UITableViewDataSource {
 
 // MARK: - Preview
 struct CatalogViewControllerPreview: PreviewProvider {
-
+    
     static var previews: some View {
         CatalogViewController().showPreview()
     }
