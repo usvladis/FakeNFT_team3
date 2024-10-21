@@ -7,6 +7,7 @@
 
 import UIKit
 import SwiftUI
+import ProgressHUD
 
 final class CatalogViewController: UIViewController {
     
@@ -84,8 +85,11 @@ final class CatalogViewController: UIViewController {
     }
     
     private func loadData() {
+        ProgressHUD.show()
+        ProgressHUD.animationType = .circleSpinFade
         viewModel.fetchCollections {
             DispatchQueue.main.async {
+                ProgressHUD.dismiss()
                 self.NFTTableView.reloadData()
             }
         }
@@ -139,6 +143,7 @@ extension CatalogViewController: UITableViewDataSource {
             return UITableViewCell()
         }
         let nft = viewModel.collection(at: indexPath.row)
+        cell.prepareForReuse()
         cell.configCell(name: nft.name, count: nft.nfts.count, image: nft.cover)
         cell.selectionStyle = .none
         cell.backgroundColor = .clear

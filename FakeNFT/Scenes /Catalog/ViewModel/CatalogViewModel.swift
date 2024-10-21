@@ -5,7 +5,7 @@
 //  Created by Кирилл Марьясов on 10.10.2024.
 //
 
-import UIKit
+import Foundation
 import ProgressHUD
 
 protocol CatalogViewModelProtocol: AnyObject {

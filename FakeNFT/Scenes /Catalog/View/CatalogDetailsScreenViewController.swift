@@ -207,7 +207,7 @@ final class CatalogDetailsScreenViewController: UIViewController {
     func configureSubviews() {
         let pickedCollection = viewModel.getPickedCollection()
         
-        let urlForImage = URL(string: pickedCollection.cover)
+        let urlForImage = pickedCollection.cover
         topImage.kf.setImage(
             with: urlForImage,
             options: [
@@ -266,6 +266,7 @@ extension CatalogDetailsScreenViewController: UICollectionViewDataSource {
         }
         
         let nft = viewModel.collection(at: indexPath.row)
+        cell.prepareForReuse()
         cell.configure(nft: nft)
         
         return cell

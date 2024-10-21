@@ -40,7 +40,6 @@ final class CollectionModel {
                 switch result {
                 case .success(let nft):
                     nfts.append(nft)
-                    print("NFT \(nft)")
                 case .failure(let error):
                     print(error.localizedDescription)
                 }

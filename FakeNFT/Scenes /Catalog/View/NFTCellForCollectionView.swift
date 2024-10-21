@@ -81,7 +81,6 @@ final class NFTCellForCollectionView: UICollectionViewCell {
         cartButton.setImage(nil, for: .normal)
         favoriteButton.setImage(nil, for: .normal)
         ethLabel.text = ""
-        
     }
     
     func configure(nft: Nft) {
