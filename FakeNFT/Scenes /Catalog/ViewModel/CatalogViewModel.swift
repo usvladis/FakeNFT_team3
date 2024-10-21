@@ -10,13 +10,16 @@ import ProgressHUD
 
 protocol CatalogViewModelProtocol: AnyObject {
     func fetchCollections(completion: @escaping () -> Void)
+    
     func numberOfCollections() -> Int
     func collection(at index: Int) -> NFTModelCatalog
+    
 }
 
 class CatalogViewModel: CatalogViewModelProtocol {
+    
     private let catalogModel = CatalogModel(networkClient: DefaultNetworkClient(), storage: NftStorageImpl())
-//    private var collections: [NFTRowModel] = []
+
     private var catalog: [NFTModelCatalog] = []
     
     func fetchCollections(completion: @escaping () -> Void) {
@@ -31,7 +34,6 @@ class CatalogViewModel: CatalogViewModelProtocol {
             case .success(let catalog):
                 self.catalog = catalog
                 ProgressHUD.dismiss()
-                print(self.catalog)
                 completion()
             case .failure(let error):
                 ProgressHUD.showError()

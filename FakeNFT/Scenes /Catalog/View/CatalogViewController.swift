@@ -100,9 +100,13 @@ final class CatalogViewController: UIViewController {
 }
 
 extension CatalogViewController: UITableViewDelegate {
+    
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        let collectionVC = CatalogDetailsScreenViewController()
         
+        let viewModelForCollectionVC = CollectionViewModel(pickedCollection: viewModel.collection(at: indexPath.row),
+                                                           model: CollectionModel(networkClient: DefaultNetworkClient(), storage: NftStorageImpl()))
+        
+        let collectionVC = CatalogDetailsScreenViewController(viewModel: viewModelForCollectionVC)
         navigationController?.pushViewController(collectionVC, animated: true)
     }
     

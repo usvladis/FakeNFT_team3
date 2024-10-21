@@ -10,6 +10,8 @@ import UIKit
 final class NFTCellForCollectionView: UICollectionViewCell {
     
     static let reuseIdentifier = "NFTCollectionViewCell"
+    private var isLike = false
+    private var inCart = false
     
     private lazy var nftImageView: UIImageView = {
         let view = UIImageView()
@@ -17,6 +19,7 @@ final class NFTCellForCollectionView: UICollectionViewCell {
         view.layer.cornerRadius = 12
         view.clipsToBounds = true
         view.translatesAutoresizingMaskIntoConstraints = false
+        view.kf.indicatorType = .activity
         return view
     }()
     
@@ -68,27 +71,53 @@ final class NFTCellForCollectionView: UICollectionViewCell {
         fatalError("init(coder:) has not been implemented")
     }
     
-    func configure(nft: NFTCellModel) {
-        nameLabel.text = nft.name
-        nftImageView.image = nft.image
+    override func prepareForReuse() {
+        super.prepareForReuse()
+        isLike = false
+        inCart = false
+        nameLabel.text = ""
+        nftImageView.image = nil
+        updateRating(0)
+        cartButton.setImage(nil, for: .normal)
+        favoriteButton.setImage(nil, for: .normal)
+        ethLabel.text = ""
         
-        let imageForLike = nft.isLike ? UIImage(named: "heart_fill") ?? UIImage() : UIImage(named: "heart") ?? UIImage()
-        favoriteButton.setImage(imageForLike, for: .normal)
+    }
+    
+    func configure(nft: Nft) {
+        inCart = true
+        isLike = true
+        let fullName = nft.name
+        let firstName = fullName.components(separatedBy: " ").first ?? fullName
         
-        let imageForCart = nft.inCart ? UIImage(named: "CartDelete")?.withTintColor(UIColor.buttonColor, renderingMode: .alwaysOriginal) : UIImage(named: "CartAdd")?.withTintColor(UIColor.buttonColor, renderingMode: .alwaysOriginal)
+        nameLabel.text = firstName
+        
+        let urlForImage = nft.images[0]
+        nftImageView.kf.setImage(
+            with: urlForImage,
+            options: [
+                .transition(.fade(1)),
+                .cacheOriginalImage
+            ]
+        )
+        let imageForLike = isLike ? UIImage(named: "heart_fill") ?? UIImage() : UIImage(named: "heart") ?? UIImage()
+        
+        let imageForCart = inCart ? UIImage(named: "CartDelete")?.withTintColor(UIColor.buttonColor, renderingMode: .alwaysOriginal) : UIImage(named: "CartAdd")?.withTintColor(UIColor.buttonColor, renderingMode: .alwaysOriginal)
         
         cartButton.setImage(imageForCart, for: .normal)
-        ethLabel.text = "\(nft.cost) \("ETH")"
+        ethLabel.text = "\(Int(nft.price)) \("ETH")"
         updateRating(nft.rating)
     }
     
     private func updateRating(_ rating: Int) {
-        let filledStarImage = UIImage(named: "star_filled")
-        let emptyStarImage = UIImage(named: "star")
-
         for (i, view) in ratingStackView.arrangedSubviews.enumerated() {
-            guard let star = view as? UIImageView else { continue }
-            star.image = i < rating ? filledStarImage : emptyStarImage
+            if let star = view as? UIImageView {
+                if i < rating {
+                    star.image = UIImage(named: "star_filled")
+                } else {
+                    star.image = UIImage(named: "star")
+                }
+            }
         }
     }
     
@@ -127,6 +156,7 @@ final class NFTCellForCollectionView: UICollectionViewCell {
             
             nameLabel.topAnchor.constraint(equalTo: ratingStackView.bottomAnchor, constant: 5),
             nameLabel.leadingAnchor.constraint(equalTo: contentView.leadingAnchor),
+            nameLabel.trailingAnchor.constraint(equalTo: cartButton.leadingAnchor),
             
             ethLabel.topAnchor.constraint(equalTo: nameLabel.bottomAnchor, constant: 8),
             ethLabel.leadingAnchor.constraint(equalTo: contentView.leadingAnchor),

@@ -9,7 +9,7 @@ import UIKit
 
 final class CatalogDetailsScreenViewController: UIViewController {
     
-    private let viewModel = CollectionViewModel()
+    private let viewModel: CollectionViewModelProtocol
     
     private var collection: CollectionModel?
     private var collectionViewHeightConstraint: NSLayoutConstraint?
@@ -38,9 +38,9 @@ final class CatalogDetailsScreenViewController: UIViewController {
     }()
     
     private lazy var topView: UIView = {
-        let view = UIView()
-        view.translatesAutoresizingMaskIntoConstraints = false
-        return view
+        let topView = UIView()
+        topView.translatesAutoresizingMaskIntoConstraints = false
+        return topView
     }()
     
     
@@ -59,17 +59,13 @@ final class CatalogDetailsScreenViewController: UIViewController {
     }()
     
     private lazy var urlButton: UIButton = {
-        let button = UIButton(type: .system)
+        let button = UIButton()
         button.translatesAutoresizingMaskIntoConstraints = false
         let font = UIFont.caption1
-        let attributes: [NSAttributedString.Key: Any] = [
-            .font: font,
-            .foregroundColor: UIColor.systemBlue
-        ]
-        let attributedTitle = NSAttributedString(string: "", attributes: attributes)
-        button.setAttributedTitle(attributedTitle, for: .normal)
-        button.addTarget(self, action: #selector(goToAuthorURL), for: .touchUpInside)
         button.contentHorizontalAlignment = .left
+        button.setTitleColor(UIColor.link, for: .normal)
+        button.titleLabel?.font = font
+        button.addTarget(self, action: #selector(goToAuthorURL), for: .touchUpInside)
         return button
     }()
     
@@ -92,9 +88,19 @@ final class CatalogDetailsScreenViewController: UIViewController {
         return collection
     }()
     
+    init(viewModel: CollectionViewModelProtocol) {
+        self.viewModel = viewModel
+        super.init(nibName: nil, bundle: nil)
+    }
+    
+    required init?(coder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         view.backgroundColor = .catalogBackgroundColor
+        print("Загрузка экрана каталога")
         addSubviews()
         addConstraints()
         loadData()
@@ -102,10 +108,13 @@ final class CatalogDetailsScreenViewController: UIViewController {
     }
     
     private func loadData() {
-        viewModel.fetchCollections {
+        print("Загрузка данных из viewModel")
+        viewModel.fetchNFTs {
             DispatchQueue.main.async {
+                print("Данные загружены, обновляем коллекцию")
                 self.collectionView.reloadData()
                 self.updateCollectionViewHeight()
+                self.configureSubviews()
             }
         }
     }
@@ -140,12 +149,6 @@ final class CatalogDetailsScreenViewController: UIViewController {
         topView.addSubview(urlButton)
         contentView.addSubview(descriptionLabel)
         contentView.addSubview(collectionView)
-        
-        topImage.image = UIImage(named: "CollectionCoverMock")
-        nameLabel.text = "Peach"
-        firstAuthorLabel.text = localizedString(key:"collectionAuthor")
-        urlButton.setTitle("John Doe", for: .normal)
-        descriptionLabel.text = "Персиковый — как облака над закатным солнцем в океане. Бла-бла-бла, кто-нибудь это читает? Всем насрать на этот текст, все хотят просто поднять бабла на NFT и уехать на сказочное Бали"
     }
     
     private func addConstraints() {
@@ -178,7 +181,7 @@ final class CatalogDetailsScreenViewController: UIViewController {
             
             firstAuthorLabel.bottomAnchor.constraint(equalTo: topView.bottomAnchor, constant: -5),
             firstAuthorLabel.leadingAnchor.constraint(equalTo: nameLabel.leadingAnchor),
-            firstAuthorLabel.widthAnchor.constraint(equalToConstant: 120),
+            firstAuthorLabel.widthAnchor.constraint(equalToConstant: 115),
             firstAuthorLabel.heightAnchor.constraint(equalToConstant: 18),
             
             urlButton.leadingAnchor.constraint(equalTo: firstAuthorLabel.trailingAnchor, constant: 4),
@@ -194,12 +197,32 @@ final class CatalogDetailsScreenViewController: UIViewController {
             collectionView.topAnchor.constraint(equalTo: descriptionLabel.bottomAnchor, constant: 16),
             collectionView.leadingAnchor.constraint(equalTo: contentView.leadingAnchor),
             collectionView.trailingAnchor.constraint(equalTo: contentView.trailingAnchor),
-            collectionView.bottomAnchor.constraint(equalTo: contentView.bottomAnchor)
+            collectionView.bottomAnchor.constraint(equalTo: contentView.bottomAnchor),
         ])
         
         collectionViewHeightConstraint = collectionView.heightAnchor.constraint(equalToConstant: 800)
         collectionViewHeightConstraint?.isActive = true
     }
+    
+    func configureSubviews() {
+        let pickedCollection = viewModel.getPickedCollection()
+        
+        let urlForImage = URL(string: pickedCollection.cover)
+        topImage.kf.setImage(
+            with: urlForImage,
+            options: [
+                .transition(.fade(1)),
+                .cacheOriginalImage
+            ]
+        )
+        
+        nameLabel.text = pickedCollection.name
+        urlButton.setTitle(pickedCollection.author, for: .normal)
+        firstAuthorLabel.text = localizedString(key: "collectionAuthor")
+        descriptionLabel.text = pickedCollection.description
+    }
+    
+    
     
     func updateCollectionViewHeight() {
         let numberOfItems = collectionView.numberOfItems(inSection: 0)
@@ -222,12 +245,12 @@ final class CatalogDetailsScreenViewController: UIViewController {
     func configure(with collection: CollectionModel) {
         self.collection = collection
     }
-    
-    
 }
+
 extension CatalogDetailsScreenViewController: UICollectionViewDelegate {
     
 }
+
 extension CatalogDetailsScreenViewController: UICollectionViewDataSource {
     
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
@@ -264,5 +287,4 @@ extension CatalogDetailsScreenViewController: UICollectionViewDelegateFlowLayout
         let leftAndRightInset: CGFloat = 16
         return UIEdgeInsets(top: 8, left: leftAndRightInset, bottom: 8, right: leftAndRightInset)
     }
-    
 }
