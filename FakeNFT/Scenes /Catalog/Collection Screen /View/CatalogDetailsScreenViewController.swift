@@ -240,6 +240,14 @@ final class CatalogDetailsScreenViewController: UIViewController {
     
     @objc func goToAuthorURL() {
         
+        let nft = viewModel.collection(at: 0)
+        guard let url = URL(string: Constants.urlDev) else { return }
+        print(url)
+        
+        let webViewVC = AuthorWebViewController(url: url)
+        webViewVC.hidesBottomBarWhenPushed = true
+        navigationController?.pushViewController(webViewVC, animated: true)
+        
     }
     
     func configure(with collection: CollectionModel) {
