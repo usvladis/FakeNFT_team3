@@ -25,25 +25,25 @@ class CatalogViewModel: CatalogViewModelProtocol {
     
     
     func fetchCollections(completion: @escaping () -> Void) {
-        let dispatchGroup = DispatchGroup()
-        dispatchGroup.enter()
         ProgressHUD.show()
         ProgressHUD.animationType = .circleSpinFade
-        
+
         catalogModel.loadCatalog { [weak self] (result: Result<NFTsModelCatalog, any Error>) in
-            guard let self = self else {return}
-            switch result {
-            case .success(let catalog):
-                self.catalog = catalog
-                self.applySavedSortOption()
+            guard let self = self else { return }
+            DispatchQueue.main.async {
                 ProgressHUD.dismiss()
-                completion()
-            case .failure(let error):
-                ProgressHUD.showError()
-                print(error.localizedDescription)
+                switch result {
+                case .success(let catalog):
+                    self.catalog = catalog
+                    self.applySavedSortOption()
+                    completion()
+                case .failure(let error):
+                    ProgressHUD.showError()
+                    print(error.localizedDescription)
+                    completion()
+                }
             }
         }
-        dispatchGroup.leave()
     }
     
     func numberOfCollections() -> Int {

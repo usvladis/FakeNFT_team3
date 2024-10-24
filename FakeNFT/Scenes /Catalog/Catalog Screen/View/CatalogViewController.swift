@@ -87,10 +87,10 @@ final class CatalogViewController: UIViewController {
     private func loadData() {
         ProgressHUD.show()
         ProgressHUD.animationType = .circleSpinFade
-        viewModel.fetchCollections {
+        viewModel.fetchCollections { [weak self] in
             DispatchQueue.main.async {
                 ProgressHUD.dismiss()
-                self.NFTTableView.reloadData()
+                self?.NFTTableView.reloadData()
             }
         }
     }
@@ -139,11 +139,10 @@ extension CatalogViewController: UITableViewDataSource {
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         guard let cell = tableView.dequeueReusableCell(withIdentifier: CatalogTableViewCell.identifier, for: indexPath) as? CatalogTableViewCell else {
-            assertionFailure("Не удалось выполнить приведение к CategoryTableViewСеll")
+            assertionFailure("Не удалось выполнить приведение к CatalogTableViewCell")
             return UITableViewCell()
         }
         let nft = viewModel.collection(at: indexPath.row)
-        cell.prepareForReuse()
         cell.configCell(name: nft.name, count: nft.nfts.count, image: nft.cover)
         cell.selectionStyle = .none
         cell.backgroundColor = .clear

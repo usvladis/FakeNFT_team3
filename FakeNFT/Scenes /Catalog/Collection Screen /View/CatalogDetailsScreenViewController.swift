@@ -109,12 +109,12 @@ final class CatalogDetailsScreenViewController: UIViewController {
     
     private func loadData() {
         print("Загрузка данных из viewModel")
-        viewModel.fetchNFTs {
+        viewModel.fetchNFTs { [weak self] in
             DispatchQueue.main.async {
                 print("Данные загружены, обновляем коллекцию")
-                self.collectionView.reloadData()
-                self.updateCollectionViewHeight()
-                self.configureSubviews()
+                self?.collectionView.reloadData()
+                self?.updateCollectionViewHeight()
+                self?.configureSubviews()
             }
         }
     }
