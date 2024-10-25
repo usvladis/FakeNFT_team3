@@ -1,5 +1,5 @@
 //
-//  CollectionViewModel.swift - 
+//  CollectionViewModel.swift -
 //  FakeNFT
 //
 //  Created by Кирилл Марьясов on 10.10.2024.
@@ -31,10 +31,7 @@ final class CollectionViewModel: CollectionViewModelProtocol {
         ProgressHUD.show()
         ProgressHUD.animationType = .circleSpinFade
         
-        let dispatchGroup = DispatchGroup()
-        dispatchGroup.enter()
-        
-        collectionModel.loadCollection(idArrys: pickedCollection.nfts) { [weak self] (result: Result<Nfts, any Error>) in
+        collectionModel.loadCollection(idArrays: pickedCollection.nfts) { [weak self] (result: Result<Nfts, any Error>) in
             guard let self = self else {return}
             switch result {
             case .success(let nfts):
@@ -51,35 +48,27 @@ final class CollectionViewModel: CollectionViewModelProtocol {
     }
     
     func fetchNFTs(completion: @escaping () -> Void) {
-        
-        let dispatchGroup = DispatchGroup()
-        
         ProgressHUD.show()
         ProgressHUD.animationType = .circleSpinFade
         
         let idArray = pickedCollection.nfts
-        var nftsArray: Nfts = []
         
-        for i in idArray {
-            dispatchGroup.enter()
-            collectionModel.loadNft(id: i) { [weak self] (result: (Result<Nft, Error>)) in
-                guard let self = self else {return}
+        collectionModel.loadCollection(idArrays: idArray) { [weak self] (result: Result<Nfts, any Error>) in
+            guard let self = self else { return }
+            DispatchQueue.main.async {
+                ProgressHUD.dismiss()
                 switch result {
-                case .success(let nft):
-                    nftsArray.append(nft)
+                case .success(let nfts):
+                    self.NFTsFromCollection = nfts
+                    completion()
+                    print("Все NFT загрузились: \(nfts.count)")
                 case .failure(let error):
                     ProgressHUD.showError()
                     print(error.localizedDescription)
+                    print("NFT не загрузились")
+                    completion()
                 }
-                dispatchGroup.leave()
             }
-        }
-        
-        dispatchGroup.notify(queue: .main) {
-            print(nftsArray.count)
-            ProgressHUD.dismiss()
-            self.NFTsFromCollection = nftsArray
-            completion()
         }
     }
     

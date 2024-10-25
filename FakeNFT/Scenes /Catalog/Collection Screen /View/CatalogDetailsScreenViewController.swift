@@ -33,7 +33,7 @@ final class CatalogDetailsScreenViewController: UIViewController {
         image.translatesAutoresizingMaskIntoConstraints = false
         image.layer.masksToBounds = true
         image.layer.cornerRadius = 12
-        image.layer.maskedCorners = [.layerMinXMaxYCorner,.layerMaxXMaxYCorner]
+        image.layer.maskedCorners = [.layerMinXMaxYCorner, .layerMaxXMaxYCorner]
         return image
     }()
     
@@ -42,7 +42,6 @@ final class CatalogDetailsScreenViewController: UIViewController {
         topView.translatesAutoresizingMaskIntoConstraints = false
         return topView
     }()
-    
     
     private lazy var nameLabel: UILabel = {
         let label = UILabel()
@@ -63,7 +62,7 @@ final class CatalogDetailsScreenViewController: UIViewController {
         button.translatesAutoresizingMaskIntoConstraints = false
         let font = UIFont.caption1
         button.contentHorizontalAlignment = .left
-        button.setTitleColor(UIColor.link, for: .normal)
+        button.setTitleColor(.link, for: .normal)
         button.titleLabel?.font = font
         button.addTarget(self, action: #selector(goToAuthorURL), for: .touchUpInside)
         return button
@@ -78,14 +77,14 @@ final class CatalogDetailsScreenViewController: UIViewController {
     }()
     
     private lazy var collectionView: UICollectionView = {
-        let collection = UICollectionView(frame: .zero, collectionViewLayout: UICollectionViewFlowLayout())
-        collection.translatesAutoresizingMaskIntoConstraints = false
-        collection.delegate = self
-        collection.dataSource = self
-        collection.register(NFTCellForCollectionView.self, forCellWithReuseIdentifier: NFTCellForCollectionView.reuseIdentifier)
-        collection.isScrollEnabled = false
-        collection.backgroundColor = .catalogBackgroundColor
-        return collection
+        let collectionView = UICollectionView(frame: .zero, collectionViewLayout: UICollectionViewFlowLayout())
+        collectionView.translatesAutoresizingMaskIntoConstraints = false
+        collectionView.delegate = self
+        collectionView.dataSource = self
+        collectionView.register(NFTCellForCollectionView.self, forCellWithReuseIdentifier: NFTCellForCollectionView.reuseIdentifier)
+        collectionView.isScrollEnabled = false
+        collectionView.backgroundColor = .catalogBackgroundColor
+        return collectionView
     }()
     
     init(viewModel: CollectionViewModelProtocol) {
@@ -197,7 +196,7 @@ final class CatalogDetailsScreenViewController: UIViewController {
             collectionView.topAnchor.constraint(equalTo: descriptionLabel.bottomAnchor, constant: 16),
             collectionView.leadingAnchor.constraint(equalTo: contentView.leadingAnchor),
             collectionView.trailingAnchor.constraint(equalTo: contentView.trailingAnchor),
-            collectionView.bottomAnchor.constraint(equalTo: contentView.bottomAnchor),
+            collectionView.bottomAnchor.constraint(equalTo: contentView.bottomAnchor)
         ])
         
         collectionViewHeightConstraint = collectionView.heightAnchor.constraint(equalToConstant: 800)
@@ -222,8 +221,6 @@ final class CatalogDetailsScreenViewController: UIViewController {
         descriptionLabel.text = pickedCollection.description
     }
     
-    
-    
     func updateCollectionViewHeight() {
         let numberOfItems = collectionView.numberOfItems(inSection: 0)
         let rows = CGFloat((numberOfItems / 3) + (numberOfItems % 3 == 0 ? 0 : 1))
@@ -239,15 +236,16 @@ final class CatalogDetailsScreenViewController: UIViewController {
     }
     
     @objc func goToAuthorURL() {
-        
-        let nft = viewModel.collection(at: 0)
-        guard let url = URL(string: Constants.urlDev) else { return }
-        print(url)
+        guard let url = URL(string: Constants.urlDev) else {
+            let alert = UIAlertController(title: "Ошибка", message: "Некорректный URL-адрес.", preferredStyle: .alert)
+            alert.addAction(UIAlertAction(title: "Ок", style: .default, handler: nil))
+            present(alert, animated: true, completion: nil)
+            return
+        }
         
         let webViewVC = AuthorWebViewController(url: url)
         webViewVC.hidesBottomBarWhenPushed = true
         navigationController?.pushViewController(webViewVC, animated: true)
-        
     }
     
     func configure(with collection: CollectionModel) {
@@ -255,14 +253,12 @@ final class CatalogDetailsScreenViewController: UIViewController {
     }
 }
 
-extension CatalogDetailsScreenViewController: UICollectionViewDelegate {
-    
-}
+extension CatalogDetailsScreenViewController: UICollectionViewDelegate {}
 
 extension CatalogDetailsScreenViewController: UICollectionViewDataSource {
     
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        viewModel.numberOfCollections()
+        return viewModel.numberOfCollections()
     }
     
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
@@ -281,18 +277,23 @@ extension CatalogDetailsScreenViewController: UICollectionViewDataSource {
     }
 }
 
-
 extension CatalogDetailsScreenViewController: UICollectionViewDelegateFlowLayout {
     
-    func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
+    func collectionView(_ collectionView: UICollectionView,
+                        layout collectionViewLayout: UICollectionViewLayout,
+                        sizeForItemAt indexPath: IndexPath) -> CGSize {
         return CGSize(width: 108, height: 192)
     }
     
-    func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, minimumInteritemSpacingForSectionAt section: Int) -> CGFloat {
+    func collectionView(_ collectionView: UICollectionView,
+                        layout collectionViewLayout: UICollectionViewLayout,
+                        minimumInteritemSpacingForSectionAt section: Int) -> CGFloat {
         return 9
     }
     
-    func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, insetForSectionAt section: Int) -> UIEdgeInsets {
+    func collectionView(_ collectionView: UICollectionView,
+                        layout collectionViewLayout: UICollectionViewLayout,
+                        insetForSectionAt section: Int) -> UIEdgeInsets {
         let leftAndRightInset: CGFloat = 16
         return UIEdgeInsets(top: 8, left: leftAndRightInset, bottom: 8, right: leftAndRightInset)
     }

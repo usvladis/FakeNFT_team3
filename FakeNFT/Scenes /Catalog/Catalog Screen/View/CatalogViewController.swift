@@ -41,13 +41,7 @@ final class CatalogViewController: UIViewController {
         addSubviews()
         loadData()
         configureNavBar()
-        setUpBinding()
-    }
-    
-    private func setUpBinding() {
-        viewModel.reloadTableView = { [weak self] in
-            self?.NFTTableView.reloadData()
-        }
+        // Удаляем вызов setUpBinding()
     }
     
     private func configureNavBar() {
@@ -57,7 +51,7 @@ final class CatalogViewController: UIViewController {
             image: filterImage,
             style: .plain,
             target: self,
-            action: #selector(sortButtonTupped)
+            action: #selector(sortButtonTapped)
         )
         
         filterButton.tintColor = .buttonColor
@@ -71,7 +65,6 @@ final class CatalogViewController: UIViewController {
             navigationBar.isTranslucent = true
         }
     }
-    
     
     private func addSubviews() {
         view.addSubview(NFTTableView)
@@ -95,24 +88,32 @@ final class CatalogViewController: UIViewController {
         }
     }
     
-    @objc private func sortButtonTupped() {
+    @objc private func sortButtonTapped() {
         
-        let alert = AlertController(title: localizedString(key:"sorting"), message: nil, preferredStyle: .actionSheet)
+        let alert = UIAlertController(title: localizedString(key:"sorting"), message: nil, preferredStyle: .actionSheet)
         let cancelAction = UIAlertAction(title: localizedString(key:"close"), style: .cancel, handler: nil)
-        let sortByTitle = UIAlertAction(title: localizedString(key:"sortingByName"), style: .default) {[weak self] _ in
-            self?.viewModel.sortByName()
-            
+        
+        let sortByTitle = UIAlertAction(title: localizedString(key:"sortingByName"), style: .default) { [weak self] _ in
+            self?.viewModel.sortByName {
+                DispatchQueue.main.async {
+                    self?.NFTTableView.reloadData()
+                }
+            }
         }
-        let sortByNumber = UIAlertAction(title: localizedString(key:"sortingByNumber"), style: .default) {[weak self] _ in
-            self?.viewModel.sortByCount()
+        
+        let sortByNumber = UIAlertAction(title: localizedString(key:"sortingByNumber"), style: .default) { [weak self] _ in
+            self?.viewModel.sortByCount {
+                DispatchQueue.main.async {
+                    self?.NFTTableView.reloadData()
+                }
+            }
         }
-        alert.setDimmingColor(UIColor.sortCellBackgroundColor.withAlphaComponent(0.5))
+        
         alert.addAction(cancelAction)
         alert.addAction(sortByTitle)
         alert.addAction(sortByNumber)
         present(alert, animated: true)
     }
-    
 }
 
 extension CatalogViewController: UITableViewDelegate {

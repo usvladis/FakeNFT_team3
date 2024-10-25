@@ -30,23 +30,28 @@ final class CollectionModel {
         }
     }
     
-    func loadCollection(idArrys: [String], completion: @escaping NftsCompletion) {
+    func loadCollection(idArrays: [String], completion: @escaping NftsCompletion) {
         var nfts: Nfts = []
-        ProgressHUD.show()
         let dispatchGroup = DispatchGroup()
-        for i in idArrys {
+        let serialQueue = DispatchQueue(label: "com.yourapp.nfts.serialQueue")
+        
+        for id in idArrays {
             dispatchGroup.enter()
-            loadNft(id: i) { (result: Result<Nft, any Error>) in
-                switch result {
-                case .success(let nft):
-                    nfts.append(nft)
-                case .failure(let error):
-                    print(error.localizedDescription)
+            loadNft(id: id) { (result: Result<Nft, any Error>) in
+                serialQueue.async {
+                    switch result {
+                    case .success(let nft):
+                        nfts.append(nft)
+                    case .failure(let error):
+                        print(error.localizedDescription)
+                    }
+                    dispatchGroup.leave()
                 }
             }
         }
-        ProgressHUD.dismiss()
-        completion(.success(nfts))
-        dispatchGroup.leave()
+        
+        dispatchGroup.notify(queue: .main) {
+            completion(.success(nfts))
+        }
     }
 }

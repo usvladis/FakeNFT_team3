@@ -12,22 +12,19 @@ protocol CatalogViewModelProtocol: AnyObject {
     func fetchCollections(completion: @escaping () -> Void)
     func numberOfCollections() -> Int
     func collection(at index: Int) -> NFTModelCatalog
-    var reloadTableView: (() -> Void)? { get set }
-    func sortByName()
-    func sortByCount()
+    func sortByName(completion: @escaping () -> Void)
+    func sortByCount(completion: @escaping () -> Void)
 }
 
-class CatalogViewModel: CatalogViewModelProtocol {
+final class CatalogViewModel: CatalogViewModelProtocol {
     private let catalogModel = CatalogModel(networkClient: DefaultNetworkClient(), storage: NftStorageImpl())
-    private let sortOptionKey = "sortOptionKey"
+    private let sortOptionStorage = SortOptionStorage()
     private var catalog: [NFTModelCatalog] = []
-    var reloadTableView: (() -> Void)?
-    
     
     func fetchCollections(completion: @escaping () -> Void) {
         ProgressHUD.show()
         ProgressHUD.animationType = .circleSpinFade
-
+        
         catalogModel.loadCatalog { [weak self] (result: Result<NFTsModelCatalog, any Error>) in
             guard let self = self else { return }
             DispatchQueue.main.async {
@@ -35,8 +32,7 @@ class CatalogViewModel: CatalogViewModelProtocol {
                 switch result {
                 case .success(let catalog):
                     self.catalog = catalog
-                    self.applySavedSortOption()
-                    completion()
+                    self.applySavedSortOption(completion: completion)
                 case .failure(let error):
                     ProgressHUD.showError()
                     print(error.localizedDescription)
@@ -54,31 +50,32 @@ class CatalogViewModel: CatalogViewModelProtocol {
         return catalog[index]
     }
     
-    func sortByName() {
+    func sortByName(completion: @escaping () -> Void) {
         catalog.sort { $0.name < $1.name }
         saveSortOption(.name)
-        reloadTableView?()
+        completion()
     }
     
-    func sortByCount() {
+    func sortByCount(completion: @escaping () -> Void) {
         catalog.sort { $0.nfts.count > $1.nfts.count }
         saveSortOption(.count)
-        reloadTableView?()
+        completion()
     }
     
     private func saveSortOption(_ option: SortOption) {
-        UserDefaults.standard.set(option.rawValue, forKey: sortOptionKey)
+        sortOptionStorage.save(option: option)
     }
     
-    private func applySavedSortOption() {
-        let savedOption = UserDefaults.standard.string(forKey: sortOptionKey)
-        switch savedOption {
-        case SortOption.name.rawValue:
-            sortByName()
-        case SortOption.count.rawValue:
-            sortByCount()
-        default:
-            break
+    private func applySavedSortOption(completion: @escaping () -> Void) {
+        if let savedOption = sortOptionStorage.retrieveSortOption() {
+            switch savedOption {
+            case .name:
+                sortByName(completion: completion)
+            case .count:
+                sortByCount(completion: completion)
+            }
+        } else {
+            completion()
         }
     }
 }
