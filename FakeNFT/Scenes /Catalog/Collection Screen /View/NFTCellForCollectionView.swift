@@ -42,12 +42,14 @@ final class NFTCellForCollectionView: UICollectionViewCell {
     private lazy var favoriteButton: UIButton = {
         let button = UIButton(type: .custom)
         button.translatesAutoresizingMaskIntoConstraints = false
+        button.addTarget(self, action: #selector(favoriteButtonTupped), for: .touchUpInside)
         return button
     }()
     
     private lazy var cartButton: UIButton = {
         let button = UIButton(type: .custom)
         button.translatesAutoresizingMaskIntoConstraints = false
+        button.addTarget(self, action: #selector(cartButtonTupped), for: .touchUpInside)
         return button
     }()
     
@@ -99,12 +101,18 @@ final class NFTCellForCollectionView: UICollectionViewCell {
                 .cacheOriginalImage
             ]
         )
-        let imageForLike = isLike ? UIImage(named: "heart_fill") ?? UIImage() : UIImage(named: "heart") ?? UIImage()
         
-        let imageForCart = inCart ? UIImage(named: "CartDelete")?.withTintColor(UIColor.buttonColor, renderingMode: .alwaysOriginal) : UIImage(named: "CartAdd")?.withTintColor(UIColor.buttonColor, renderingMode: .alwaysOriginal)
+        let imageForLike = isLike
+        ? UIImage(named: "heart_fill") ?? UIImage()
+        : UIImage(named: "heart") ?? UIImage()
         
+        let imageForCart = inCart
+        ? UIImage(named: "CartDelete")?.withTintColor(UIColor.buttonColor, renderingMode: .alwaysOriginal)
+        : UIImage(named: "CartAdd")?.withTintColor(UIColor.buttonColor, renderingMode: .alwaysOriginal)
+        
+        favoriteButton.setImage(imageForLike, for: .normal)
         cartButton.setImage(imageForCart, for: .normal)
-        ethLabel.text = "\(Int(nft.price)) \("ETH")"
+        ethLabel.text = "\(Int(nft.price)) ETH"
         updateRating(nft.rating)
     }
     
@@ -170,5 +178,20 @@ final class NFTCellForCollectionView: UICollectionViewCell {
             cartButton.widthAnchor.constraint(equalToConstant: 40),
             cartButton.heightAnchor.constraint(equalToConstant: 40)
         ])
+    }
+    
+    @objc func favoriteButtonTupped() {
+        print("favoriteButtonTupped")
+        isLike.toggle()
+        let imageForLike = isLike ? UIImage(named: "heart_fill") ?? UIImage() : UIImage(named: "heart") ?? UIImage()
+        favoriteButton.setImage(imageForLike, for: .normal)
+    }
+    
+    @objc func cartButtonTupped() {
+        print("cartButtonTupped")
+        inCart.toggle()
+        
+        let imageForCart = inCart ? UIImage(named: "CartDelete")?.withTintColor(UIColor.buttonColor, renderingMode: .alwaysOriginal) :                                                       UIImage(named: "CartAdd")?.withTintColor(UIColor.buttonColor, renderingMode: .alwaysOriginal)
+        cartButton.setImage(imageForCart, for: .normal)
     }
 }
