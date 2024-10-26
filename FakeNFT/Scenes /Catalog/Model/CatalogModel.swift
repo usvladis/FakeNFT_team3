@@ -9,6 +9,10 @@ import Foundation
 
 final class CatalogModel {
     
+<<<<<<< HEAD
     
+=======
+    //Здесь будет реализована работа с сетью
+>>>>>>> Catalogue
     
 }

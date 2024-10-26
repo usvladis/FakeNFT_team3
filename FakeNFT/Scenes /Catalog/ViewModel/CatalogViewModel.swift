@@ -9,6 +9,7 @@ import UIKit
 
 class CatalogViewModel {
     
+<<<<<<< HEAD
     private var collections: [NFTRowForTableView] = []
     
     func fetchCollections(completion: @escaping () -> Void) {
@@ -23,6 +24,30 @@ class CatalogViewModel {
         return collections.count
     }
     func collection(at index: Int) -> NFTRowForTableView {
+=======
+    private var collections: [NFTRowModel] = []
+    
+    func fetchCollections(completion: @escaping () -> Void) {
+        
+        DispatchQueue.main.async {
+            
+        }
+        guard let image = UIImage(named: "CollectionPreviewMock") else {return}
+        collections = [NFTRowModel(image: image, name: "Peach", count: 11),
+                       NFTRowModel(image: image, name: "Peach", count: 11),
+                       NFTRowModel(image: image, name: "Peach", count: 11),
+                       NFTRowModel(image: image, name: "Peach", count: 11),
+                       NFTRowModel(image: image, name: "Peach", count: 11),
+                       NFTRowModel(image: image, name: "Peach", count: 11)]
+        completion()
+    }
+    
+    func numberOfCollections() -> Int {
+        return collections.count
+    }
+    
+    func collection(at index: Int) -> NFTRowModel {
+>>>>>>> Catalogue
         return collections[index]
     }
 }
