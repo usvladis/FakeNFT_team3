@@ -6,6 +6,7 @@
 //
 
 import UIKit
+import ProgressHUD
 
 final class CatalogDetailsScreenViewController: UIViewController {
     
@@ -268,10 +269,17 @@ extension CatalogDetailsScreenViewController: UICollectionViewDataSource {
             assertionFailure("Не удалось dequeued ячейку с идентификатором \(NFTCellForCollectionView.reuseIdentifier) или привести ее к NFTCellForCollectionView")
             return UICollectionViewCell()
         }
-        
+        cell.delegate = self
+        var isLike = false
         let nft = viewModel.collection(at: indexPath.row)
-        cell.prepareForReuse()
-        cell.configure(nft: nft)
+        let likes = viewModel.getLikes()
+        if let index = likes.firstIndex(of: nft.id) {
+            isLike = true
+        } else {
+            isLike = false
+        }
+        
+        cell.configure(nft: nft, isLike: isLike, nftID: nft.id)
         
         return cell
     }
@@ -296,5 +304,25 @@ extension CatalogDetailsScreenViewController: UICollectionViewDelegateFlowLayout
                         insetForSectionAt section: Int) -> UIEdgeInsets {
         let leftAndRightInset: CGFloat = 16
         return UIEdgeInsets(top: 8, left: leftAndRightInset, bottom: 8, right: leftAndRightInset)
+    }
+}
+
+extension CatalogDetailsScreenViewController: NFTCollectionViewCellDelegate {
+    func tapLikeButton(with id: String) {
+        ProgressHUD.show()
+        view.isUserInteractionEnabled = false
+        viewModel.toggleLike(for: id) {
+            ProgressHUD.dismiss()
+            self.view.isUserInteractionEnabled = true
+        }
+    }
+    
+    func tapCartButton(with id: String) {
+        ProgressHUD.show()
+        view.isUserInteractionEnabled = false
+        viewModel.toggleCart(for: id) {
+            ProgressHUD.dismiss()
+            self.view.isUserInteractionEnabled = true
+        }
     }
 }

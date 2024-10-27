@@ -7,9 +7,16 @@
 
 import UIKit
 
+protocol NFTCollectionViewCellDelegate: AnyObject {
+    func tapLikeButton(with id: String)
+    func tapCartButton(with id: String)
+}
+
 final class NFTCellForCollectionView: UICollectionViewCell {
     
     static let reuseIdentifier = "NFTCollectionViewCell"
+    weak var delegate: NFTCollectionViewCellDelegate?
+    private var id = ""
     private var isLike = false
     private var inCart = false
     
@@ -85,9 +92,10 @@ final class NFTCellForCollectionView: UICollectionViewCell {
         ethLabel.text = ""
     }
     
-    func configure(nft: Nft) {
+    func configure(nft: Nft, isLike: Bool, nftID: String) {
+        id = nftID
         inCart = true
-        isLike = true
+        self.isLike = isLike
         let fullName = nft.name
         let firstName = fullName.components(separatedBy: " ").first ?? fullName
         
@@ -185,6 +193,8 @@ final class NFTCellForCollectionView: UICollectionViewCell {
         isLike.toggle()
         let imageForLike = isLike ? UIImage(named: "heart_fill") ?? UIImage() : UIImage(named: "heart") ?? UIImage()
         favoriteButton.setImage(imageForLike, for: .normal)
+        
+        delegate?.tapLikeButton(with: id)
     }
     
     @objc func cartButtonTupped() {
@@ -193,5 +203,7 @@ final class NFTCellForCollectionView: UICollectionViewCell {
         
         let imageForCart = inCart ? UIImage(named: "CartDelete")?.withTintColor(UIColor.buttonColor, renderingMode: .alwaysOriginal) :                                                       UIImage(named: "CartAdd")?.withTintColor(UIColor.buttonColor, renderingMode: .alwaysOriginal)
         cartButton.setImage(imageForCart, for: .normal)
+        
+        delegate?.tapCartButton(with: id)
     }
 }

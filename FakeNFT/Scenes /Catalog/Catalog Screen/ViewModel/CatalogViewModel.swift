@@ -12,14 +12,19 @@ protocol CatalogViewModelProtocol: AnyObject {
     func fetchCollections(completion: @escaping () -> Void)
     func numberOfCollections() -> Int
     func collection(at index: Int) -> NFTModelCatalog
+    func getProfile(completion: @escaping () -> Void)
     func sortByName(completion: @escaping () -> Void)
     func sortByCount(completion: @escaping () -> Void)
+    var profile: Profile? { get set }
 }
 
 final class CatalogViewModel: CatalogViewModelProtocol {
     private let catalogModel = CatalogModel(networkClient: DefaultNetworkClient(), storage: NftStorageImpl())
     private let sortOptionStorage = SortOptionStorage()
     private var catalog: [NFTModelCatalog] = []
+    
+    private let networkClient = DefaultNetworkClient()
+    var profile: Profile?
     
     func fetchCollections(completion: @escaping () -> Void) {
         ProgressHUD.show()
@@ -76,6 +81,36 @@ final class CatalogViewModel: CatalogViewModelProtocol {
             }
         } else {
             completion()
+        }
+    }
+    
+    func getProfile(completion: @escaping () -> Void) {
+        let dispatchGroup = DispatchGroup()
+        dispatchGroup.enter()
+        loadProfile { [weak self] result in
+            guard let self = self else {return}
+            switch result {
+            case .success(let newProfile):
+                self.profile = newProfile
+                print(newProfile)
+                completion()
+            case .failure(let error):
+                print(error.localizedDescription)
+            }
+        }
+        dispatchGroup.leave()
+    }
+    
+    func loadProfile(completion: @escaping ProfileCompletion) {
+        
+        let request = ProfileRequest()
+        networkClient.send(request: request, type: Profile.self) { [weak self] result in
+            switch result {
+            case .success(let profile):
+                completion(.success(profile))
+            case .failure(let error):
+                completion(.failure(error))
+            }
         }
     }
 }
