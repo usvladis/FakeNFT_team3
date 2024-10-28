@@ -7,9 +7,12 @@
 
 import Foundation
 
+// MARK: - Currency
+/// Модель валюты, содержащая основные атрибуты для представления валюты
 struct Currency: Codable {
-    let title: String
-    let name: String
-    let image: URL
-    let id: String
+    let title: String       // Название валюты
+    let name: String        // Краткое имя валюты
+    let image: URL          // URL изображения валюты
+    let id: String          // Уникальный идентификатор валюты
 }
+

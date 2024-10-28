@@ -7,9 +7,15 @@
 
 import Foundation
 
+// MARK: - CurrencyListRequest
+/// Запрос для получения списка доступных валют
 struct CurrencyListRequest: NetworkRequest {
+    
+    // MARK: - Properties
     var endpoint: URL? {
         URL(string: "\(RequestConstants.baseURL)/api/v1/currencies")
     }
-    var dto: (any Dto)?
+    
+    var dto: (any Dto)?  // Объект данных для передачи в запросе, если требуется
 }
+

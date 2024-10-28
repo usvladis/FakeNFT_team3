@@ -7,11 +7,15 @@
 
 import UIKit
 
+// MARK: - NFTCellModel
+/// Модель данных для отображения ячейки NFT
 struct NFTCellModel {
-    let image: UIImage
-    let rating: Int
-    let name: String
-    let cost: Int
-    let isLike: Bool
-    let inCart: Bool
+    // MARK: - Properties
+    let image: UIImage       // Изображение NFT
+    let rating: Int          // Рейтинг NFT
+    let name: String         // Название NFT
+    let cost: Int            // Стоимость NFT
+    let isLike: Bool         // Отметка "Нравится"
+    let inCart: Bool         // Маркер добавления в корзину
 }
+

@@ -6,16 +6,22 @@
 //
 
 import Foundation
+
+// MARK: - ProfileStorage Protocol
 protocol ProfileStorage: AnyObject {
     func saveProfile(profile: Profile)
     func getProfile() -> Profile?
 }
-// Пример простого класса, который сохраняет данные из сети
+
+// MARK: - ProfileStorageImpl
+/// Реализация хранения профиля с использованием синхронизации
 final class ProfileStorageImpl: ProfileStorage {
     
-    private var profile: Profile? = nil
+    // MARK: - Properties
+    private var profile: Profile?
     private let syncQueue = DispatchQueue(label: "sync-nft-queue")
     
+    // MARK: - ProfileStorage Methods
     func saveProfile(profile: Profile) {
         syncQueue.async {
             self.profile = profile
@@ -28,3 +34,4 @@ final class ProfileStorageImpl: ProfileStorage {
         }
     }
 }
+

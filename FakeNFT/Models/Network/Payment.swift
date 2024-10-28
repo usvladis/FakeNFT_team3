@@ -7,8 +7,11 @@
 
 import Foundation
 
+// MARK: - Payment
+/// Модель для представления результата оплаты
 struct Payment: Codable {
-    let success: Bool
-    let orederId: String
-    let id : String
+    let success: Bool       // Статус успеха оплаты
+    let orderId: String     // Идентификатор заказа
+    let id: String          // Идентификатор транзакции
 }
+

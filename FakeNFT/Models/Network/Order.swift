@@ -7,7 +7,10 @@
 
 import Foundation
 
+// MARK: - Order
+/// Модель заказа, содержащая идентификатор и список NFT
 struct Order: Codable {
-    let id: String
-    let nfts: [String]
+    let id: String           // Идентификатор заказа
+    let nfts: [String]       // Список идентификаторов NFT, включенных в заказ
 }
+

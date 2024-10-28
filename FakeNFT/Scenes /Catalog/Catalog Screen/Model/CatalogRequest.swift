@@ -7,10 +7,14 @@
 
 import Foundation
 
+// MARK: - CatalogRequest
+/// Запрос для загрузки каталога NFT
 struct CatalogRequest: NetworkRequest {
     
     var endpoint: URL? {
         URL(string: "\(RequestConstants.baseURL)/api/v1/collections")
     }
+    
     var dto: Dto?
 }
+

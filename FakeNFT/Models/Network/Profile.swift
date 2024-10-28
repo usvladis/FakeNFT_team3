@@ -6,13 +6,16 @@
 //
 
 import Foundation
+
 // MARK: - Profile
+/// Модель профиля пользователя, содержащая информацию о пользователе и его коллекциях
 struct Profile: Codable {
-    let name: String
-    let avatar: String
-    let description: String
-    let website: String
-    let nfts: [String]
-    let likes: [String]
-    let id: String
+    let name: String           // Имя пользователя
+    let avatar: String         // URL аватара пользователя в виде строки
+    let description: String    // Описание пользователя
+    let website: String        // URL веб-сайта пользователя в виде строки
+    let nfts: [String]         // Идентификаторы NFT, принадлежащих пользователю
+    let likes: [String]        // Идентификаторы понравившихся NFT
+    let id: String             // Уникальный идентификатор пользователя
 }
+

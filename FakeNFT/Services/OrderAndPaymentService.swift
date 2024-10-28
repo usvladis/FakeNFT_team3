@@ -7,10 +7,12 @@
 
 import Foundation
 
+// MARK: - Completion Type Aliases
 typealias OrderCompletion = (Result<Order, Error>) -> Void
 typealias CurrencyListCompletion = (Result<[Currency], Error>) -> Void
 typealias PaymentConfirmationRequest = (Result<Payment, Error>) -> Void
 
+// MARK: - OrderService Protocol
 protocol OrderService {
     func loadOrder(completion: @escaping OrderCompletion)
     func loadCurrencyList(completion: @escaping CurrencyListCompletion)
@@ -18,14 +20,19 @@ protocol OrderService {
     func loadPayment(currencyId: String, completion: @escaping PaymentConfirmationRequest)
 }
 
+// MARK: - OrderServiceImpl
+/// Реализация сервиса для загрузки и управления заказами, валютами и платежами
 final class OrderServiceImpl: OrderService {
     
+    // MARK: - Properties
     private let networkClient: NetworkClient
     
+    // MARK: - Initializer
     init(networkClient: NetworkClient) {
         self.networkClient = networkClient
     }
     
+    // MARK: - OrderService Methods
     func loadOrder(completion: @escaping OrderCompletion) {
         networkClient.send(request: NFTOrderRequest(), type: Order.self) { result in
             switch result {
@@ -54,6 +61,7 @@ final class OrderServiceImpl: OrderService {
     func updateOrder(nftsIds: [String], completion: @escaping OrderCompletion) {
         let newOrderModel = NewOrderModel(nfts: nftsIds)
         let request = EditOrderRequest(newOrder: newOrderModel)
+        
         networkClient.send(request: request, type: Order.self) { result in
             switch result {
             case .success(let order):
@@ -68,12 +76,13 @@ final class OrderServiceImpl: OrderService {
         networkClient.send(request: PaymentRequest(), type: Payment.self) { result in
             switch result {
             case .success(let payment):
-                print("Received currencies: \(payment)")
+                print("Received payment confirmation: \(payment)")
                 completion(.success(payment))
             case .failure(let error):
-                print("Error loading currency list: \(error)")
+                print("Error loading payment confirmation: \(error)")
                 completion(.failure(error))
             }
         }
     }
 }
+

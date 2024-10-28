@@ -6,9 +6,16 @@
 //
 
 import Foundation
+
+// MARK: - NFTOrderRequest
+/// Запрос для получения или обновления информации о заказе NFT
 struct NFTOrderRequest: NetworkRequest {
-  var endpoint: URL? {
-    URL(string: "\(RequestConstants.baseURL)/api/v1/orders/1")
-  }
-  var dto: (any Dto)?
+    
+    // MARK: - Properties
+    var endpoint: URL? {
+        URL(string: "\(RequestConstants.baseURL)/api/v1/orders/1")
+    }
+    
+    var dto: (any Dto)?  // Объект данных для передачи в запросе, если требуется
 }
+

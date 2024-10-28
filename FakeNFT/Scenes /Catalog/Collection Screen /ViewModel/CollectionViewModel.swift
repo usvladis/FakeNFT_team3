@@ -8,6 +8,7 @@
 import UIKit
 import ProgressHUD
 
+// MARK: - CollectionViewModelProtocol
 protocol CollectionViewModelProtocol: AnyObject {
     func fetchCollections(completion: @escaping () -> Void)
     func numberOfCollections() -> Int
@@ -20,8 +21,10 @@ protocol CollectionViewModelProtocol: AnyObject {
     func toggleCart(for nftId: String, completion: @escaping () -> Void)
 }
 
+// MARK: - CollectionViewModel
 final class CollectionViewModel: CollectionViewModelProtocol {
     
+    // MARK: - Private Properties
     private let collectionModel: CollectionModel
     private var pickedCollection: NFTModelCatalog
     private var NFTsFromCollection: Nfts = []
@@ -32,7 +35,8 @@ final class CollectionViewModel: CollectionViewModelProtocol {
     var showErrorAlert: ((String) -> Void)?
     private let profileService = ProfileServiceImpl(networkClient: DefaultNetworkClient(), storage: ProfileStorageImpl())
     private let orderService = OrderServiceImpl(networkClient: DefaultNetworkClient())
-    
+
+    // MARK: - Initializer
     init(pickedCollection: NFTModelCatalog, model: CollectionModel, profile: Profile, order: Order) {
         self.collectionModel = model
         self.pickedCollection = pickedCollection
@@ -42,12 +46,13 @@ final class CollectionViewModel: CollectionViewModelProtocol {
         self.cartNFT = order.nfts
     }
     
+    // MARK: - Data Fetching Methods
     func fetchCollections(completion: @escaping () -> Void) {
         ProgressHUD.show()
         ProgressHUD.animationType = .circleSpinFade
         
         collectionModel.loadCollection(idArrays: pickedCollection.nfts) { [weak self] (result: Result<Nfts, any Error>) in
-            guard let self = self else {return}
+            guard let self = self else { return }
             switch result {
             case .success(let nfts):
                 self.NFTsFromCollection = nfts
@@ -56,16 +61,12 @@ final class CollectionViewModel: CollectionViewModelProtocol {
             case .failure(let error):
                 ProgressHUD.showError()
                 completion()
-                print(error.localizedDescription)
-                print("NFT не загрузились")
+                print("Ошибка загрузки NFT: \(error.localizedDescription)")
             }
         }
     }
     
     func fetchNFTs(completion: @escaping () -> Void) {
-        ProgressHUD.show()
-        ProgressHUD.animationType = .circleSpinFade
-        
         let idArray = pickedCollection.nfts
         
         collectionModel.loadCollection(idArrays: idArray) { [weak self] (result: Result<Nfts, any Error>) in
@@ -79,14 +80,14 @@ final class CollectionViewModel: CollectionViewModelProtocol {
                     print("Все NFT загрузились: \(nfts.count)")
                 case .failure(let error):
                     ProgressHUD.showError()
-                    print(error.localizedDescription)
-                    print("NFT не загрузились")
+                    print("Ошибка загрузки NFT: \(error.localizedDescription)")
                     completion()
                 }
             }
         }
     }
     
+    // MARK: - Collection Data Accessors
     func numberOfCollections() -> Int {
         return NFTsFromCollection.count
     }
@@ -105,24 +106,25 @@ final class CollectionViewModel: CollectionViewModelProtocol {
     }
     
     func getCart() -> [String] {
-            return cartNFT
-        }
+        return cartNFT
+    }
     
+    // MARK: - User Actions
     func toggleLike(for nftId: String, completion: @escaping () -> Void) {
-        guard var profile = profile else { return }
+        guard let profile = profile else { return }
         
         if let index = favoriteNFT.firstIndex(of: nftId) {
             favoriteNFT.remove(at: index)
-            print("Удалили лайк из массива")
+            print("Удалили лайк из массива: \(nftId)")
         } else {
             favoriteNFT.append(nftId)
-            print("добавлен: ! \(nftId) ! в массив лайков")
+            print("Добавили в массив лайков: \(nftId)")
         }
         
         profileService.sendExamplePutRequest(likes: favoriteNFT, avatar: profile.avatar, name: profile.name) { [weak self] result in
             switch result {
             case .success(let updatedProfile):
-                print("Успешно отправили PUT-запрос на обновление массива")
+                print("Обновили массив лайков в профиле")
                 self?.profile = updatedProfile
             case .failure(let error):
                 self?.showErrorAlert?(error.localizedDescription)
@@ -132,24 +134,26 @@ final class CollectionViewModel: CollectionViewModelProtocol {
     }
     
     func toggleCart(for nftId: String, completion: @escaping () -> Void) {
-    
         guard var order = order else { return }
-                
-                if let index = cartNFT.firstIndex(of: nftId) {
-                    cartNFT.remove(at: index)
-                } else {
-                    cartNFT.append(nftId)
-                }
-                
-                orderService.updateOrder(nftsIds: cartNFT) { [weak self] result in
-                    switch result {
-                    case .success(let order):
-                        self?.order = order
-                    case .failure(let error):
-                        self?.showErrorAlert?(error.localizedDescription)
-                    }
-                    completion()
-                }
         
+        if let index = cartNFT.firstIndex(of: nftId) {
+            cartNFT.remove(at: index)
+            print("Удалили из корзины: \(nftId)")
+        } else {
+            cartNFT.append(nftId)
+            print("Добавили в корзину: \(nftId)")
+        }
+        
+        orderService.updateOrder(nftsIds: cartNFT) { [weak self] result in
+            switch result {
+            case .success(let order):
+                print("Обновили заказ")
+                self?.order = order
+            case .failure(let error):
+                self?.showErrorAlert?(error.localizedDescription)
+            }
+            completion()
+        }
     }
 }
+
