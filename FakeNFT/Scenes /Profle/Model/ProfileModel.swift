@@ -7,9 +7,13 @@
 
 import Foundation
 
-struct ProfileModel {
-    var profileImage: String
-    var userName: String
-    var userDescription: String
-    var userWebsite: String
+// MARK: - ProfileModel
+struct ProfileModel: Decodable {
+    let name: String
+    let avatar: String
+    let description: String
+    let website: String
+    let nfts: [String]
+    let likes: [String]
+    let id: String
 }
