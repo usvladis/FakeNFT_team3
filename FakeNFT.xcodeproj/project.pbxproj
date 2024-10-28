@@ -49,6 +49,8 @@
 		47391CDE2CC2762800717286 /* FavoriteNFTCollectionViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 47391CDD2CC2762800717286 /* FavoriteNFTCollectionViewCell.swift */; };
 		47391CE42CC2831200717286 /* AboutDeveloperViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 47391CE32CC2831200717286 /* AboutDeveloperViewController.swift */; };
 		47391CE62CC2898700717286 /* ProfileItem.swift in Sources */ = {isa = PBXBuildFile; fileRef = 47391CE52CC2898700717286 /* ProfileItem.swift */; };
+		474C36462CCFD1E7006A5BE0 /* ProfileService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 474C36452CCFD1E7006A5BE0 /* ProfileService.swift */; };
+		474C36482CCFD20F006A5BE0 /* ProfileByRequest.swift in Sources */ = {isa = PBXBuildFile; fileRef = 474C36472CCFD20F006A5BE0 /* ProfileByRequest.swift */; };
 		47733EC42CB7005800F2F406 /* PreviewVCExtention.swift in Sources */ = {isa = PBXBuildFile; fileRef = 47733EC32CB7005800F2F406 /* PreviewVCExtention.swift */; };
 		47733EC62CB706C100F2F406 /* ViewConfigurableProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = 47733EC52CB706C100F2F406 /* ViewConfigurableProtocol.swift */; };
 		558E39E72C68CE0A00FB86AC /* NftService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 558E39E62C68CE0900FB86AC /* NftService.swift */; };
@@ -117,6 +119,8 @@
 		47391CDD2CC2762800717286 /* FavoriteNFTCollectionViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FavoriteNFTCollectionViewCell.swift; sourceTree = "<group>"; };
 		47391CE32CC2831200717286 /* AboutDeveloperViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AboutDeveloperViewController.swift; sourceTree = "<group>"; };
 		47391CE52CC2898700717286 /* ProfileItem.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProfileItem.swift; sourceTree = "<group>"; };
+		474C36452CCFD1E7006A5BE0 /* ProfileService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProfileService.swift; sourceTree = "<group>"; };
+		474C36472CCFD20F006A5BE0 /* ProfileByRequest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProfileByRequest.swift; sourceTree = "<group>"; };
 		47733EC32CB7005800F2F406 /* PreviewVCExtention.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PreviewVCExtention.swift; sourceTree = "<group>"; };
 		47733EC52CB706C100F2F406 /* ViewConfigurableProtocol.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewConfigurableProtocol.swift; sourceTree = "<group>"; };
 		558E39E62C68CE0900FB86AC /* NftService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NftService.swift; sourceTree = "<group>"; };
@@ -176,6 +180,7 @@
 		214C8D482CB6DE3C00219D6E /* Profle */ = {
 			isa = PBXGroup;
 			children = (
+				474C36442CCFD1C4006A5BE0 /* ProfileService */,
 				47391CE22CC2825E00717286 /* Model */,
 				47391CC32CBE6A0D00717286 /* ProfileScreen */,
 				47391CCF2CC24F8C00717286 /* MyNFTScreen */,
@@ -388,6 +393,15 @@
 			path = Model;
 			sourceTree = "<group>";
 		};
+		474C36442CCFD1C4006A5BE0 /* ProfileService */ = {
+			isa = PBXGroup;
+			children = (
+				474C36452CCFD1E7006A5BE0 /* ProfileService.swift */,
+				474C36472CCFD20F006A5BE0 /* ProfileByRequest.swift */,
+			);
+			path = ProfileService;
+			sourceTree = "<group>";
+		};
 		E1CD40DA2A96BE9B00BE7FE8 /* Resources */ = {
 			isa = PBXGroup;
 			children = (
@@ -547,6 +561,8 @@
 				47391CD32CC253DE00717286 /* MyNFTTableViewCell.swift in Sources */,
 				3F478ECF29DB474E00F6D39E /* Colors.swift in Sources */,
 				47391CCB2CBE6D5700717286 /* ProfileTableViewCell.swift in Sources */,
+				474C36462CCFD1E7006A5BE0 /* ProfileService.swift in Sources */,
+				474C36482CCFD20F006A5BE0 /* ProfileByRequest.swift in Sources */,
 				47391CC72CBE6ADE00717286 /* ProfileViewMolel.swift in Sources */,
 				3F478ED129DB476500F6D39E /* Fonts.swift in Sources */,
 				3FC8C39329D246BA0081F015 /* DateFormatters+Presets.swift in Sources */,
