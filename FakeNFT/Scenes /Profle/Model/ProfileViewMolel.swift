@@ -6,47 +6,215 @@
 //
 
 import UIKit
+import Kingfisher
 
 final class ProfileViewModel {
     
+    // MARK: - Dependencies
+    private let profileService: ProfileServiceProtocol
+    private let nftService: NftService
+    private let nftStorage: NftStorage
+    
     // MARK: - Public Properties
-    var profile: ProfileModel {
+    var profile: ProfileModel? {
         didSet {
             profileUpdated?()
         }
     }
+    var nft: Nft? {
+        didSet {
+            nftsUpdated?()
+        }
+    }
     
-    var profileImage: String {
-        return profile.profileImage
+    var profileImageUrl: String {
+        return profile?.avatar ?? ""
+    }
+    
+    var nftImageUrl: String {
+        return nft?.images.first ?? ""
     }
     
     var userName: String {
-        return profile.userName
+        return profile?.name ?? ""
     }
     
     var userDescription: String {
-        return profile.userDescription
+        return profile?.description ?? ""
     }
     
     var userWebsite: String {
-        return profile.userWebsite
+        return profile?.website ?? ""
     }
     
     var profileUpdated: (() -> Void)?
+    var profileImageUpdated: ((UIImage?) -> Void)?
+    var nftsUpdated: (() -> Void)?
+    var nftsImageUpdate: ((String, UIImage?) -> Void)?
     
-    // MARK: - Data for UITable
+    // MARK: - Data for UIController
     var items: [ProfileItem] = []
-    var myNFTNames: [String] = ["Piper","Archie","Zeus", "Lucky"]
-    var favoriteNFTNames: [String] = ["Piper","Archie","Zeus", "Lucky", "Piper","Archie"]
+    var nfts: [Nft] = []
+    var likedNFTs: [Nft] = []
+    var myNFT: [String] = []
+    var favoriteNFT: [String] = []
+    var nftImages: [String: UIImage] = [:]
     
     // MARK: - Initializer
-    init(profile: ProfileModel) {
-        self.profile = profile
-        self.items = [
-            ProfileItem(categoryName: localizedString(key: "myNFT"), count: myNFTNames.count),
-            ProfileItem(categoryName: localizedString(key: "favoriteNFT"), count: favoriteNFTNames.count),
-            ProfileItem(categoryName: localizedString(key: "aboutTheDeveloper"))
-        ]
+    init(profileService: ProfileServiceProtocol, nftService: NftService, nftStorage: NftStorage) {
+        self.profileService = profileService
+        self.nftService = nftService
+        self.nftStorage = nftStorage
+    }
+    
+    // MARK: - Data Loading
+    func loadProfile() {
+        profileService.loadProfile { [weak self] result in
+            guard let self = self else { return }
+            switch result {
+            case .success(let profile):
+                self.profile = profile
+                self.loadProfileImage()
+                self.myNFT = profile.nfts
+                self.favoriteNFT = profile.likes
+                self.items = [
+                    ProfileItem(
+                        categoryName: localizedString(key: "myNFT"),
+                        count: profile.nfts.count
+                    ),
+                    ProfileItem(
+                        categoryName: localizedString(key: "favoriteNFT"),
+                        count: profile.likes.count
+                    ),
+                    ProfileItem(
+                        categoryName: localizedString(key: "aboutTheDeveloper")
+                    )
+                ]
+                self.profileUpdated?()
+            case .failure(let error):
+                print("Ошибка загрузки профиля: \(error)")
+            }
+        }
+    }
+    
+    func loadProfileImage() {
+        guard let imageURL = URL(string: profileImageUrl) else {
+            print("Некорректный URL: \(profileImageUrl)")
+            return
+        }
+        KingfisherManager.shared.retrieveImage(with: imageURL) { [weak self] result in
+            guard let self = self else { return }
+            switch result {
+            case .success(let value):
+                print("Изображение загруженно")
+                self.profileImageUpdated?(value.image)
+            case .failure(let error):
+                print("Ошибка загрузки изображения: \(error)")
+                if case .processorError(let reason) = error {
+                    print("Ошибка процессора: \(reason)")
+                }
+                self.profileImageUpdated?(nil)
+            }
+        }
+    }
+    
+    func loadLikedNFTs(likes: [String]) {
+        likedNFTs = []
+        let dispatchGroup = DispatchGroup()
+        
+        for nftId in likes {
+            dispatchGroup.enter()
+            nftService.loadNft(id: nftId) { [weak self] result in
+                guard let self = self else { return }
+                defer { dispatchGroup.leave() }
+                switch result {
+                case .success(let nft):
+                    self.likedNFTs.append(nft)
+                    self.nft = nft
+                    self.loadNFTImage(for: nft, source: NFTSource.favoriteNFT)
+                    
+                case .failure(let error):
+                    print("Ошибка загрузки NFT с id \(nftId): \(error)")
+                }
+            }
+        }
+        dispatchGroup.notify(queue: .main) { [weak self] in
+            guard let self = self else { return }
+            self.nftsUpdated?()
+        }
+    }
+    
+    func loadNFTs(mynft: [String]) {
+        nfts = []
+        let dispatchGroup = DispatchGroup()
+        
+        for nftId in mynft {
+            dispatchGroup.enter()
+            nftService.loadNft(id: nftId) { [weak self] result in
+                guard let self = self else { return }
+                defer { dispatchGroup.leave() }
+                
+                switch result {
+                case .success(let nft):
+                    self.nfts.append(nft)
+                    self.nft = nft
+                    self.loadNFTImage(for: nft, source: NFTSource.myNFT)
+                    
+                case .failure(let error):
+                    print("Ошибка загрузки NFT с id \(nftId): \(error)")
+                }
+            }
+        }
+        dispatchGroup.notify(queue: .main) { [weak self] in
+            guard let self = self else { return }
+            self.nftsUpdated?()
+        }
+    }
+    
+    func loadNFTImage(for nft: Nft, source: NFTSource) {
+        guard let imageURL = URL(string: nftImageUrl) else { return }
+        
+        KingfisherManager.shared.retrieveImage(with: imageURL) { [weak self] result in
+            guard let self = self else { return }
+            switch result {
+            case .success(let value):
+                print("Изображение NFT загружено")
+                self.nftImages[nft.id] = value.image
+                
+                switch source {
+                case .myNFT:
+                    if let index = self.nfts.firstIndex(where: { $0.id == nft.id }) {
+                        self.nfts[index].name = extractNFTName(from: nftImageUrl) ?? nft.originalName
+                    }
+                case .favoriteNFT:
+                    if let index = self.likedNFTs.firstIndex(where: { $0.id == nft.id }) {
+                        self.likedNFTs[index].name = extractNFTName(from: nftImageUrl) ?? nft.originalName
+                    }
+                }
+                self.nftsImageUpdate?(nft.id, value.image)
+                
+            case .failure(let error):
+                print("Ошибка загрузки изображения NFT: \(error)")
+                self.nftsImageUpdate?(nft.id, nil)
+            }
+        }
+    }
+    
+    func extractNFTName(from urlString: String) -> String? {
+        let pattern = #"\/([^\/]+)\/\d+\.png$"#
+        let regex = try? NSRegularExpression(pattern: pattern, options: [])
+        let nsString = urlString as NSString
+        let results = regex?.firstMatch(in: urlString, options: [], range: NSRange(location: 0, length: nsString.length))
+        
+        if let range = results?.range(at: 1) {
+            return nsString.substring(with: range)
+        }
+        return nil
+    }
+    
+    func ratingImage(for nft: Nft) -> UIImage? {
+        let rating = min(max(nft.rating, 0), 5)
+        return UIImage(named: "rating_\(rating)")
     }
     
     // MARK: - Логика обработки нажатий на ячейки
@@ -57,28 +225,25 @@ final class ProfileViewModel {
         case 1:
             return .navigateToFavorites
         case 2:
-            return .openUserWebsite(url: "https://practicum.yandex.ru/ios-developer/?from=catalog")
+            return .openUserWebsite(url: userWebsite)
         default:
             return .none
         }
     }
     
-    func configureNFT(for index: Int, from source: NFTSource) -> (image: UIImage?, name: String) {
-        let nftName: String
-        
-        switch source {
-        case .myNFT:
-            nftName = myNFTNames[index]
-        case .favoriteNFT:
-            nftName = favoriteNFTNames[index]
-        }
-        let nftImage = UIImage(named: nftName)
-        
-        return (image: nftImage, name: nftName)
+    // MARK: - Сортировка
+    func sortByName() {
+        nfts.sort { $0.name.localizedCaseInsensitiveCompare($1.name) == .orderedAscending }
+        nftsUpdated?()
     }
     
-    func sortByName() {
-        myNFTNames.sort()
+    func sortByRating() {
+        nfts.sort { $0.rating > $1.rating }
+        nftsUpdated?()
+    }
+    
+    func sortByPrice() {
+        nfts.sort { $0.price < $1.price }
+        nftsUpdated?()
     }
 }
-
