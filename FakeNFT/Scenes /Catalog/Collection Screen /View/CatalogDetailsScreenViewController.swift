@@ -263,26 +263,36 @@ extension CatalogDetailsScreenViewController: UICollectionViewDataSource {
     }
     
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
-        
-        guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: NFTCellForCollectionView.reuseIdentifier,
-                                                            for: indexPath) as? NFTCellForCollectionView else {
-            assertionFailure("Не удалось dequeued ячейку с идентификатором \(NFTCellForCollectionView.reuseIdentifier) или привести ее к NFTCellForCollectionView")
-            return UICollectionViewCell()
+            guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: NFTCellForCollectionView.reuseIdentifier,
+                                                                for: indexPath) as? NFTCellForCollectionView
+            else {
+                print("Не прошёл каст")
+                return UICollectionViewCell()
+            }
+            cell.delegate = self
+            var isLike = false
+            var inCart = false
+            let nft = viewModel.collection(at: indexPath.row)
+            let likes = viewModel.getLikes()
+            let cart = viewModel.getCart()
+            
+            if let index = likes.firstIndex(of: nft.id) {
+                isLike = true
+            } else {
+                isLike = false
+            }
+            
+            if let index = cart.firstIndex(of: nft.id) {
+                inCart = true
+            } else {
+                inCart = false
+            }
+            
+            cell.prepareForReuse()
+            cell.configure(nft: nft, isLike: isLike, nftID: nft.id, inCart: inCart)
+            
+            return cell
         }
-        cell.delegate = self
-        var isLike = false
-        let nft = viewModel.collection(at: indexPath.row)
-        let likes = viewModel.getLikes()
-        if let index = likes.firstIndex(of: nft.id) {
-            isLike = true
-        } else {
-            isLike = false
-        }
-        
-        cell.configure(nft: nft, isLike: isLike, nftID: nft.id)
-        
-        return cell
-    }
 }
 
 extension CatalogDetailsScreenViewController: UICollectionViewDelegateFlowLayout {

@@ -92,9 +92,9 @@ final class NFTCellForCollectionView: UICollectionViewCell {
         ethLabel.text = ""
     }
     
-    func configure(nft: Nft, isLike: Bool, nftID: String) {
+    func configure(nft: Nft, isLike: Bool, nftID: String, inCart: Bool) {
         id = nftID
-        inCart = true
+        self.inCart = inCart
         self.isLike = isLike
         let fullName = nft.name
         let firstName = fullName.components(separatedBy: " ").first ?? fullName
