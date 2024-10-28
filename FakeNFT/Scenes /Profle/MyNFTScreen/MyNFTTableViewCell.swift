@@ -39,16 +39,12 @@ final class MyNFTTableViewCell: UITableViewCell {
     
     private lazy var starsImageView: UIImageView = {
         let imageView = UIImageView()
-        if let arrowImage = UIImage(named: "rating_2") {
-            imageView.image = arrowImage
-        }
         imageView.translatesAutoresizingMaskIntoConstraints = false
         return imageView
     }()
     
     private lazy var fromLabel: UILabel = {
         let label = UILabel()
-        label.text = "от John Doe"
         label.textColor = .fontColor
         label.font = .caption2
         label.translatesAutoresizingMaskIntoConstraints = false
@@ -57,7 +53,7 @@ final class MyNFTTableViewCell: UITableViewCell {
     
     private lazy var payLabel: UILabel = {
         let label = UILabel()
-        label.text = "цена"
+        label.text = localizedString(key: "price")
         label.textColor = .fontColor
         label.font = .caption2
         label.translatesAutoresizingMaskIntoConstraints = false
@@ -66,7 +62,6 @@ final class MyNFTTableViewCell: UITableViewCell {
     
     private lazy var countMoneyLabel: UILabel = {
         let label = UILabel()
-        label.text = "1,78 ETH"
         label.textColor = .fontColor
         label.font = .bodyBold
         label.translatesAutoresizingMaskIntoConstraints = false
@@ -139,5 +134,15 @@ extension MyNFTTableViewCell: ViewConfigurable {
     func configureView() {
         addSubviews()
         addConstraints()
+    }
+}
+
+extension MyNFTTableViewCell {
+    func configure(with nft: Nft, image: UIImage?, ratingImage: UIImage?) {
+        self.countMoneyLabel.text = "\(nft.price) ETH"
+        self.nftImageView.image = image ?? UIImage(named: "placeholder")
+        self.starsImageView.image = ratingImage ?? UIImage(named: "rating_0")
+        self.nameLabel.text = nft.name
+        self.fromLabel.text = "\(localizedString(key: "from")) \(nft.originalName)"
     }
 }

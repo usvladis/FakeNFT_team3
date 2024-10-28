@@ -6,18 +6,21 @@
 //
 
 import UIKit
-import SwiftUI
-
-// MARK: - Preview
-struct MyNFTViewControllerPreview: PreviewProvider {
-    static var previews: some View {
-        MyNFTViewController().showPreview()
-    }
-}
 
 class MyNFTViewController: UIViewController {
-    //MARK: - ViewModel
-    var viewModel: ProfileViewModel?
+    
+    // MARK: - View Model
+    var viewModel: ProfileViewModel
+    private var nfts: [Nft] = []
+    
+    init(viewModel: ProfileViewModel) {
+        self.viewModel = viewModel
+        super.init(nibName: nil, bundle: nil)
+    }
+    
+    required init?(coder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
     
     //MARK: - UI Elements
     private lazy var backButton: UIButton = {
@@ -62,7 +65,9 @@ class MyNFTViewController: UIViewController {
         super.viewDidLoad()
         view.backgroundColor = .backgroudColor
         setupView()
-        update()
+        setupBindings()
+        loadNFTs()
+        
     }
     
     //MARK: - Private Methods
@@ -88,15 +93,6 @@ class MyNFTViewController: UIViewController {
         showSortingAlert()
     }
     
-    private func update() {
-        if viewModel != nil {
-            tableView.reloadData()
-            checkIfTableIsEmpty()
-        } else {
-            print("viewModel is nil")
-        }
-    }
-    
     private func showSortingAlert() {
         let alertController = UIAlertController(
             title: localizedString(key: "sorting"),
@@ -104,24 +100,26 @@ class MyNFTViewController: UIViewController {
             preferredStyle: .actionSheet
         )
         alertController.addAction(UIAlertAction(
-            title: localizedString(key: "sortingByPrice"),
-            style: .default
-        ) { _ in
-            print("Сортировка по цене выбрана")
-        })
+               title: localizedString(key: "sortingByPrice"),
+               style: .default
+           ) { _ in
+               self.viewModel.sortByPrice()
+               self.tableView.reloadData()
+           })
         alertController.addAction(UIAlertAction(
-            title: localizedString(key: "sortingByRating"),
-            style: .default
-        ) { _ in
-            print("Сортировка по рейтингу выбрана")
-        })
-        alertController.addAction(UIAlertAction(
-            title: localizedString(key: "sortingByName"),
-            style: .default
-        ) { _ in
-            self.viewModel?.sortByName()
-            self.tableView.reloadData()
-        })
+               title: localizedString(key: "sortingByRating"),
+               style: .default
+           ) { _ in
+               self.viewModel.sortByRating()
+               self.tableView.reloadData()
+           })
+           alertController.addAction(UIAlertAction(
+               title: localizedString(key: "sortingByName"),
+               style: .default
+           ) { _ in
+               self.viewModel.sortByName()
+               self.tableView.reloadData()
+           })
         alertController.addAction(UIAlertAction(
             title: localizedString(key: "close"),
             style: .cancel, handler: nil
@@ -136,8 +134,39 @@ class MyNFTViewController: UIViewController {
     }
     
     private func checkIfTableIsEmpty() {
-        if viewModel?.myNFTNames.isEmpty == true {
+        if viewModel.myNFT.isEmpty == true {
             showPlaceHolder()
+        }
+    }
+    
+    private func loadNFTs() {
+        viewModel.loadNFTs(mynft: viewModel.myNFT)
+       }
+       
+    private func setupBindings() {
+        checkIfTableIsEmpty()
+        updateAfterDownloadData()
+        updateCellLoadingNFT()
+    }
+    
+    private func updateAfterDownloadData() {
+        viewModel.nftsUpdated = { [weak self] in
+            self?.nfts = self?.viewModel.nfts ?? []
+            self?.tableView.reloadData()
+        }
+    }
+    
+    private func updateCellLoadingNFT() {
+        viewModel.nftsImageUpdate = { [weak self] nftId, image in
+            guard let self = self else { return }
+            
+            if let index = self.nfts.firstIndex(where: { $0.id == nftId }) {
+                let indexPath = IndexPath(row: index, section: 0)
+                
+                if let cell = self.tableView.cellForRow(at: indexPath) as? MyNFTTableViewCell {
+                    cell.nftImageView.image = image ?? UIImage(named: "placeholder")
+                }
+            }
         }
     }
 }
@@ -165,7 +194,7 @@ extension MyNFTViewController: ViewConfigurable {
 // MARK: - UITableViewDataSource
 extension MyNFTViewController: UITableViewDataSource {
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return viewModel?.myNFTNames.count ?? 0
+        return nfts.count
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
@@ -173,12 +202,12 @@ extension MyNFTViewController: UITableViewDataSource {
             return UITableViewCell()
         }
         
-        if let nftData = viewModel?.configureNFT(for: indexPath.item, from: .myNFT) {
-            
-            cell.nftImageView.image = nftData.image
-            cell.nameLabel.text = nftData.name
-        }
-        return cell
+        let nft = viewModel.nfts[indexPath.item]
+           let image = viewModel.nftImages[nft.id] ?? UIImage(named: "placeholder")
+           let ratingImage = viewModel.ratingImage(for: nft)
+        cell.configure(with: nft, image: image, ratingImage: ratingImage)
+           
+           return cell
     }
     
 }
