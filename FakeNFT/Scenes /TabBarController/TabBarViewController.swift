@@ -15,7 +15,18 @@ final class TabBarController: UITabBarController {
     }
     
     private func generateTabBar() {
-        let profileViewController = UINavigationController(rootViewController: ProfileViewController())
+        let profileViewController = UINavigationController(
+            rootViewController: ProfileViewController(
+                viewModel: ProfileViewModel(
+                    profileService: ProfileService(
+                        networkClient: DefaultNetworkClient() as NetworkClient
+                    ),
+                    nftService: NftServiceImpl(networkClient: DefaultNetworkClient(),
+                                               storage: NftStorageImpl()),
+                    nftStorage: NftStorageImpl()
+                )
+            )
+        )
         let catalogViewController = UINavigationController(rootViewController: CatalogViewController())
         let cartViewController = UINavigationController(rootViewController: CartViewController())
         let statisticsViewController = UINavigationController(rootViewController: StatisticsViewController())

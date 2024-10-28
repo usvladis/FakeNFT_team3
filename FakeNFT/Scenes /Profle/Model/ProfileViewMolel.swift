@@ -75,8 +75,8 @@ final class ProfileViewModel {
             case .success(let profile):
                 self.profile = profile
                 self.loadProfileImage()
-                self.myNFT = profile.nfts
-                self.favoriteNFT = profile.likes
+//                self.myNFT = profile.nfts
+//                self.favoriteNFT = profile.likes
                 self.items = [
                     ProfileItem(
                         categoryName: localizedString(key: "myNFT"),

@@ -6,31 +6,26 @@
 //
 
 import UIKit
-import SwiftUI
-
-// MARK: - Preview
-struct ProfileViewControllerPreview: PreviewProvider {
-    static var previews: some View {
-        ProfileViewController().showPreview()
-    }
-}
 
 final class ProfileViewController: UIViewController {
     
     // MARK: - ViewModel
-    private let viewModel = ProfileViewModel(
-        profile: ProfileModel(
-            profileImage: "user_pic",
-            userName: "Joaquin Phoenix",
-            userDescription: """
-            Дизайнер из Казани, люблю цифровое искусство 
-            и бейглы. В моей коллекции уже 100+ NFT, 
-            и еще больше — на моём сайте. Открыт 
-            к коллаборациям.
-            """,
-            userWebsite: "Joaquin Phoenix.com"
-        )
+    private var viewModel = ProfileViewModel(
+        profileService: ProfileService(
+            networkClient: DefaultNetworkClient() as NetworkClient
+        ),
+        nftService: NftServiceImpl(networkClient: DefaultNetworkClient(), storage: NftStorageImpl()),
+        nftStorage: NftStorageImpl()
     )
+
+    init(viewModel: ProfileViewModel) {
+        self.viewModel = viewModel
+        super.init(nibName: nil, bundle: nil)
+    }
+    
+    required init?(coder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
     
     // MARK: - UI Elements
     private lazy var changeProfileButton: UIButton = {
@@ -45,7 +40,7 @@ final class ProfileViewController: UIViewController {
     }()
     
     private lazy var profileImage: UIImageView = {
-        let imageView = UIImageView(image: UIImage(named: viewModel.profileImage))
+        let imageView = UIImageView()
         imageView.layer.cornerRadius = 35
         imageView.layer.masksToBounds = true
         imageView.translatesAutoresizingMaskIntoConstraints = false
@@ -98,6 +93,7 @@ final class ProfileViewController: UIViewController {
         super.viewDidLoad()
         setupView()
         setupBindings()
+        viewModel.loadProfile()
     }
     
     // MARK: - Private Methods
@@ -115,25 +111,42 @@ final class ProfileViewController: UIViewController {
         print("Переходим по ссылке")
     }
     
+    // MARK: - Setup Methods
     private func setupBindings() {
+        updateScreenInformation()
+        updateImage()
+    }
+    
+    private func updateScreenInformation() {
         viewModel.profileUpdated = { [weak self] in
-            self?.nameLabel.text = self?.viewModel.userName
-            self?.informationLabel.text = self?.viewModel.userDescription
-            self?.profileLink.setTitle(self?.viewModel.userWebsite, for: .normal)
+            DispatchQueue.main.async { [weak self] in
+                guard let self = self else { return }
+                self.nameLabel.text = self.viewModel.userName
+                self.informationLabel.text = self.viewModel.userDescription
+                self.profileLink.setTitle(self.viewModel.userWebsite, for: .normal)
+                self.tableView.reloadData()
+            }
+        }
+    }
+    
+    private func updateImage() {
+        viewModel.profileImageUpdated = { [weak self] (image: UIImage?) in
+            DispatchQueue.main.async { [weak self] in
+                guard let self = self else { return }
+                self.profileImage.image = image
+            }
         }
     }
     
     private func handleAction(_ action: ProfileAction) {
         switch action {
         case .navigateToMyNFTs:
-            let myNFTVC = MyNFTViewController()
-            myNFTVC.viewModel = viewModel
+            let myNFTVC = MyNFTViewController(viewModel: viewModel)
             myNFTVC.hidesBottomBarWhenPushed = true
             navigationController?.pushViewController(myNFTVC, animated: true)
             
         case .navigateToFavorites:
-            let favoritesVC = FavoriteNFTViewController()
-            favoritesVC.viewModel = viewModel
+            let favoritesVC = FavoriteNFTViewController(viewModel: viewModel)
             favoritesVC.hidesBottomBarWhenPushed = true
             navigationController?.pushViewController(favoritesVC, animated: true)
             
@@ -168,7 +181,7 @@ extension ProfileViewController: ViewConfigurable {
             informationLabel.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -16),
             
             profileLink.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 16),
-            profileLink.topAnchor.constraint(equalTo: informationLabel.bottomAnchor, constant: 8),
+            profileLink.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: 190),
             
             tableView.topAnchor.constraint(equalTo: profileLink.bottomAnchor, constant: 40),
             tableView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
@@ -207,11 +220,8 @@ extension ProfileViewController: UITableViewDataSource {
         }
         
         let item = viewModel.items[indexPath.row]
-        if let count = item.count {
-            cell.configure(with: item.categoryName, count: "\(count)")
-        } else {
-            cell.configure(with: item.categoryName, count: nil)
-        }
+        cell.configure(with: item.categoryName,
+                       count: item.count != nil ? "\(item.count!)" : nil)
         return cell
     }
 }
@@ -228,4 +238,3 @@ extension ProfileViewController: UITableViewDelegate {
         handleAction(action)
     }
 }
-
