@@ -7,7 +7,7 @@
 
 import UIKit
 
-class NFTItemCell: UITableViewCell {
+final class NFTItemCell: UITableViewCell {
     
     static let identifier = "NFTItemCell"
     
@@ -111,7 +111,7 @@ class NFTItemCell: UITableViewCell {
     func configure(with item: NFTItem) {
         nftImageView.image = item.image
         titleLabel.text = item.title
-        costLabel.text = item.price
+        costLabel.text = "\(item.price) ETH"
         ratingLabel.image = UIImage(named: "rating_\(item.rating)")
     }
     @objc
