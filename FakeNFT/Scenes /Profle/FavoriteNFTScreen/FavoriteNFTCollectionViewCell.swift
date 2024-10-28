@@ -30,16 +30,12 @@ final class FavoriteNFTCollectionViewCell: UICollectionViewCell {
     
     private lazy var starsImageView: UIImageView = {
         let imageView = UIImageView()
-        if let arrowImage = UIImage(named: "rating_4") {
-            imageView.image = arrowImage
-        }
         imageView.translatesAutoresizingMaskIntoConstraints = false
         return imageView
     }()
     
     private lazy var countMoneyLabel: UILabel = {
         let label = UILabel()
-        label.text = "1,78 ETH"
         label.textColor = .fontColor
         label.font = .caption1
         label.translatesAutoresizingMaskIntoConstraints = false
@@ -87,7 +83,7 @@ extension FavoriteNFTCollectionViewCell: ViewConfigurable {
             
             countMoneyLabel.topAnchor.constraint(equalTo: starsImageView.bottomAnchor, constant: 8),
             countMoneyLabel.leadingAnchor.constraint(equalTo: nameLabel.leadingAnchor),
-            countMoneyLabel.widthAnchor.constraint(equalToConstant: 61),
+            countMoneyLabel.widthAnchor.constraint(equalToConstant: 76),
             countMoneyLabel.heightAnchor.constraint(equalToConstant: 20)
         ])
     }
@@ -98,3 +94,11 @@ extension FavoriteNFTCollectionViewCell: ViewConfigurable {
     }
 }
 
+extension FavoriteNFTCollectionViewCell {
+    func configure(with nft: Nft, image: UIImage?, ratingImage: UIImage?) {
+        self.countMoneyLabel.text = "\(nft.price) ETH"
+        self.nftImageView.image = image ?? UIImage(named: "placeholder")
+        self.starsImageView.image = ratingImage ?? UIImage(named: "rating_0")
+        self.nameLabel.text = nft.name
+    }
+}
