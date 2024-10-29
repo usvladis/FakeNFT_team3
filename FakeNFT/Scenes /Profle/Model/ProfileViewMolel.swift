@@ -28,24 +28,45 @@ final class ProfileViewModel {
     }
     
     var profileImageUrl: String {
-        return profile?.avatar ?? ""
+        get {
+            return profile?.avatar ?? ""
+        }
+        set {
+            profile?.avatar = newValue
+        }
     }
     
     var nftImageUrl: String {
-        return nft?.images.first ?? ""
+            return nft?.images.first ?? ""
     }
     
     var userName: String {
-        return profile?.name ?? ""
+        get {
+            return profile?.name ?? ""
+        }
+        set {
+            profile?.name = newValue
+        }
     }
     
     var userDescription: String {
-        return profile?.description ?? ""
+        get {
+            return profile?.description ?? ""
+        }
+        set {
+            profile?.description = newValue
+        }
     }
     
     var userWebsite: String {
-        return profile?.website ?? ""
+        get {
+            return profile?.website ?? ""
+        }
+        set {
+            profile?.website = newValue
+        }
     }
+   
     
     var profileUpdated: (() -> Void)?
     var profileImageUpdated: ((UIImage?) -> Void)?
@@ -97,6 +118,32 @@ final class ProfileViewModel {
         }
     }
     
+    func updateProfile(
+        name: String,
+        avatar: String,
+        description: String,
+        website: String,
+        completion: @escaping (Result<ProfilePutResponse, Error>) -> Void
+    ) {
+        profileService.sendProfilePutRequest(
+            param1: name,
+            param2: avatar,
+            param3: description,
+            param4: website
+        ) { result in
+            switch result {
+            case .success(let response):
+                // Обновите локальные данные профиля, если нужно
+                self.loadProfile()
+                print("Обновление профиля завершено, вызываем profileUpdated.")
+//                self.profileUpdated?() // Обновите UI
+                completion(.success(response))
+            case .failure(let error):
+                completion(.failure(error))
+            }
+        }
+    }
+    
     func loadProfileImage() {
         guard let imageURL = URL(string: profileImageUrl) else {
             print("Некорректный URL: \(profileImageUrl)")
@@ -106,7 +153,7 @@ final class ProfileViewModel {
             guard let self = self else { return }
             switch result {
             case .success(let value):
-                print("Изображение загруженно")
+                print("Изображение загружено: \(value.image)")
                 self.profileImageUpdated?(value.image)
             case .failure(let error):
                 print("Ошибка загрузки изображения: \(error)")

@@ -53,6 +53,8 @@
 		474C36482CCFD20F006A5BE0 /* ProfileByRequest.swift in Sources */ = {isa = PBXBuildFile; fileRef = 474C36472CCFD20F006A5BE0 /* ProfileByRequest.swift */; };
 		47733EC42CB7005800F2F406 /* PreviewVCExtention.swift in Sources */ = {isa = PBXBuildFile; fileRef = 47733EC32CB7005800F2F406 /* PreviewVCExtention.swift */; };
 		47733EC62CB706C100F2F406 /* ViewConfigurableProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = 47733EC52CB706C100F2F406 /* ViewConfigurableProtocol.swift */; };
+		477677E62CD10A7200F63821 /* ProfilePutRequest.swift in Sources */ = {isa = PBXBuildFile; fileRef = 477677E52CD10A7200F63821 /* ProfilePutRequest.swift */; };
+		47B1CA122CCFEC5900847BDA /* ProfileChangeViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 47B1CA112CCFEC5900847BDA /* ProfileChangeViewController.swift */; };
 		558E39E72C68CE0A00FB86AC /* NftService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 558E39E62C68CE0900FB86AC /* NftService.swift */; };
 /* End PBXBuildFile section */
 
@@ -123,6 +125,8 @@
 		474C36472CCFD20F006A5BE0 /* ProfileByRequest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProfileByRequest.swift; sourceTree = "<group>"; };
 		47733EC32CB7005800F2F406 /* PreviewVCExtention.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PreviewVCExtention.swift; sourceTree = "<group>"; };
 		47733EC52CB706C100F2F406 /* ViewConfigurableProtocol.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewConfigurableProtocol.swift; sourceTree = "<group>"; };
+		477677E52CD10A7200F63821 /* ProfilePutRequest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProfilePutRequest.swift; sourceTree = "<group>"; };
+		47B1CA112CCFEC5900847BDA /* ProfileChangeViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProfileChangeViewController.swift; sourceTree = "<group>"; };
 		558E39E62C68CE0900FB86AC /* NftService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NftService.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -183,6 +187,7 @@
 				474C36442CCFD1C4006A5BE0 /* ProfileService */,
 				47391CE22CC2825E00717286 /* Model */,
 				47391CC32CBE6A0D00717286 /* ProfileScreen */,
+				47B1CA102CCFEC0000847BDA /* ProfileChangeScreen */,
 				47391CCF2CC24F8C00717286 /* MyNFTScreen */,
 				47391CD82CC26A8200717286 /* FavoriteNFTScreen */,
 				47391CE12CC2819A00717286 /* AboutDeveloperScreen */,
@@ -398,8 +403,17 @@
 			children = (
 				474C36452CCFD1E7006A5BE0 /* ProfileService.swift */,
 				474C36472CCFD20F006A5BE0 /* ProfileByRequest.swift */,
+				477677E52CD10A7200F63821 /* ProfilePutRequest.swift */,
 			);
 			path = ProfileService;
+			sourceTree = "<group>";
+		};
+		47B1CA102CCFEC0000847BDA /* ProfileChangeScreen */ = {
+			isa = PBXGroup;
+			children = (
+				47B1CA112CCFEC5900847BDA /* ProfileChangeViewController.swift */,
+			);
+			path = ProfileChangeScreen;
 			sourceTree = "<group>";
 		};
 		E1CD40DA2A96BE9B00BE7FE8 /* Resources */ = {
@@ -578,6 +592,7 @@
 				47391CDA2CC26AA800717286 /* FaviriteNFTViewController.swift in Sources */,
 				47391CE62CC2898700717286 /* ProfileItem.swift in Sources */,
 				558E39E72C68CE0A00FB86AC /* NftService.swift in Sources */,
+				47B1CA122CCFEC5900847BDA /* ProfileChangeViewController.swift in Sources */,
 				47733EC62CB706C100F2F406 /* ViewConfigurableProtocol.swift in Sources */,
 				3F68069729CBBAF100B4F915 /* AppDelegate.swift in Sources */,
 				3F68069929CBBAF100B4F915 /* SceneDelegate.swift in Sources */,
@@ -592,6 +607,7 @@
 				0C79EE612A76DCD600EE90EA /* NftByIdRequest.swift in Sources */,
 				3F6806D329CBBE9600B4F915 /* NetworkRequest.swift in Sources */,
 				214C8D572CB6E1D900219D6E /* ProfileViewController.swift in Sources */,
+				477677E62CD10A7200F63821 /* ProfilePutRequest.swift in Sources */,
 				3F6806D129CBBE6B00B4F915 /* NetworkClient.swift in Sources */,
 				47391CDC2CC26C8800717286 /* PlaceHolderView.swift in Sources */,
 				47391CE42CC2831200717286 /* AboutDeveloperViewController.swift in Sources */,
