@@ -10,13 +10,7 @@ import UIKit
 final class ProfileViewController: UIViewController {
     
     // MARK: - ViewModel
-    private var viewModel = ProfileViewModel(
-        profileService: ProfileService(
-            networkClient: DefaultNetworkClient() as NetworkClient
-        ),
-        nftService: NftServiceImpl(networkClient: DefaultNetworkClient(), storage: NftStorageImpl()),
-        nftStorage: NftStorageImpl()
-    )
+    private let viewModel: ProfileViewModel
 
     init(viewModel: ProfileViewModel) {
         self.viewModel = viewModel
@@ -102,9 +96,10 @@ final class ProfileViewController: UIViewController {
     }
     
     @objc
-    private func didTapChangeButton() {
-        print("Изменяем профиль")
-    }
+       private func didTapChangeButton() {
+           let profileChangeViewController = ProfileChangeViewController(viewModel: viewModel)
+           present(profileChangeViewController, animated: true, completion: nil)
+       }
     
     @objc
     private func profileLinkTapped() {
@@ -119,7 +114,7 @@ final class ProfileViewController: UIViewController {
     
     private func updateScreenInformation() {
         viewModel.profileUpdated = { [weak self] in
-            DispatchQueue.main.async { [weak self] in
+            DispatchQueue.main.async {
                 guard let self = self else { return }
                 self.nameLabel.text = self.viewModel.userName
                 self.informationLabel.text = self.viewModel.userDescription
@@ -131,7 +126,7 @@ final class ProfileViewController: UIViewController {
     
     private func updateImage() {
         viewModel.profileImageUpdated = { [weak self] (image: UIImage?) in
-            DispatchQueue.main.async { [weak self] in
+            DispatchQueue.main.async {
                 guard let self = self else { return }
                 self.profileImage.image = image
             }
