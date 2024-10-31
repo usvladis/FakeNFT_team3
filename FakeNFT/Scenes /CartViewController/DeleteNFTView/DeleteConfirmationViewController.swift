@@ -10,9 +10,9 @@ import Kingfisher
 
 final class DeleteConfirmationViewController: UIViewController {
     
-    private var nftId: UUID?
+    private var nftId: String?
         
-    var onDeleteConfirmed: ((UUID) -> Void)? // Callback для передачи ID обратно
+    var onDeleteConfirmed: ((String) -> Void)? // Callback для передачи ID обратно
 
     
     private let nftImageView: UIImageView = {
@@ -59,7 +59,7 @@ final class DeleteConfirmationViewController: UIViewController {
     }()
     
     // Публичная функция для установки изображения NFT
-    func configure(with imageURL: URL, nftId: UUID) {
+    func configure(with imageURL: URL, nftId: String) {
         nftImageView.kf.setImage(with: imageURL)
         self.nftId = nftId
     }

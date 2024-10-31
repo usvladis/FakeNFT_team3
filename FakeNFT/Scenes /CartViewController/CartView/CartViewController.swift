@@ -8,12 +8,14 @@
 import UIKit
 import SwiftUI
 import Kingfisher
+import ProgressHUD
 
 // MARK: - Preview
 final class CartViewController: UIViewController {
     
     private var nftItems: [NFTItem] = []
     private let nftService = SimpleNftService()
+    private let cartService = CartService.shared
     
     private let tableView: UITableView = {
         let tableView = UITableView()
@@ -75,6 +77,11 @@ final class CartViewController: UIViewController {
         return label
     }()
     
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        loadNFTItems()
+    }
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         // Добавляем таргет на нажатие кнопки sortButton
@@ -88,12 +95,19 @@ final class CartViewController: UIViewController {
         tableView.dataSource = self
         tableView.delegate = self
         
-        loadNFTItems()
     }
     
     private func loadNFTItems() {
-        let nftIds = ["83c23ccc-1368-4da8-b54d-76c9b235835b", "fc92edf5-1355-4246-b3b7-d64bc54d1abd"]
+        let nftIds = cartService.getAllNFTIds()
         
+        guard !nftIds.isEmpty else {
+            nftItems.removeAll() // очищаем элементы на случай, если они остались от предыдущей загрузки
+            updateViewVisibility() // показываем плейсхолдер
+            return
+        }
+        
+        showLoadingIndicator()
+        nftItems.removeAll()
         for id in nftIds {
             nftService.fetchNFT(by: id) { [weak self] result in
                 switch result {
@@ -102,7 +116,7 @@ final class CartViewController: UIViewController {
                     if let imageURLString = nft.images.first,
                        let url = URL(string: imageURLString) {
                         let nftItem = NFTItem(
-                            id: UUID(uuidString: nft.id)!,
+                            id: nft.id,
                             imageURL: url,
                             title: nft.name,
                             price: nft.price,
@@ -111,8 +125,10 @@ final class CartViewController: UIViewController {
                         
                         DispatchQueue.main.async {
                             self?.nftItems.append(nftItem)
+                            self?.hideLoadingIndicator()
                             self?.tableView.reloadData()
                             self?.setupCartInformation()
+                            self?.applySavedSortType()
                             self?.updateViewVisibility()
                         }
                     }
@@ -259,7 +275,7 @@ final class CartViewController: UIViewController {
         present(alertController, animated: true, completion: nil)
     }
     
-    private func presentDeleteConfirmationDialog(with imageURL: URL, nftId: UUID) {
+    private func presentDeleteConfirmationDialog(with imageURL: URL, nftId: String) {
         let deleteConfirmationVC = DeleteConfirmationViewController()
         deleteConfirmationVC.configure(with: imageURL, nftId: nftId) // передаем картинку и id
         deleteConfirmationVC.modalPresentationStyle = .overFullScreen
@@ -270,8 +286,10 @@ final class CartViewController: UIViewController {
         present(deleteConfirmationVC, animated: true, completion: nil)
     }
     
-    func deleteNFT(withId id: UUID) {
+    func deleteNFT(withId id: String) {
         if let index = nftItems.firstIndex(where: { $0.id == id }) {
+            let nftItem = nftItems[index]
+            cartService.removeNFT(id: nftItem.id) // Удаляем ID из CartService
             nftItems.remove(at: index)
             tableView.reloadData()
             setupCartInformation()
@@ -313,6 +331,26 @@ final class CartViewController: UIViewController {
         default:
             sortByPrice()
         }
+    }
+    
+    private func showLoadingIndicator() {
+        ProgressHUD.show()
+        // Скрываем плейсхолдер
+        placeholderLabel.isHidden = true
+        // Скрываем таблицу и нижнюю панель с информацией
+        navigationController?.setNavigationBarHidden(true, animated: false)
+        tableView.isHidden = true
+        bottomView.isHidden = true
+        checkoutButton.isHidden = true
+        totalNFTLabel.isHidden = true
+        totalAmountLabel.isHidden = true
+    }
+    
+    private func hideLoadingIndicator() {
+        ProgressHUD.dismiss()
+        
+        // Показать UI после завершения загрузки
+        updateViewVisibility()
     }
 }
 

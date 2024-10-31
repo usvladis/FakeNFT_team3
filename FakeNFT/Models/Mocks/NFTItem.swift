@@ -8,7 +8,7 @@
 import UIKit
 
 struct NFTItem {
-    let id: UUID
+    let id: String
     let imageURL: URL
     let title: String
     let price: Double

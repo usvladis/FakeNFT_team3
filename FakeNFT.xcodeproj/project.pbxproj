@@ -18,6 +18,7 @@
 		212F7EB72CD37788005DF622 /* OrderResponseAndDTO.swift in Sources */ = {isa = PBXBuildFile; fileRef = 212F7EB62CD37788005DF622 /* OrderResponseAndDTO.swift */; };
 		212F7EB92CD377A3005DF622 /* CreateOrderRequest.swift in Sources */ = {isa = PBXBuildFile; fileRef = 212F7EB82CD377A3005DF622 /* CreateOrderRequest.swift */; };
 		212F7EBC2CD37E7C005DF622 /* SimpleNftService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 212F7EBB2CD37E7C005DF622 /* SimpleNftService.swift */; };
+		212F7EBF2CD3D1EA005DF622 /* CartService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 212F7EBE2CD3D1EA005DF622 /* CartService.swift */; };
 		214C8D502CB6E02700219D6E /* Localizable.strings in Resources */ = {isa = PBXBuildFile; fileRef = 214C8D4E2CB6E02700219D6E /* Localizable.strings */; };
 		214C8D532CB6E11700219D6E /* TabBarViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 214C8D522CB6E11700219D6E /* TabBarViewController.swift */; };
 		214C8D552CB6E1A900219D6E /* CatalogViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 214C8D542CB6E1A900219D6E /* CatalogViewController.swift */; };
@@ -83,6 +84,7 @@
 		212F7EB62CD37788005DF622 /* OrderResponseAndDTO.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OrderResponseAndDTO.swift; sourceTree = "<group>"; };
 		212F7EB82CD377A3005DF622 /* CreateOrderRequest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CreateOrderRequest.swift; sourceTree = "<group>"; };
 		212F7EBB2CD37E7C005DF622 /* SimpleNftService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SimpleNftService.swift; sourceTree = "<group>"; };
+		212F7EBE2CD3D1EA005DF622 /* CartService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CartService.swift; sourceTree = "<group>"; };
 		214C8D4F2CB6E02700219D6E /* ru */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = ru; path = ru.lproj/Localizable.strings; sourceTree = "<group>"; };
 		214C8D512CB6E04C00219D6E /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/Localizable.strings; sourceTree = "<group>"; };
 		214C8D522CB6E11700219D6E /* TabBarViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TabBarViewController.swift; sourceTree = "<group>"; };
@@ -172,6 +174,14 @@
 				212F7EBB2CD37E7C005DF622 /* SimpleNftService.swift */,
 			);
 			path = CustomServicesForCartController;
+			sourceTree = "<group>";
+		};
+		212F7EBD2CD3D1D9005DF622 /* CartService */ = {
+			isa = PBXGroup;
+			children = (
+				212F7EBE2CD3D1EA005DF622 /* CartService.swift */,
+			);
+			path = CartService;
 			sourceTree = "<group>";
 		};
 		214C8D442CB6DE3C00219D6E /* CartViewController */ = {
@@ -353,6 +363,7 @@
 		3F6806C629CBBC4E00B4F915 /* Services */ = {
 			isa = PBXGroup;
 			children = (
+				212F7EBD2CD3D1D9005DF622 /* CartService */,
 				212F7EBA2CD37E55005DF622 /* CustomServicesForCartController */,
 				212F7EB52CD37771005DF622 /* Order */,
 				3FC8C38F29D245250081F015 /* Requests */,
@@ -574,6 +585,7 @@
 				212F7EB42CD365CA005DF622 /* WebViewViewController.swift in Sources */,
 				3FC8C39329D246BA0081F015 /* DateFormatters+Presets.swift in Sources */,
 				47733EC42CB7005800F2F406 /* PreviewVCExtention.swift in Sources */,
+				212F7EBF2CD3D1EA005DF622 /* CartService.swift in Sources */,
 				0CFCB7422A78013E0009A829 /* Nft.swift in Sources */,
 				21812F7B2CB9845C00C861D1 /* LocalizedString.swift in Sources */,
 				214C8D592CB6E1F700219D6E /* StatisticsViewController.swift in Sources */,
