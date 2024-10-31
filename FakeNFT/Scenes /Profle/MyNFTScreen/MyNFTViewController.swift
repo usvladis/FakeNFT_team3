@@ -10,15 +10,26 @@ import UIKit
 class MyNFTViewController: UIViewController {
     
     // MARK: - View Model
-    var viewModel: ProfileViewModel
     private var nfts: [Nft] = []
     
-    init(viewModel: ProfileViewModel) {
+    private let viewModel: MyNFTViewModel
+    private var newProfileViewModel: ProfileViewModel
+    
+    init(
+        viewModel: MyNFTViewModel,
+        newProfileViewModel: ProfileViewModel
+    ) {
         self.viewModel = viewModel
-        super.init(nibName: nil, bundle: nil)
+        self.newProfileViewModel = newProfileViewModel
+        super.init(
+            nibName: nil,
+            bundle: nil
+        )
     }
     
-    required init?(coder: NSCoder) {
+    required init?(
+        coder: NSCoder
+    ) {
         fatalError("init(coder:) has not been implemented")
     }
     
@@ -26,9 +37,16 @@ class MyNFTViewController: UIViewController {
     private lazy var backButton: UIButton = {
         let button = UIButton()
         if let imageButton = UIImage(named: "back_button")?.withRenderingMode(.alwaysTemplate) {
-            button.setImage(imageButton, for: .normal)
+            button.setImage(
+                imageButton,
+                for: .normal
+            )
             button.tintColor = .buttonColor
-            button.addTarget(self, action: #selector(didTapBackButton), for: .touchUpInside)
+            button.addTarget(
+                self,
+                action: #selector(didTapBackButton),
+                for: .touchUpInside
+            )
         }
         button.widthAnchor.constraint(equalToConstant: 24).isActive = true
         button.heightAnchor.constraint(equalToConstant: 24).isActive = true
@@ -39,9 +57,16 @@ class MyNFTViewController: UIViewController {
     private lazy var sortingButton: UIButton = {
         let button = UIButton()
         if let imageButton = UIImage(named: "filter_button")?.withRenderingMode(.alwaysTemplate) {
-            button.setImage(imageButton, for: .normal)
+            button.setImage(
+                imageButton,
+                for: .normal
+            )
             button.tintColor = .buttonColor
-            button.addTarget(self, action: #selector(sortingButtonTapped), for: .touchUpInside)
+            button.addTarget(
+                self,
+                action: #selector(sortingButtonTapped),
+                for: .touchUpInside
+            )
         }
         button.widthAnchor.constraint(equalToConstant: 42).isActive = true
         button.heightAnchor.constraint(equalToConstant: 42).isActive = true
@@ -56,13 +81,17 @@ class MyNFTViewController: UIViewController {
         tableView.backgroundColor = .backgroudColor
         tableView.dataSource = self
         tableView.delegate = self
-        tableView.register(MyNFTTableViewCell.self, forCellReuseIdentifier: MyNFTTableViewCell.identifier)
+        tableView.register(
+            MyNFTTableViewCell.self,
+            forCellReuseIdentifier: MyNFTTableViewCell.identifier
+        )
         return tableView
     }()
     
     //MARK: - LifeCicle
     override func viewDidLoad() {
         super.viewDidLoad()
+        viewModel.configure(with: newProfileViewModel)
         view.backgroundColor = .backgroudColor
         setupView()
         setupBindings()
@@ -89,7 +118,9 @@ class MyNFTViewController: UIViewController {
     }
     
     @objc
-    private func sortingButtonTapped(_ sender: UIButton) {
+    private func sortingButtonTapped(
+        _ sender: UIButton
+    ) {
         showSortingAlert()
     }
     
@@ -100,26 +131,26 @@ class MyNFTViewController: UIViewController {
             preferredStyle: .actionSheet
         )
         alertController.addAction(UIAlertAction(
-               title: localizedString(key: "sortingByPrice"),
-               style: .default
-           ) { _ in
-               self.viewModel.sortByPrice()
-               self.tableView.reloadData()
-           })
+            title: localizedString(key: "sortingByPrice"),
+            style: .default
+        ) { _ in
+            self.viewModel.sortByPrice()
+            self.tableView.reloadData()
+        })
         alertController.addAction(UIAlertAction(
-               title: localizedString(key: "sortingByRating"),
-               style: .default
-           ) { _ in
-               self.viewModel.sortByRating()
-               self.tableView.reloadData()
-           })
-           alertController.addAction(UIAlertAction(
-               title: localizedString(key: "sortingByName"),
-               style: .default
-           ) { _ in
-               self.viewModel.sortByName()
-               self.tableView.reloadData()
-           })
+            title: localizedString(key: "sortingByRating"),
+            style: .default
+        ) { _ in
+            self.viewModel.sortByRating()
+            self.tableView.reloadData()
+        })
+        alertController.addAction(UIAlertAction(
+            title: localizedString(key: "sortingByName"),
+            style: .default
+        ) { _ in
+            self.viewModel.sortByName()
+            self.tableView.reloadData()
+        })
         alertController.addAction(UIAlertAction(
             title: localizedString(key: "close"),
             style: .cancel, handler: nil
@@ -128,21 +159,23 @@ class MyNFTViewController: UIViewController {
     }
     
     private func showPlaceHolder() {
-        let backgroundView = PlaceHolderView(frame: view.frame)
+        let backgroundView = PlaceHolderView(
+            frame: view.frame
+        )
         backgroundView.setupNoNFTState()
         view.addSubview(backgroundView)
     }
     
     private func checkIfTableIsEmpty() {
-        if viewModel.myNFT.isEmpty == true {
+        if viewModel.myNFT?.isEmpty == true {
             showPlaceHolder()
         }
     }
     
     private func loadNFTs() {
-        viewModel.loadNFTs(mynft: viewModel.myNFT)
-       }
-       
+        viewModel.loadNFTs(mynft: viewModel.myNFT ?? [""])
+    }
+    
     private func setupBindings() {
         checkIfTableIsEmpty()
         updateAfterDownloadData()
@@ -193,33 +226,49 @@ extension MyNFTViewController: ViewConfigurable {
 
 // MARK: - UITableViewDataSource
 extension MyNFTViewController: UITableViewDataSource {
-    func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+    func tableView(
+        _ tableView: UITableView,
+        numberOfRowsInSection section: Int
+    ) -> Int {
         return nfts.count
     }
     
-    func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        guard let cell = tableView.dequeueReusableCell(withIdentifier: MyNFTTableViewCell.identifier, for: indexPath) as? MyNFTTableViewCell else {
+    func tableView(
+        _ tableView: UITableView,
+        cellForRowAt indexPath: IndexPath
+    ) -> UITableViewCell {
+        guard let cell = tableView.dequeueReusableCell(
+            withIdentifier: MyNFTTableViewCell.identifier,
+            for: indexPath
+        ) as? MyNFTTableViewCell else {
             return UITableViewCell()
         }
         
         let nft = viewModel.nfts[indexPath.item]
-           let image = viewModel.nftImages[nft.id] ?? UIImage(named: "placeholder")
-           let ratingImage = viewModel.ratingImage(for: nft)
-        cell.configure(with: nft, image: image, ratingImage: ratingImage)
-           
-           return cell
+        let image = viewModel.nftImages[nft.id] ?? UIImage(named: "placeholder")
+        let ratingImage = viewModel.ratingImage(for: nft)
+        cell.configure(
+            with: nft,
+            image: image,
+            ratingImage: ratingImage
+        )
+        return cell
     }
-    
 }
 
 // MARK: - UITableViewDelegate
 extension MyNFTViewController: UITableViewDelegate {
     
-    func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
+    func tableView(
+        _ tableView: UITableView,
+        heightForRowAt indexPath: IndexPath
+    ) -> CGFloat {
         return 140
     }
     
-    func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        
+    func tableView(
+        _ tableView: UITableView,
+        didSelectRowAt indexPath: IndexPath
+    ) {
     }
 }

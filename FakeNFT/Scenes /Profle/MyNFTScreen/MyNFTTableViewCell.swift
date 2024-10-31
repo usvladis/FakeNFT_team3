@@ -23,7 +23,10 @@ final class MyNFTTableViewCell: UITableViewCell {
     private lazy var likeButton: UIButton = {
         let button = UIButton()
         if let imageButton = UIImage(named: "heart") {
-            button.setImage(imageButton, for: .normal)
+            button.setImage(
+                imageButton,
+                for: .normal
+            )
         }
         button.translatesAutoresizingMaskIntoConstraints = false
         return button
@@ -69,18 +72,29 @@ final class MyNFTTableViewCell: UITableViewCell {
     }()
     
     // MARK: - Initializers
-    override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
-        super.init(style: style, reuseIdentifier: reuseIdentifier)
-        
+    override init(
+        style: UITableViewCell.CellStyle,
+        reuseIdentifier: String?
+    ) {
+        super.init(
+            style: style,
+            reuseIdentifier: reuseIdentifier
+        )
         selectionStyle = .none
         backgroundColor = .backgroudColor
-        separatorInset = UIEdgeInsets(top: 0, left: 16, bottom: 0, right: 16)
+        separatorInset = UIEdgeInsets(
+            top: 0,
+            left: 16,
+            bottom: 0,
+            right: 16
+        )
         layer.maskedCorners = []
-        
         configureView()
     }
     
-    required init?(coder: NSCoder) {
+    required init?(
+        coder: NSCoder
+    ) {
         fatalError("init(coder:) has not been implemented")
     }
 }
@@ -138,7 +152,11 @@ extension MyNFTTableViewCell: ViewConfigurable {
 }
 
 extension MyNFTTableViewCell {
-    func configure(with nft: Nft, image: UIImage?, ratingImage: UIImage?) {
+    func configure(
+        with nft: Nft,
+        image: UIImage?,
+        ratingImage: UIImage?
+    ) {
         self.countMoneyLabel.text = "\(nft.price) ETH"
         self.nftImageView.image = image ?? UIImage(named: "placeholder")
         self.starsImageView.image = ratingImage ?? UIImage(named: "rating_0")
