@@ -143,6 +143,7 @@ final class CheckoutViewController: UIViewController {
                 case .success:
                     // При успешной оплате переходим на экран успешного заказа
                     self?.showSuccessViewController()
+                    self?.cartService.clearCart()
         
                 case .failure(let error):
                     // В случае ошибки показываем алерт с описанием ошибки

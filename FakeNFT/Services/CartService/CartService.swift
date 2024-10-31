@@ -45,6 +45,12 @@ final class CartService {
         return nftIdsInCart
     }
     
+    func clearCart() {
+        nftIdsInCart.removeAll()
+        saveCartItems()
+        print("Корзина очищена после успешной оплаты")
+    }
+    
     // MARK: - Private Methods
     
     // Метод для сохранения ID в UserDefaults
