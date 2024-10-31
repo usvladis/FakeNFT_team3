@@ -19,18 +19,18 @@ final class ProfileStorageImpl: ProfileStorage {
     
     // MARK: - Properties
     private var profile: Profile?
-    private let syncQueue = DispatchQueue(label: "sync-nft-queue")
+    private let syncQueue = DispatchQueue(label: "sync-nft-queue", attributes: .concurrent)
     
     // MARK: - ProfileStorage Methods
     func saveProfile(profile: Profile) {
-        syncQueue.async {
+        syncQueue.async(flags: .barrier) {
             self.profile = profile
         }
     }
     
     func getProfile() -> Profile? {
         syncQueue.sync {
-            profile
+            return self.profile
         }
     }
 }

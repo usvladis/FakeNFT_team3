@@ -267,12 +267,13 @@ extension CatalogDetailsScreenViewController: UICollectionViewDataSource {
             print("Не прошёл каст")
             return UICollectionViewCell()
         }
-        
+
+        cell.delegate = self
+
         let nft = viewModel.collection(at: indexPath.row)
         let isLike = viewModel.getLikes().contains(nft.id)
         let inCart = viewModel.getCart().contains(nft.id)
-        
-        cell.prepareForReuse()
+
         cell.configure(nft: nft, isLike: isLike, nftID: nft.id, inCart: inCart)
         return cell
     }
