@@ -11,9 +11,36 @@ final class ProfileViewController: UIViewController {
     
     // MARK: - ViewModel
     private let viewModel: ProfileViewModel
-
-    init(viewModel: ProfileViewModel) {
+    private var profileChangeViewModel: ProfileChangeViewModel
+    private let myNFTViewModel: MyNFTViewModel
+    private let favoriteNFTViewModel: FavoriteNFTViewModel
+    
+    init(viewModel: ProfileViewModel,
+         profileChangeViewModel: ProfileChangeViewModel,
+         networkClient: NetworkClient,
+         storage: NftStorage) {
+        let nftService = NftServiceImpl(
+            networkClient: networkClient,
+            storage: storage
+        )
+        let profileService = ProfileService(
+            networkClient: networkClient
+        )
+        
+        self.profileChangeViewModel = ProfileChangeViewModel(
+            profileService: profileService
+        )
+        
+        self.myNFTViewModel = MyNFTViewModel(
+            nftService: nftService
+        )
+        
+        self.favoriteNFTViewModel = FavoriteNFTViewModel(
+            nftService: nftService
+        )
+        
         self.viewModel = viewModel
+        self.profileChangeViewModel = profileChangeViewModel
         super.init(nibName: nil, bundle: nil)
     }
     
@@ -66,7 +93,11 @@ final class ProfileViewController: UIViewController {
         button.setTitle(viewModel.userWebsite, for: .normal)
         button.titleLabel?.font = .caption1
         button.setTitleColor(.blueUniversal, for: .normal)
-        button.addTarget(self, action: #selector(profileLinkTapped), for: .touchUpInside)
+        button.addTarget(
+            self,
+            action: #selector(profileLinkTapped),
+            for: .touchUpInside
+        )
         button.translatesAutoresizingMaskIntoConstraints = false
         return button
     }()
@@ -78,7 +109,10 @@ final class ProfileViewController: UIViewController {
         tableView.backgroundColor = .backgroudColor
         tableView.dataSource = self
         tableView.delegate = self
-        tableView.register(ProfileTableViewCell.self, forCellReuseIdentifier: ProfileTableViewCell.identifier)
+        tableView.register(
+            ProfileTableViewCell.self,
+            forCellReuseIdentifier: ProfileTableViewCell.identifier
+        )
         return tableView
     }()
     
@@ -90,20 +124,50 @@ final class ProfileViewController: UIViewController {
         viewModel.loadProfile()
     }
     
+    override func viewWillAppear(
+        _ animated: Bool
+    ) {
+        super.viewWillAppear(animated)
+        setupBindings()
+        viewModel.loadProfile()
+    }
+    
+    
     // MARK: - Private Methods
     private func setupNavigationBar() {
-        navigationItem.rightBarButtonItem = UIBarButtonItem(customView: changeProfileButton)
+        navigationItem.rightBarButtonItem = UIBarButtonItem(
+            customView: changeProfileButton
+        )
     }
     
     @objc
-       private func didTapChangeButton() {
-           let profileChangeViewController = ProfileChangeViewController(viewModel: viewModel)
-           present(profileChangeViewController, animated: true, completion: nil)
-       }
+    private func didTapChangeButton() {
+        let profileChangeViewController = ProfileChangeViewController(
+            viewModel: profileChangeViewModel,
+            newProfileViewModel: viewModel
+        )
+        setupBindings()
+        viewModel.loadProfile()
+        present(
+            profileChangeViewController,
+            animated: true,
+            completion: nil
+        )
+    }
     
-    @objc
-    private func profileLinkTapped() {
-        print("Переходим по ссылке")
+    @objc private func profileLinkTapped() {
+        if !viewModel.userWebsite.isEmpty,
+           let url = URL(
+            string: viewModel.userWebsite
+           ) {
+            UIApplication.shared.open(
+                url,
+                options: [:],
+                completionHandler: nil
+            )
+        } else {
+            print("Некорректный URL")
+        }
     }
     
     // MARK: - Setup Methods
@@ -136,12 +200,18 @@ final class ProfileViewController: UIViewController {
     private func handleAction(_ action: ProfileAction) {
         switch action {
         case .navigateToMyNFTs:
-            let myNFTVC = MyNFTViewController(viewModel: viewModel)
+            let myNFTVC = MyNFTViewController(
+                viewModel: myNFTViewModel,
+                newProfileViewModel: viewModel
+            )
             myNFTVC.hidesBottomBarWhenPushed = true
             navigationController?.pushViewController(myNFTVC, animated: true)
             
         case .navigateToFavorites:
-            let favoritesVC = FavoriteNFTViewController(viewModel: viewModel)
+            let favoritesVC = FavoriteNFTViewController(
+                viewModel: favoriteNFTViewModel,
+                newProfileViewModel: viewModel
+            )
             favoritesVC.hidesBottomBarWhenPushed = true
             navigationController?.pushViewController(favoritesVC, animated: true)
             
@@ -205,12 +275,23 @@ extension ProfileViewController: ViewConfigurable {
 
 // MARK: - UITableViewDataSource
 extension ProfileViewController: UITableViewDataSource {
-    func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+    func tableView(
+        _ tableView: UITableView,
+        numberOfRowsInSection section: Int
+    ) -> Int {
         return viewModel.items.count
     }
     
-    func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        guard let cell = tableView.dequeueReusableCell(withIdentifier: ProfileTableViewCell.identifier, for: indexPath) as? ProfileTableViewCell else {
+    func tableView(
+        _ tableView: UITableView,
+        cellForRowAt indexPath: IndexPath
+    ) -> UITableViewCell {
+        guard let cell = tableView.dequeueReusableCell(
+            withIdentifier: ProfileTableViewCell.identifier,
+            for: indexPath
+        )
+                as? ProfileTableViewCell else
+        {
             return UITableViewCell()
         }
         
@@ -224,11 +305,17 @@ extension ProfileViewController: UITableViewDataSource {
 // MARK: - UITableViewDelegate
 extension ProfileViewController: UITableViewDelegate {
     
-    func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
+    func tableView(
+        _ tableView: UITableView,
+        heightForRowAt indexPath: IndexPath
+    ) -> CGFloat {
         return 54
     }
     
-    func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+    func tableView(
+        _ tableView: UITableView,
+        didSelectRowAt indexPath: IndexPath
+    ) {
         let action = viewModel.didSelectItem(at: indexPath.row)
         handleAction(action)
     }
