@@ -2,7 +2,7 @@
 //  WebViewViewController.swift
 //  FakeNFT
 //
-//  Created by Владислав Усачев on 18.10.2024.
+//  Created by Владислав Усачев on 31.10.2024.
 //
 
 import UIKit
