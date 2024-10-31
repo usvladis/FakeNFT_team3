@@ -6,6 +6,7 @@
 //
 
 import UIKit
+import Kingfisher
 
 final class DeleteConfirmationViewController: UIViewController {
     
@@ -17,6 +18,9 @@ final class DeleteConfirmationViewController: UIViewController {
     private let nftImageView: UIImageView = {
         let imageView = UIImageView()
         imageView.contentMode = .scaleAspectFit
+        imageView.clipsToBounds = true
+        imageView.layer.cornerRadius = 12
+        imageView.layer.masksToBounds = true
         imageView.translatesAutoresizingMaskIntoConstraints = false
         return imageView
     }()
@@ -55,8 +59,8 @@ final class DeleteConfirmationViewController: UIViewController {
     }()
     
     // Публичная функция для установки изображения NFT
-    func configure(with image: UIImage, nftId: UUID) {
-        nftImageView.image = image
+    func configure(with imageURL: URL, nftId: UUID) {
+        nftImageView.kf.setImage(with: imageURL)
         self.nftId = nftId
     }
 

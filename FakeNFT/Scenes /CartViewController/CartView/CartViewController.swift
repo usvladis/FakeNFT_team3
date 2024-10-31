@@ -7,11 +7,13 @@
 
 import UIKit
 import SwiftUI
+import Kingfisher
 
 // MARK: - Preview
 final class CartViewController: UIViewController {
     
-    private var nftItems: [NFTItem] = NFTItem.mockData()
+    private var nftItems: [NFTItem] = []
+    private let nftService = SimpleNftService()
     
     private let tableView: UITableView = {
         let tableView = UITableView()
@@ -85,6 +87,41 @@ final class CartViewController: UIViewController {
         
         tableView.dataSource = self
         tableView.delegate = self
+        
+        loadNFTItems()
+    }
+    
+    private func loadNFTItems() {
+        let nftIds = ["83c23ccc-1368-4da8-b54d-76c9b235835b", "fc92edf5-1355-4246-b3b7-d64bc54d1abd"]
+        
+        for id in nftIds {
+            nftService.fetchNFT(by: id) { [weak self] result in
+                switch result {
+                case .success(let nft):
+                    // Пробуем извлечь первый URL из массива изображений
+                    if let imageURLString = nft.images.first,
+                       let url = URL(string: imageURLString) {
+                        let nftItem = NFTItem(
+                            id: UUID(uuidString: nft.id)!,
+                            imageURL: url,
+                            title: nft.name,
+                            price: nft.price,
+                            rating: nft.rating
+                        )
+                        
+                        DispatchQueue.main.async {
+                            self?.nftItems.append(nftItem)
+                            self?.tableView.reloadData()
+                            self?.setupCartInformation()
+                            self?.updateViewVisibility()
+                        }
+                    }
+                    
+                case .failure(let error):
+                    print("Error loading NFT: \(error)")
+                }
+            }
+        }
     }
     
     private func setupView() {
@@ -175,8 +212,8 @@ final class CartViewController: UIViewController {
     
     private func setupCartInformation() {
         totalNFTLabel.text = "\(nftItems.count) NFT"
-        var totalPrice = nftItems.reduce(0) { $0 + $1.price }
-        totalAmountLabel.text = "\(totalPrice) ETH"
+        let totalPrice = nftItems.reduce(0) { $0 + $1.price }
+        totalAmountLabel.text = String(format: "%.2f ETH", totalPrice) // Ограничиваем до двух знаков после запятой
     }
     
     @objc
@@ -222,9 +259,9 @@ final class CartViewController: UIViewController {
         present(alertController, animated: true, completion: nil)
     }
     
-    private func presentDeleteConfirmationDialog(with image: UIImage, nftId: UUID) {
+    private func presentDeleteConfirmationDialog(with imageURL: URL, nftId: UUID) {
         let deleteConfirmationVC = DeleteConfirmationViewController()
-        deleteConfirmationVC.configure(with: image, nftId: nftId) // передаем картинку и id
+        deleteConfirmationVC.configure(with: imageURL, nftId: nftId) // передаем картинку и id
         deleteConfirmationVC.modalPresentationStyle = .overFullScreen
         deleteConfirmationVC.modalTransitionStyle = .crossDissolve
         deleteConfirmationVC.onDeleteConfirmed = { [weak self] nftId in
@@ -291,8 +328,9 @@ extension CartViewController: UITableViewDataSource, UITableViewDelegate {
         }
         let nftItem = nftItems[indexPath.row]
         cell.configure(with: nftItem)
+        
         cell.buttonAction = { [weak self] in
-            self?.presentDeleteConfirmationDialog(with: nftItem.image, nftId: nftItem.id)
+            self?.presentDeleteConfirmationDialog(with: nftItem.imageURL, nftId: nftItem.id)
         }
         return cell
     }

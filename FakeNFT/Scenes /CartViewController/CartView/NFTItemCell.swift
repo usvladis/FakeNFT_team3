@@ -6,6 +6,7 @@
 //
 
 import UIKit
+import Kingfisher
 
 final class NFTItemCell: UITableViewCell {
     
@@ -17,6 +18,8 @@ final class NFTItemCell: UITableViewCell {
         let imageView = UIImageView()
         imageView.contentMode = .scaleAspectFill
         imageView.clipsToBounds = true
+        imageView.layer.cornerRadius = 12
+        imageView.layer.masksToBounds = true
         imageView.translatesAutoresizingMaskIntoConstraints = false
         return imageView
     }()
@@ -109,7 +112,7 @@ final class NFTItemCell: UITableViewCell {
     }
     
     func configure(with item: NFTItem) {
-        nftImageView.image = item.image
+        nftImageView.kf.setImage(with: item.imageURL)
         titleLabel.text = item.title
         costLabel.text = "\(item.price) ETH"
         ratingLabel.image = UIImage(named: "rating_\(item.rating)")
