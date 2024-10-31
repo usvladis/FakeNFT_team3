@@ -9,7 +9,8 @@ import UIKit
 
 final class CheckoutViewController: UIViewController {
     private let paymentMethods = PaymentMethod.data()
-    
+    private let nftService = SimpleNftService()
+    private let cartService = CartService.shared
     private var selectedPaymentMethodIndex: IndexPath? = nil
     
     private let collectionView: UICollectionView = {
@@ -133,10 +134,22 @@ final class CheckoutViewController: UIViewController {
     
     @objc
     private func handlePayButton() {
-        let successViewController = SuccessPaymentViewController()
-        successViewController.modalPresentationStyle = .fullScreen
+        let nftIds = cartService.getAllNFTIds() // Получаем все Id из корзины
         
-        present(successViewController, animated: false)
+        // Запускаем оплату через orderService
+        nftService.placeOrder(with: nftIds) { [weak self] result in
+            DispatchQueue.main.async {
+                switch result {
+                case .success:
+                    // При успешной оплате переходим на экран успешного заказа
+                    self?.showSuccessViewController()
+        
+                case .failure(let error):
+                    // В случае ошибки показываем алерт с описанием ошибки
+                    self?.showAlert(title: localizedString(key: "paymentErrorAlertTitle"))
+                }
+            }
+        }
     }
     
     @objc
@@ -146,6 +159,20 @@ final class CheckoutViewController: UIViewController {
         navigationWebViewController.modalPresentationStyle = .fullScreen
         
         present(navigationWebViewController, animated: true)
+    }
+    
+    private func showSuccessViewController() {
+        let successViewController = SuccessPaymentViewController()
+        successViewController.modalPresentationStyle = .fullScreen
+        
+        present(successViewController, animated: false)
+    }
+    
+    private func showAlert(title: String) {
+        let alert = AlertService.createAlert(title: title) {
+            self.handlePayButton()
+        }
+        present(alert, animated: true, completion: nil)
     }
 }
 
