@@ -9,14 +9,24 @@ import UIKit
 
 final class ProfileChangeViewController: UIViewController {
     // MARK: - ViewModel
-    private let viewModel: ProfileViewModel
+    private var viewModel: ProfileChangeViewModel
+    private var newProfileViewModel: ProfileViewModel
     
-    init(viewModel: ProfileViewModel) {
+    init(
+        viewModel: ProfileChangeViewModel,
+        newProfileViewModel: ProfileViewModel
+    ) {
         self.viewModel = viewModel
-        super.init(nibName: nil, bundle: nil)
+        self.newProfileViewModel = newProfileViewModel
+        super.init(
+            nibName: nil,
+            bundle: nil
+        )
     }
     
-    required init?(coder: NSCoder) {
+    required init?(
+        coder: NSCoder
+    ) {
         fatalError("init(coder:) has not been implemented")
     }
     
@@ -37,10 +47,17 @@ final class ProfileChangeViewController: UIViewController {
     private lazy var closeButton: UIButton = {
         let button = UIButton()
         if let imageButton = UIImage(named: "close_button")?.withRenderingMode(.alwaysTemplate) {
-            button.setImage(imageButton, for: .normal)
+            button.setImage(
+                imageButton,
+                for: .normal
+            )
             button.tintColor = .buttonColor
         }
-        button.addTarget(self, action: #selector(didTapCloseButton), for: .touchUpInside)
+        button.addTarget(
+            self,
+            action: #selector(didTapCloseButton),
+            for: .touchUpInside
+        )
         button.translatesAutoresizingMaskIntoConstraints = false
         return button
     }()
@@ -63,24 +80,41 @@ final class ProfileChangeViewController: UIViewController {
     
     private lazy var changePfotoButton: UIButton = {
         let button = UIButton()
-        button.setTitle(localizedString(key: "changePhoto"), for: .normal)
+        button.setTitle(
+            localizedString(key: "changePhoto"),
+            for: .normal
+        )
         button.titleLabel?.font = .caption3
         button.titleLabel?.textAlignment = .center
         button.setTitleColor(.white, for: .normal)
         button.titleLabel?.numberOfLines = 2
-        button.addTarget(self, action: #selector(didTapChangePhotoButton), for: .touchUpInside)
+        button.addTarget(
+            self,
+            action: #selector(didTapChangePhotoButton),
+            for: .touchUpInside
+        )
         button.translatesAutoresizingMaskIntoConstraints = false
         return button
     }()
     
     private lazy var downloadImageButton: UIButton = {
         let button = UIButton()
-        button.setTitle(localizedString(key: "uploadImage"), for: .normal)
+        button.setTitle(
+            localizedString(key: "uploadImage"),
+            for: .normal
+        )
         button.titleLabel?.font = .bodyRegular
         button.titleLabel?.textAlignment = .center
-        button.setTitleColor(.buttonColor, for: .normal)
+        button.setTitleColor(
+            .buttonColor,
+            for: .normal
+        )
         button.isHidden = true
-        button.addTarget(self, action: #selector(didTapDownloadImageButton), for: .touchUpInside)
+        button.addTarget(
+            self,
+            action: #selector(didTapDownloadImageButton),
+            for: .touchUpInside
+        )
         button.translatesAutoresizingMaskIntoConstraints = false
         return button
     }()
@@ -149,6 +183,7 @@ final class ProfileChangeViewController: UIViewController {
     // MARK: - Life Cycle
     override func viewDidLoad() {
         super.viewDidLoad()
+        viewModel.configure(with: newProfileViewModel)
         view.backgroundColor = .backgroudColor
         configureView()
         setupBindings()
@@ -161,8 +196,8 @@ final class ProfileChangeViewController: UIViewController {
         let newName = nameTextField.text ?? ""
         let newDescription = descriptionTextView.text ?? ""
         let newWebsite = websiteTextField.text ?? ""
-        let newAvatarUrl = self.viewModel.profileImageUrl
-
+        let newAvatarUrl = self.viewModel.profileImageUrl ?? ""
+        
         viewModel.updateProfile(
             name: newName,
             avatar: newAvatarUrl,
@@ -223,20 +258,20 @@ final class ProfileChangeViewController: UIViewController {
             message: nil,
             preferredStyle: .alert
         )
-
+        
         alertController.addTextField { textField in
             textField.placeholder = "https://example.com/avatar/png"
             textField.keyboardType = .URL
             textField.autocorrectionType = .no
         }
-
+        
         let closeAction = UIAlertAction(
             title: "Закрыть",
             style: .cancel,
             handler: nil
         )
         alertController.addAction(closeAction)
-
+        
         let okAction = UIAlertAction(
             title: "Ок",
             style: .default
@@ -244,7 +279,6 @@ final class ProfileChangeViewController: UIViewController {
             guard let self = self else {return}
             if let urlText = alertController.textFields?.first?.text, !urlText.isEmpty {
                 self.viewModel.profileImageUrl = urlText
-                print("Ссылка на аватар сохранена: \(urlText)")
             } else {
                 print("URL не введен или пуст")
             }
@@ -271,13 +305,17 @@ final class ProfileChangeViewController: UIViewController {
     }
     
     @objc
-    private func keyboardWillShow(_ notification: Notification) {
+    private func keyboardWillShow(
+        _ notification: Notification
+    ) {
         guard let keyboardFrame = notification.userInfo?[UIResponder.keyboardFrameEndUserInfoKey] as? CGRect else { return }
         scrollView.contentInset.bottom = keyboardFrame.height
     }
     
     @objc
-    private func keyboardWillHide(_ notification: Notification) {
+    private func keyboardWillHide(
+        _ notification: Notification
+    ) {
         scrollView.contentInset.bottom = .zero
     }
     
@@ -316,7 +354,9 @@ extension ProfileChangeViewController: ViewConfigurable {
             websiteTextField
         ]
         subViews.forEach { contentView.addSubview($0) }
-        [darkOverlay, changePfotoButton].forEach { profileImage.addSubview($0) }
+        [darkOverlay, changePfotoButton].forEach {
+            profileImage.addSubview($0)
+        }
     }
     
     func addConstraints() {
