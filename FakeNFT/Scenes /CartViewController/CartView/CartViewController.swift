@@ -235,7 +235,11 @@ final class CartViewController: UIViewController {
     @objc
     func checkoutButtonTapped() {
         print("checkoutButtonTapped")
-        let checkoutViewController = CheckoutViewController()
+        // Создаем экземпляр ViewModel
+        let checkoutViewModel = CheckoutViewModel()
+        
+        // Передаем ViewModel в CheckoutViewController
+        let checkoutViewController = CheckoutViewController(viewModel: checkoutViewModel)
         let checkoutNavigationViewController = UINavigationController(rootViewController: checkoutViewController)
         checkoutNavigationViewController.modalPresentationStyle = .fullScreen
         
