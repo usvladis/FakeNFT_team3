@@ -10,9 +10,7 @@ import Kingfisher
 
 final class DeleteConfirmationViewController: UIViewController {
     
-    private var nftId: String?
-        
-    var onDeleteConfirmed: ((String) -> Void)? // Callback для передачи ID обратно
+    private var viewModel: DeleteConfirmationViewModel!
 
     
     private let nftImageView: UIImageView = {
@@ -59,14 +57,19 @@ final class DeleteConfirmationViewController: UIViewController {
     }()
     
     // Публичная функция для установки изображения NFT
-    func configure(with imageURL: URL, nftId: String) {
-        nftImageView.kf.setImage(with: imageURL)
-        self.nftId = nftId
+    init(viewModel: DeleteConfirmationViewModel) {
+        super.init(nibName: nil, bundle: nil)
+        self.viewModel = viewModel
     }
-
+    
+    required init?(coder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         setupViews()
+        bindViewModel()
     }
     
     private func setupViews() {
@@ -125,15 +128,33 @@ final class DeleteConfirmationViewController: UIViewController {
         ])
     }
     
-    @objc private func handleDelete() {
-        dismiss(animated: true, completion: { [weak self] in
-            if let nftId = self?.nftId {
-                self?.onDeleteConfirmed?(nftId) // Передаем ID обратно
+    private func bindViewModel() {
+        viewModel.nftImageURL.bind { [weak self] url in
+            if let url = url {
+                self?.nftImageView.kf.setImage(with: url)
             }
-        })
+        }
+        
+        viewModel.warningText.bind { [weak self] text in
+            self?.warningLabel.text = text
+        }
+        
+        viewModel.deleteButtonTitle.bind { [weak self] title in
+            self?.deleteButton.setTitle(title, for: .normal)
+        }
+        
+        viewModel.cancelButtonTitle.bind { [weak self] title in
+            self?.cancelButton.setTitle(title, for: .normal)
+        }
+    }
+    
+    @objc private func handleDelete() {
+        viewModel.confirmDelete()
+        dismiss(animated: true, completion: nil)
     }
     
     @objc private func handleCancel() {
+        viewModel.cancelDelete()
         dismiss(animated: true, completion: nil)
     }
 }

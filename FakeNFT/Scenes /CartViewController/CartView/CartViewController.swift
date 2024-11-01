@@ -276,13 +276,21 @@ final class CartViewController: UIViewController {
     }
     
     private func presentDeleteConfirmationDialog(with imageURL: URL, nftId: String) {
-        let deleteConfirmationVC = DeleteConfirmationViewController()
-        deleteConfirmationVC.configure(with: imageURL, nftId: nftId) // передаем картинку и id
-        deleteConfirmationVC.modalPresentationStyle = .overFullScreen
-        deleteConfirmationVC.modalTransitionStyle = .crossDissolve
-        deleteConfirmationVC.onDeleteConfirmed = { [weak self] nftId in
+        let viewModel = DeleteConfirmationViewModel(
+            nftId: nftId,
+            nftImageURL: imageURL,
+            warningText: localizedString(key: "removeQuestionText"),
+            deleteButtonTitle: localizedString(key: "removeButtonTitle"),
+            cancelButtonTitle: localizedString(key: "goBackButtonTitle")
+        )
+        viewModel.onDeleteConfirmed = {[weak self] nftId in
             self?.deleteNFT(withId: nftId) // вызываем метод удаления NFT
         }
+        viewModel.onCancel = {
+            // Обработка отмены
+        }
+
+        let deleteConfirmationVC = DeleteConfirmationViewController(viewModel: viewModel)
         present(deleteConfirmationVC, animated: true, completion: nil)
     }
     

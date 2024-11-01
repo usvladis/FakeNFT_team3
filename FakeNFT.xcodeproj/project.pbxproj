@@ -35,6 +35,7 @@
 		21812FA32CB99CE900C861D1 /* PaymentMethod.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21812FA22CB99CE900C861D1 /* PaymentMethod.swift */; };
 		21812FA62CBC109200C861D1 /* Epic1_Usachev_DecompositionOfCart.md in Resources */ = {isa = PBXBuildFile; fileRef = 21812FA52CBC109200C861D1 /* Epic1_Usachev_DecompositionOfCart.md */; };
 		21ADBBEF2CD40C8100B21C9C /* AlertService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21ADBBEE2CD40C8100B21C9C /* AlertService.swift */; };
+		21ADBBF12CD4F8BF00B21C9C /* DeleteConfirmationViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21ADBBF02CD4F8BF00B21C9C /* DeleteConfirmationViewModel.swift */; };
 		3F478ECF29DB474E00F6D39E /* Colors.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3F478ECE29DB474E00F6D39E /* Colors.swift */; };
 		3F478ED129DB476500F6D39E /* Fonts.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3F478ED029DB476500F6D39E /* Fonts.swift */; };
 		3F603CCD29DB4A53000C43D7 /* ProgressHUD in Frameworks */ = {isa = PBXBuildFile; productRef = 3F603CCC29DB4A53000C43D7 /* ProgressHUD */; };
@@ -103,6 +104,7 @@
 		21812FA22CB99CE900C861D1 /* PaymentMethod.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PaymentMethod.swift; sourceTree = "<group>"; };
 		21812FA52CBC109200C861D1 /* Epic1_Usachev_DecompositionOfCart.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = Epic1_Usachev_DecompositionOfCart.md; sourceTree = "<group>"; };
 		21ADBBEE2CD40C8100B21C9C /* AlertService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AlertService.swift; sourceTree = "<group>"; };
+		21ADBBF02CD4F8BF00B21C9C /* DeleteConfirmationViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DeleteConfirmationViewModel.swift; sourceTree = "<group>"; };
 		3F478ECE29DB474E00F6D39E /* Colors.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Colors.swift; sourceTree = "<group>"; };
 		3F478ED029DB476500F6D39E /* Fonts.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Fonts.swift; sourceTree = "<group>"; };
 		3F68069329CBBAF100B4F915 /* FakeNFT.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = FakeNFT.app; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -273,6 +275,7 @@
 			isa = PBXGroup;
 			children = (
 				21812F9B2CB99C0800C861D1 /* DeleteConfirmationViewController.swift */,
+				21ADBBF02CD4F8BF00B21C9C /* DeleteConfirmationViewModel.swift */,
 			);
 			path = DeleteNFTView;
 			sourceTree = "<group>";
@@ -593,6 +596,7 @@
 				0CFCB7422A78013E0009A829 /* Nft.swift in Sources */,
 				21812F7B2CB9845C00C861D1 /* LocalizedString.swift in Sources */,
 				214C8D592CB6E1F700219D6E /* StatisticsViewController.swift in Sources */,
+				21ADBBF12CD4F8BF00B21C9C /* DeleteConfirmationViewModel.swift in Sources */,
 				0CFCB7402A78002A0009A829 /* ExamplePutService.swift in Sources */,
 				3F6806D529CBBEC700B4F915 /* NetworkTask.swift in Sources */,
 				558E39E72C68CE0A00FB86AC /* NftService.swift in Sources */,
