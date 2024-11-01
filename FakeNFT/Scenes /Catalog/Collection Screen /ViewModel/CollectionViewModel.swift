@@ -121,7 +121,7 @@ final class CollectionViewModel: CollectionViewModelProtocol {
             print("Добавили в массив лайков: \(nftId)")
         }
         
-        profileService.sendExamplePutRequest(likes: favoriteNFT, avatar: profile.avatar, name: profile.name) { [weak self] result in
+        profileService.updateProfile(likes: favoriteNFT, avatar: profile.avatar, name: profile.name) { [weak self] result in
             switch result {
             case .success(let updatedProfile):
                 print("Обновили массив лайков в профиле")

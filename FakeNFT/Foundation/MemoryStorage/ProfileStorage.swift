@@ -14,24 +14,24 @@ protocol ProfileStorage: AnyObject {
 }
 
 // MARK: - ProfileStorageImpl
-/// Реализация хранения профиля с использованием синхронизации
+/// Реализация хранения профиля с использованием NSLock для синхронизации
 final class ProfileStorageImpl: ProfileStorage {
     
     // MARK: - Properties
     private var profile: Profile?
-    private let syncQueue = DispatchQueue(label: "sync-nft-queue", attributes: .concurrent)
+    private let mutex = NSLock()
     
     // MARK: - ProfileStorage Methods
     func saveProfile(profile: Profile) {
-        syncQueue.async(flags: .barrier) {
-            self.profile = profile
-        }
+        mutex.lock()
+        self.profile = profile
+        mutex.unlock()
     }
     
     func getProfile() -> Profile? {
-        syncQueue.sync {
-            return self.profile
-        }
+        mutex.lock()
+        defer { mutex.unlock() }
+        return profile
     }
 }
 

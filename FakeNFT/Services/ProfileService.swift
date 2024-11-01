@@ -14,7 +14,7 @@ typealias ProfilePutCompletion = (Result<Profile, Error>) -> Void
 // MARK: - ProfileService Protocol
 protocol ProfileService {
     func loadProfile(completion: @escaping ProfileCompletion)
-    func sendExamplePutRequest(
+    func updateProfile(
         likes: [String],
         avatar: String,
         name: String,
@@ -58,7 +58,7 @@ final class ProfileServiceImpl: ProfileService {
         }
     }
     
-    func sendExamplePutRequest(
+    func updateProfile(
         likes: [String],
         avatar: String,
         name: String,

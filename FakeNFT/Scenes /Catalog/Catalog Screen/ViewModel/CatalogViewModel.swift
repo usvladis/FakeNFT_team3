@@ -95,11 +95,11 @@ final class CatalogViewModel: CatalogViewModelProtocol {
     
     // MARK: - Profile & Order Loading
     func getProfile(completion: @escaping () -> Void) {
-        let dispatchGroup = DispatchGroup()
-        
-        dispatchGroup.enter()
         loadProfile { [weak self] result in
-            guard let self = self else { return }
+            guard let self = self else {
+                completion()
+                return
+            }
             switch result {
             case .success:
                 print("Завершили загрузку профиля, он теперь равен: \(String(describing: self.profile))")
@@ -109,8 +109,9 @@ final class CatalogViewModel: CatalogViewModelProtocol {
                 }
             case .failure(let error):
                 print("Ошибка загрузки профиля: \(error.localizedDescription)")
+                
+                completion()
             }
-            dispatchGroup.leave()
         }
     }
     
