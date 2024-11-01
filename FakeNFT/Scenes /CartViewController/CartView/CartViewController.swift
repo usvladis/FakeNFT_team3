@@ -13,9 +13,7 @@ import ProgressHUD
 // MARK: - Preview
 final class CartViewController: UIViewController {
     
-    private var nftItems: [NFTItem] = []
-    private let nftService = SimpleNftService()
-    private let cartService = CartService.shared
+    private let viewModel = CartViewModel()
     
     private let tableView: UITableView = {
         let tableView = UITableView()
@@ -79,78 +77,57 @@ final class CartViewController: UIViewController {
     
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
-        loadNFTItems()
+        viewModel.loadNFTItems()
     }
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        // Добавляем таргет на нажатие кнопки sortButton
-        sortButton.target = self
-        sortButton.action = #selector(sortButtonTapped)
-        
         setupView()
-        applySavedSortType()
-        updateViewVisibility()
-        
-        tableView.dataSource = self
-        tableView.delegate = self
-        
+        bindViewModel()
+        viewModel.applySavedSortType()
+        //viewModel.loadNFTItems()
     }
     
-    private func loadNFTItems() {
-        let nftIds = cartService.getAllNFTIds()
-        
-        guard !nftIds.isEmpty else {
-            nftItems.removeAll() // очищаем элементы на случай, если они остались от предыдущей загрузки
-            updateViewVisibility() // показываем плейсхолдер
-            return
+    private func bindViewModel() {
+        viewModel.onItemsUpdated = { [weak self] in
+            DispatchQueue.main.async {
+                self?.tableView.reloadData()
+                self?.setupCartInformation()
+                self?.updateViewVisibility()
+            }
+            
         }
         
-        showLoadingIndicator()
-        nftItems.removeAll()
-        for id in nftIds {
-            nftService.fetchNFT(by: id) { [weak self] result in
-                switch result {
-                case .success(let nft):
-                    // Пробуем извлечь первый URL из массива изображений
-                    if let imageURLString = nft.images.first,
-                       let url = URL(string: imageURLString) {
-                        let nftItem = NFTItem(
-                            id: nft.id,
-                            imageURL: url,
-                            title: nft.name,
-                            price: nft.price,
-                            rating: nft.rating
-                        )
-                        
-                        DispatchQueue.main.async {
-                            self?.nftItems.append(nftItem)
-                            self?.hideLoadingIndicator()
-                            self?.tableView.reloadData()
-                            self?.setupCartInformation()
-                            self?.applySavedSortType()
-                            self?.updateViewVisibility()
-                        }
-                    }
-                    
-                case .failure(let error):
-                    print("Error loading NFT: \(error)")
+        viewModel.onLoadingStatusChanged = { [weak self] isLoading in
+            DispatchQueue.main.async {
+                if isLoading {
+                    self?.showLoadingIndicator()
+                } else {
+                    self?.hideLoadingIndicator()
                 }
             }
+        }
+        
+        viewModel.onError = { error in
+            print("Error loading NFT: \(error)")
         }
     }
     
     private func setupView() {
-        // View setup
         view.backgroundColor = .backgroudColor
         navigationItem.rightBarButtonItem = sortButton
         navigationController?.navigationBar.barTintColor = .backgroudColor
         navigationController?.navigationBar.tintColor = .buttonColor
         
+        sortButton.target = self
+        sortButton.action = #selector(sortButtonTapped)
+        
         setupTableView()
         setupBottomView()
         setupPlaceholder()
-        setupCartInformation()
+        
+        tableView.dataSource = self
+        tableView.delegate = self
     }
     
     private func setupTableView() {
@@ -201,7 +178,7 @@ final class CartViewController: UIViewController {
     }
     
     private func updateViewVisibility() {
-        if nftItems.isEmpty {
+        if viewModel.nftItems.isEmpty {
             // Показываем плейсхолдер
             placeholderLabel.isHidden = false
             
@@ -227,9 +204,8 @@ final class CartViewController: UIViewController {
     }
     
     private func setupCartInformation() {
-        totalNFTLabel.text = "\(nftItems.count) NFT"
-        let totalPrice = nftItems.reduce(0) { $0 + $1.price }
-        totalAmountLabel.text = String(format: "%.2f ETH", totalPrice) // Ограничиваем до двух знаков после запятой
+        totalNFTLabel.text = viewModel.getTotalNFTCount()
+        totalAmountLabel.text = viewModel.getTotalPrice()
     }
     
     @objc
@@ -248,35 +224,13 @@ final class CartViewController: UIViewController {
     
     @objc
     func sortButtonTapped() {
-        // Создаем UIAlertController в стиле Action Sheet
         let alertController = UIAlertController(title: localizedString(key: "sorting"), message: nil, preferredStyle: .actionSheet)
+        alertController.addAction(UIAlertAction(title: localizedString(key: "sortingByPrice"), style: .default) { _ in self.viewModel.sortByPrice() })
+        alertController.addAction(UIAlertAction(title: localizedString(key: "sortingByRating"), style: .default) { _ in self.viewModel.sortByRating() })
+        alertController.addAction(UIAlertAction(title: localizedString(key: "sortingByName"), style: .default) { _ in self.viewModel.sortByName() })
+        alertController.addAction(UIAlertAction(title: localizedString(key: "close"), style: .cancel))
         
-        // Добавляем действие для сортировки по цене
-        let sortByPriceAction = UIAlertAction(title: localizedString(key: "sortingByPrice"), style: .default) { [weak self] _ in
-            self?.sortByPrice()
-        }
-        
-        // Добавляем действие для сортировки по рейтингу
-        let sortByRatingAction = UIAlertAction(title: localizedString(key: "sortingByRating"), style: .default) { [weak self] _ in
-            self?.sortByRating()
-        }
-        
-        // Добавляем действие для сортировки по названию
-        let sortByNameAction = UIAlertAction(title: localizedString(key: "sortingByName"), style: .default) { [weak self] _ in
-            self?.sortByName()
-        }
-        
-        // Добавляем действие для отмены
-        let closeAction = UIAlertAction(title: localizedString(key: "close"), style: .cancel)
-        
-        // Добавляем все действия в UIAlertController
-        alertController.addAction(sortByPriceAction)
-        alertController.addAction(sortByRatingAction)
-        alertController.addAction(sortByNameAction)
-        alertController.addAction(closeAction)
-        
-        // Показываем UIAlertController
-        present(alertController, animated: true, completion: nil)
+        present(alertController, animated: true)
     }
     
     private func presentDeleteConfirmationDialog(with imageURL: URL, nftId: String) {
@@ -288,61 +242,15 @@ final class CartViewController: UIViewController {
             cancelButtonTitle: localizedString(key: "goBackButtonTitle")
         )
         viewModel.onDeleteConfirmed = {[weak self] nftId in
-            self?.deleteNFT(withId: nftId) // вызываем метод удаления NFT
+            self?.viewModel.deleteNFT(withId: nftId) // вызываем метод удаления NFT
         }
         viewModel.onCancel = {
             // Обработка отмены
         }
 
         let deleteConfirmationVC = DeleteConfirmationViewController(viewModel: viewModel)
-        present(deleteConfirmationVC, animated: true, completion: nil)
-    }
-    
-    func deleteNFT(withId id: String) {
-        if let index = nftItems.firstIndex(where: { $0.id == id }) {
-            let nftItem = nftItems[index]
-            cartService.removeNFT(id: nftItem.id) // Удаляем ID из CartService
-            nftItems.remove(at: index)
-            tableView.reloadData()
-            setupCartInformation()
-            updateViewVisibility() // обновляем интерфейс после удаления
-        }
-    }
-    
-    private func sortByPrice() {
-        nftItems.sort { $0.price < $1.price }
-        UserDefaults.standard.set("price", forKey: "selectedSortType")
-        tableView.reloadData()
-        updateViewVisibility()
-    }
-    
-    private func sortByRating() {
-        nftItems.sort { $0.rating > $1.rating }
-        UserDefaults.standard.set("rating", forKey: "selectedSortType")
-        tableView.reloadData()
-        updateViewVisibility()
-    }
-    
-    private func sortByName() {
-        nftItems.sort { $0.title < $1.title }
-        UserDefaults.standard.set("name", forKey: "selectedSortType")
-        tableView.reloadData()
-        updateViewVisibility()
-    }
-    
-    private func applySavedSortType() {
-        let savedSortType = UserDefaults.standard.string(forKey: "selectedSortType") ?? "price"
-        
-        switch savedSortType {
-        case "price":
-            sortByPrice()
-        case "rating":
-            sortByRating()
-        case "name":
-            sortByName()
-        default:
-            sortByPrice()
-        }
+        deleteConfirmationVC.modalPresentationStyle = .overFullScreen
+        present(deleteConfirmationVC, animated: false, completion: nil)
     }
     
     private func showLoadingIndicator() {
@@ -369,14 +277,14 @@ final class CartViewController: UIViewController {
 extension CartViewController: UITableViewDataSource, UITableViewDelegate {
     
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return nftItems.count
+        return viewModel.nftItems.count
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         guard let cell = tableView.dequeueReusableCell(withIdentifier: NFTItemCell.identifier, for: indexPath) as? NFTItemCell else {
             return UITableViewCell()
         }
-        let nftItem = nftItems[indexPath.row]
+        let nftItem = viewModel.nftItems[indexPath.row]
         cell.configure(with: nftItem)
         
         cell.buttonAction = { [weak self] in

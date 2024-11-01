@@ -150,12 +150,12 @@ final class DeleteConfirmationViewController: UIViewController {
     
     @objc private func handleDelete() {
         viewModel.confirmDelete()
-        dismiss(animated: true, completion: nil)
+        dismiss(animated: false, completion: nil)
     }
     
     @objc private func handleCancel() {
         viewModel.cancelDelete()
-        dismiss(animated: true, completion: nil)
+        dismiss(animated: false, completion: nil)
     }
 }
 
