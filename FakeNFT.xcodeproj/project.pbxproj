@@ -53,6 +53,7 @@
 		47733EC42CB7005800F2F406 /* PreviewVCExtention.swift in Sources */ = {isa = PBXBuildFile; fileRef = 47733EC32CB7005800F2F406 /* PreviewVCExtention.swift */; };
 		47733EC62CB706C100F2F406 /* ViewConfigurableProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = 47733EC52CB706C100F2F406 /* ViewConfigurableProtocol.swift */; };
 		477677E62CD10A7200F63821 /* ProfilePutRequest.swift in Sources */ = {isa = PBXBuildFile; fileRef = 477677E52CD10A7200F63821 /* ProfilePutRequest.swift */; };
+		47A7E5CD2CD673920054BD06 /* ExtentionForString.swift in Sources */ = {isa = PBXBuildFile; fileRef = 47A7E5CC2CD673920054BD06 /* ExtentionForString.swift */; };
 		47B1CA122CCFEC5900847BDA /* ProfileChangeViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 47B1CA112CCFEC5900847BDA /* ProfileChangeViewController.swift */; };
 		47DB805B2CD29B9F002DCB2B /* ProfileViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 47DB805A2CD29B9F002DCB2B /* ProfileViewModel.swift */; };
 		47DB805D2CD29C73002DCB2B /* ProfileChangeViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 47DB805C2CD29C73002DCB2B /* ProfileChangeViewModel.swift */; };
@@ -128,6 +129,7 @@
 		47733EC32CB7005800F2F406 /* PreviewVCExtention.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PreviewVCExtention.swift; sourceTree = "<group>"; };
 		47733EC52CB706C100F2F406 /* ViewConfigurableProtocol.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewConfigurableProtocol.swift; sourceTree = "<group>"; };
 		477677E52CD10A7200F63821 /* ProfilePutRequest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProfilePutRequest.swift; sourceTree = "<group>"; };
+		47A7E5CC2CD673920054BD06 /* ExtentionForString.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ExtentionForString.swift; sourceTree = "<group>"; };
 		47B1CA112CCFEC5900847BDA /* ProfileChangeViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProfileChangeViewController.swift; sourceTree = "<group>"; };
 		47DB805A2CD29B9F002DCB2B /* ProfileViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProfileViewModel.swift; sourceTree = "<group>"; };
 		47DB805C2CD29C73002DCB2B /* ProfileChangeViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProfileChangeViewModel.swift; sourceTree = "<group>"; };
@@ -435,6 +437,7 @@
 				47733EC52CB706C100F2F406 /* ViewConfigurableProtocol.swift */,
 				21812F7A2CB9845C00C861D1 /* LocalizedString.swift */,
 				47391CDB2CC26C8800717286 /* PlaceHolderView.swift */,
+				47A7E5CC2CD673920054BD06 /* ExtentionForString.swift */,
 			);
 			path = Resources;
 			sourceTree = "<group>";
@@ -624,6 +627,7 @@
 				47391CDC2CC26C8800717286 /* PlaceHolderView.swift in Sources */,
 				47391CE42CC2831200717286 /* AboutDeveloperViewController.swift in Sources */,
 				0C79EE632A76DD1900EE90EA /* RequestConstants.swift in Sources */,
+				47A7E5CD2CD673920054BD06 /* ExtentionForString.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

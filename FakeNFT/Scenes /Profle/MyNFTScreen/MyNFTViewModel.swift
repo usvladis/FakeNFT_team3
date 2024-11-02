@@ -82,7 +82,7 @@ final class MyNFTViewModel {
                 self.nftImages[nft.id] = value.image
                 
                 if let index = self.nfts.firstIndex(where: { $0.id == nft.id }) {
-                    self.nfts[index].name = self.extractNFTName(from: nftImageUrl) ?? nft.originalName
+                    self.nfts[index].name = nftImageUrl.extractNFTName(from: nftImageUrl) ?? nft.originalName
                 }
                 self.nftsImageUpdate?(nft.id, value.image)
                 
@@ -91,34 +91,6 @@ final class MyNFTViewModel {
                 self.nftsImageUpdate?(nft.id, nil)
             }
         }
-    }
-    
-    func extractNFTName(
-        from urlString: String
-    ) -> String? {
-        let pattern = #"\/([^\/]+)\/\d+\.png$"#
-        let regex = try? NSRegularExpression(
-            pattern: pattern,
-            options: []
-        )
-        let nsString = urlString as NSString
-        let results = regex?.firstMatch(
-            in: urlString,
-            options: [],
-            range: NSRange(
-                location: 0,
-                length: nsString.length
-            )
-        )
-        
-        if let range = results?.range(
-            at: 1
-        ) {
-            return nsString.substring(
-                with: range
-            )
-        }
-        return nil
     }
     
     func ratingImage(
