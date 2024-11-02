@@ -7,7 +7,7 @@
 
 import UIKit
 
-class MyNFTViewController: UIViewController {
+final class MyNFTViewController: UIViewController {
     
     // MARK: - View Model
     private var nfts: [Nft] = []
@@ -86,6 +86,13 @@ class MyNFTViewController: UIViewController {
             forCellReuseIdentifier: MyNFTTableViewCell.identifier
         )
         return tableView
+    }()
+    
+    private lazy var activityIndicator: UIActivityIndicatorView = {
+        let indicator = UIActivityIndicatorView(style: .medium)
+        indicator.translatesAutoresizingMaskIntoConstraints = false
+        indicator.hidesWhenStopped = true
+        return indicator
     }()
     
     //MARK: - LifeCicle
@@ -183,9 +190,12 @@ class MyNFTViewController: UIViewController {
     }
     
     private func updateAfterDownloadData() {
+        activityIndicator.startAnimating()
         viewModel.nftsUpdated = { [weak self] in
-            self?.nfts = self?.viewModel.nfts ?? []
-            self?.tableView.reloadData()
+            guard let self = self else {return}
+            self.activityIndicator.stopAnimating()
+            self.nfts = self.viewModel.nfts
+            self.tableView.reloadData()
         }
     }
     
@@ -207,7 +217,12 @@ class MyNFTViewController: UIViewController {
 // MARK: - ViewConfigurable
 extension MyNFTViewController: ViewConfigurable {
     func addSubviews() {
-        view.addSubview(tableView)
+        [
+            activityIndicator,
+            tableView
+        ].forEach {
+            view.addSubview($0)
+        }
     }
     
     func addConstraints() {
@@ -215,7 +230,10 @@ extension MyNFTViewController: ViewConfigurable {
             tableView.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor),
             tableView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
             tableView.trailingAnchor.constraint(equalTo: view.trailingAnchor),
-            tableView.bottomAnchor.constraint(equalTo: view.bottomAnchor)
+            tableView.bottomAnchor.constraint(equalTo: view.bottomAnchor),
+            
+            activityIndicator.centerXAnchor.constraint(equalTo: view.centerXAnchor),
+            activityIndicator.centerYAnchor.constraint(equalTo: view.centerYAnchor)
         ])
     }
     private func setupView() {

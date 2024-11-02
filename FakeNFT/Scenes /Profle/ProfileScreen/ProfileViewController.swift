@@ -116,6 +116,13 @@ final class ProfileViewController: UIViewController {
         return tableView
     }()
     
+    private lazy var activityIndicator: UIActivityIndicatorView = {
+        let indicator = UIActivityIndicatorView(style: .medium)
+        indicator.translatesAutoresizingMaskIntoConstraints = false
+        indicator.hidesWhenStopped = true
+        return indicator
+    }()
+    
     // MARK: - LifeCycle
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -177,9 +184,11 @@ final class ProfileViewController: UIViewController {
     }
     
     private func updateScreenInformation() {
+        activityIndicator.startAnimating()
         viewModel.profileUpdated = { [weak self] in
             DispatchQueue.main.async {
                 guard let self = self else { return }
+                self.activityIndicator.stopAnimating()
                 self.nameLabel.text = self.viewModel.userName
                 self.informationLabel.text = self.viewModel.userDescription
                 self.profileLink.setTitle(self.viewModel.userWebsite, for: .normal)
@@ -251,7 +260,10 @@ extension ProfileViewController: ViewConfigurable {
             tableView.topAnchor.constraint(equalTo: profileLink.bottomAnchor, constant: 40),
             tableView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
             tableView.trailingAnchor.constraint(equalTo: view.trailingAnchor),
-            tableView.bottomAnchor.constraint(equalTo: view.bottomAnchor)
+            tableView.bottomAnchor.constraint(equalTo: view.bottomAnchor),
+            
+            activityIndicator.centerXAnchor.constraint(equalTo: view.centerXAnchor),
+            activityIndicator.centerYAnchor.constraint(equalTo: view.centerYAnchor)
         ])
     }
     
@@ -261,7 +273,8 @@ extension ProfileViewController: ViewConfigurable {
             nameLabel,
             informationLabel,
             profileLink,
-            tableView
+            tableView,
+            activityIndicator
         ]
         subViews.forEach { view.addSubview($0) }
     }

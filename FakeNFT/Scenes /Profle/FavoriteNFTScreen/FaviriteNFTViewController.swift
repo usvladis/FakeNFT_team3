@@ -68,6 +68,14 @@ final class FavoriteNFTViewController: UIViewController {
         return collectionView
     }()
     
+    private lazy var activityIndicator: UIActivityIndicatorView = {
+        let indicator = UIActivityIndicatorView(style: .medium)
+        indicator.translatesAutoresizingMaskIntoConstraints = false
+        indicator.hidesWhenStopped = true
+        return indicator
+    }()
+    
+    // MARK - LifeCicle
     override func viewDidLoad() {
         super.viewDidLoad()
         viewModel.configure(with: newProfileViewModel)
@@ -122,9 +130,12 @@ final class FavoriteNFTViewController: UIViewController {
     }
     
     private func updateAfterDownloadData() {
+        activityIndicator.startAnimating()
         viewModel.nftsUpdated = { [weak self] in
-            self?.likedNFTs = self?.viewModel.likedNFTs ?? []
-            self?.collectionView.reloadData()
+            guard let self = self else {return}
+            self.activityIndicator.stopAnimating()
+            self.likedNFTs = self.viewModel.likedNFTs
+            self.collectionView.reloadData()
         }
     }
     
@@ -146,7 +157,12 @@ final class FavoriteNFTViewController: UIViewController {
 // MARK: - ViewConfigurable
 extension FavoriteNFTViewController: ViewConfigurable {
     func addSubviews() {
-        view.addSubview(collectionView)
+        [
+            activityIndicator,
+            collectionView
+        ].forEach {
+            view.addSubview($0)
+        }
     }
     
     func addConstraints() {
@@ -154,7 +170,10 @@ extension FavoriteNFTViewController: ViewConfigurable {
             collectionView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
             collectionView.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor),
             collectionView.trailingAnchor.constraint(equalTo: view.trailingAnchor),
-            collectionView.bottomAnchor.constraint(equalTo: view.bottomAnchor)
+            collectionView.bottomAnchor.constraint(equalTo: view.bottomAnchor),
+            
+            activityIndicator.centerXAnchor.constraint(equalTo: view.centerXAnchor),
+            activityIndicator.centerYAnchor.constraint(equalTo: view.centerYAnchor)
         ])
     }
     
