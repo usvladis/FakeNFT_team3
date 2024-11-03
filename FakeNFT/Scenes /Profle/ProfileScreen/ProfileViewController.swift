@@ -153,8 +153,9 @@ final class ProfileViewController: UIViewController {
             viewModel: profileChangeViewModel,
             newProfileViewModel: viewModel
         )
-        setupBindings()
-        viewModel.loadProfile()
+        profileChangeViewController.onDismiss = { [weak self] in
+               self?.viewModel.loadProfile()
+           }
         present(
             profileChangeViewController,
             animated: true,

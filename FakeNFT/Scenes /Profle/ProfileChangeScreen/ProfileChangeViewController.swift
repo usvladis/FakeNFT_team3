@@ -180,12 +180,13 @@ final class ProfileChangeViewController: UIViewController {
         return textField
     }()
     
-    private lazy var activityIndicator: UIActivityIndicatorView = {
-        let indicator = UIActivityIndicatorView(style: .medium)
-        indicator.translatesAutoresizingMaskIntoConstraints = false
-        indicator.hidesWhenStopped = true
-        return indicator
-    }()
+    //MARK: - Public Priorites
+    var onDismiss: (() -> Void)?
+    
+    override func viewWillDisappear(_ animated: Bool) {
+        super.viewWillDisappear(animated)
+        onDismiss?()
+    }
     
     // MARK: - Life Cycle
     override func viewDidLoad() {
@@ -240,11 +241,9 @@ final class ProfileChangeViewController: UIViewController {
     }
     
     private func updateScreenInformation() {
-        activityIndicator.startAnimating()
         viewModel.profileUpdated = { [weak self] in
             DispatchQueue.main.async {
                 guard let self = self else { return }
-                self.activityIndicator.stopAnimating()
                 self.nameTextField.text = self.viewModel.userName
                 self.descriptionTextView.text = self.viewModel.userDescription
                 self.websiteTextField.text = self.viewModel.userWebsite
@@ -360,8 +359,7 @@ extension ProfileChangeViewController: ViewConfigurable {
             descriptionLabel,
             descriptionTextView,
             websiteLabel,
-            websiteTextField,
-            activityIndicator
+            websiteTextField
         ]
         subViews.forEach { contentView.addSubview($0) }
         [darkOverlay, changePfotoButton].forEach {
@@ -433,10 +431,11 @@ extension ProfileChangeViewController: ViewConfigurable {
             websiteTextField.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 16),
             websiteTextField.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -16),
             websiteTextField.heightAnchor.constraint(equalToConstant: 40),
-            websiteTextField.bottomAnchor.constraint(equalTo: contentView.bottomAnchor, constant: -16),
-            
-            activityIndicator.centerXAnchor.constraint(equalTo: view.centerXAnchor),
-            activityIndicator.centerYAnchor.constraint(equalTo: view.centerYAnchor)
+            websiteTextField.bottomAnchor.constraint(equalTo: contentView.bottomAnchor, constant: -16)
         ])
     }
+}
+
+extension ProfileChangeViewController {
+    
 }
