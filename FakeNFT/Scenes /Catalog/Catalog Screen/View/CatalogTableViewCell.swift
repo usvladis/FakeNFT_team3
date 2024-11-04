@@ -28,17 +28,18 @@ final class CatalogTableViewCell: UITableViewCell {
     }()
     
     private lazy var nameAndCountLabel: UILabel = {
-        let nameAndCountLabel = UILabel()
-        nameAndCountLabel.translatesAutoresizingMaskIntoConstraints = false
-        nameAndCountLabel.font = .bodyBold
-        return nameAndCountLabel
+        let label = UILabel()
+        label.translatesAutoresizingMaskIntoConstraints = false
+        label.font = .bodyBold
+        return label
     }()
     
     // MARK: - Initializers
     
     override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
         super.init(style: .subtitle, reuseIdentifier: reuseIdentifier)
-        addSubViews()
+        setupSubviews()
+        setupConstraints()
     }
     
     required init?(coder: NSCoder) {
@@ -46,11 +47,10 @@ final class CatalogTableViewCell: UITableViewCell {
     }
     
     // MARK: - Configuration
-    
-    func configCell(name: String, count: Int, image: URL) {
-        let urlForImage = image
+    /// Конфигурирует ячейку с именем, количеством элементов и изображением
+    func configure(name: String, count: Int, image: URL) {
         topImage.kf.setImage(
-            with: urlForImage,
+            with: image,
             options: [
                 .transition(.fade(1)),
                 .cacheOriginalImage
@@ -59,18 +59,20 @@ final class CatalogTableViewCell: UITableViewCell {
         nameAndCountLabel.text = "\(name) (\(count))"
     }
     
-    
     // MARK: - Layout Setup
     
-    private func addSubViews() {
+    private func setupSubviews() {
         contentView.addSubview(topImage)
         contentView.addSubview(nameAndCountLabel)
-        
-        let heightCell = contentView.heightAnchor.constraint(equalToConstant: 179)
-        heightCell.priority = .defaultHigh
+    }
+    
+    private func setupConstraints() {
+        let heightConstraint = contentView.heightAnchor.constraint(equalToConstant: 179)
+        heightConstraint.priority = .defaultHigh
         
         NSLayoutConstraint.activate([
-            heightCell,
+            heightConstraint,
+            
             topImage.topAnchor.constraint(equalTo: contentView.topAnchor),
             topImage.leadingAnchor.constraint(equalTo: contentView.leadingAnchor),
             topImage.trailingAnchor.constraint(equalTo: contentView.trailingAnchor),
@@ -82,3 +84,4 @@ final class CatalogTableViewCell: UITableViewCell {
         ])
     }
 }
+

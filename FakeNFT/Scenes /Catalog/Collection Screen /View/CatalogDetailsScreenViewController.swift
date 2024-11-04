@@ -6,14 +6,17 @@
 //
 
 import UIKit
+import ProgressHUD
 
+// MARK: - CatalogDetailsScreenViewController
 final class CatalogDetailsScreenViewController: UIViewController {
     
+    // MARK: - Properties
     private let viewModel: CollectionViewModelProtocol
-    
     private var collection: CollectionModel?
     private var collectionViewHeightConstraint: NSLayoutConstraint?
     
+    // MARK: - UI Elements
     private lazy var scrollView: UIScrollView = {
         let scrollView = UIScrollView()
         scrollView.alwaysBounceVertical = true
@@ -60,10 +63,9 @@ final class CatalogDetailsScreenViewController: UIViewController {
     private lazy var urlButton: UIButton = {
         let button = UIButton()
         button.translatesAutoresizingMaskIntoConstraints = false
-        let font = UIFont.caption1
         button.contentHorizontalAlignment = .left
         button.setTitleColor(.link, for: .normal)
-        button.titleLabel?.font = font
+        button.titleLabel?.font = .caption1
         button.addTarget(self, action: #selector(goToAuthorURL), for: .touchUpInside)
         return button
     }()
@@ -77,7 +79,8 @@ final class CatalogDetailsScreenViewController: UIViewController {
     }()
     
     private lazy var collectionView: UICollectionView = {
-        let collectionView = UICollectionView(frame: .zero, collectionViewLayout: UICollectionViewFlowLayout())
+        let layout = UICollectionViewFlowLayout()
+        let collectionView = UICollectionView(frame: .zero, collectionViewLayout: layout)
         collectionView.translatesAutoresizingMaskIntoConstraints = false
         collectionView.delegate = self
         collectionView.dataSource = self
@@ -87,6 +90,7 @@ final class CatalogDetailsScreenViewController: UIViewController {
         return collectionView
     }()
     
+    // MARK: - Initializer
     init(viewModel: CollectionViewModelProtocol) {
         self.viewModel = viewModel
         super.init(nibName: nil, bundle: nil)
@@ -96,6 +100,7 @@ final class CatalogDetailsScreenViewController: UIViewController {
         fatalError("init(coder:) has not been implemented")
     }
     
+    // MARK: - Lifecycle
     override func viewDidLoad() {
         super.viewDidLoad()
         view.backgroundColor = .catalogBackgroundColor
@@ -106,10 +111,15 @@ final class CatalogDetailsScreenViewController: UIViewController {
         configureNavBar()
     }
     
+    // MARK: - Setup Methods
     private func loadData() {
+        ProgressHUD.show()
+        ProgressHUD.animationType = .circleSpinFade
         print("Загрузка данных из viewModel")
+        
         viewModel.fetchNFTs { [weak self] in
             DispatchQueue.main.async {
+                ProgressHUD.dismiss()
                 print("Данные загружены, обновляем коллекцию")
                 self?.collectionView.reloadData()
                 self?.updateCollectionViewHeight()
@@ -132,10 +142,6 @@ final class CatalogDetailsScreenViewController: UIViewController {
         )
         backButton.tintColor = .black
         navigationItem.leftBarButtonItem = backButton
-    }
-    
-    @objc private func backButtonTapped() {
-        navigationController?.popViewController(animated: true)
     }
     
     private func addSubviews() {
@@ -203,25 +209,17 @@ final class CatalogDetailsScreenViewController: UIViewController {
         collectionViewHeightConstraint?.isActive = true
     }
     
-    func configureSubviews() {
+    private func configureSubviews() {
         let pickedCollection = viewModel.getPickedCollection()
         
-        let urlForImage = pickedCollection.cover
-        topImage.kf.setImage(
-            with: urlForImage,
-            options: [
-                .transition(.fade(1)),
-                .cacheOriginalImage
-            ]
-        )
-        
+        topImage.kf.setImage(with: pickedCollection.cover, options: [.transition(.fade(1)), .cacheOriginalImage])
         nameLabel.text = pickedCollection.name
         urlButton.setTitle(pickedCollection.author, for: .normal)
         firstAuthorLabel.text = localizedString(key: "collectionAuthor")
         descriptionLabel.text = pickedCollection.description
     }
     
-    func updateCollectionViewHeight() {
+    private func updateCollectionViewHeight() {
         let numberOfItems = collectionView.numberOfItems(inSection: 0)
         let rows = CGFloat((numberOfItems / 3) + (numberOfItems % 3 == 0 ? 0 : 1))
         let itemHeight: CGFloat = 192
@@ -231,11 +229,12 @@ final class CatalogDetailsScreenViewController: UIViewController {
         collectionViewHeightConstraint?.constant = totalHeight
     }
     
-    @objc func dismissViewController() {
-        dismiss(animated: true, completion: nil)
+    // MARK: - Actions
+    @objc private func backButtonTapped() {
+        navigationController?.popViewController(animated: true)
     }
     
-    @objc func goToAuthorURL() {
+    @objc private func goToAuthorURL() {
         guard let url = URL(string: Constants.urlDev) else {
             let alert = UIAlertController(title: "Ошибка", message: "Некорректный URL-адрес.", preferredStyle: .alert)
             alert.addAction(UIAlertAction(title: "Ок", style: .default, handler: nil))
@@ -253,48 +252,66 @@ final class CatalogDetailsScreenViewController: UIViewController {
     }
 }
 
+// MARK: - UICollectionViewDelegate
 extension CatalogDetailsScreenViewController: UICollectionViewDelegate {}
 
+// MARK: - UICollectionViewDataSource
 extension CatalogDetailsScreenViewController: UICollectionViewDataSource {
-    
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
         return viewModel.numberOfCollections()
     }
     
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
-        
         guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: NFTCellForCollectionView.reuseIdentifier,
                                                             for: indexPath) as? NFTCellForCollectionView else {
-            assertionFailure("Не удалось dequeued ячейку с идентификатором \(NFTCellForCollectionView.reuseIdentifier) или привести ее к NFTCellForCollectionView")
+            print("Не прошёл каст")
             return UICollectionViewCell()
         }
-        
+
+        cell.delegate = self
+
         let nft = viewModel.collection(at: indexPath.row)
-        cell.prepareForReuse()
-        cell.configure(nft: nft)
-        
+        let isLike = viewModel.getLikes().contains(nft.id)
+        let inCart = viewModel.getCart().contains(nft.id)
+
+        cell.configure(nft: nft, isLike: isLike, nftID: nft.id, inCart: inCart)
         return cell
     }
 }
 
+// MARK: - UICollectionViewDelegateFlowLayout
 extension CatalogDetailsScreenViewController: UICollectionViewDelegateFlowLayout {
-    
-    func collectionView(_ collectionView: UICollectionView,
-                        layout collectionViewLayout: UICollectionViewLayout,
-                        sizeForItemAt indexPath: IndexPath) -> CGSize {
+    func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
         return CGSize(width: 108, height: 192)
     }
     
-    func collectionView(_ collectionView: UICollectionView,
-                        layout collectionViewLayout: UICollectionViewLayout,
-                        minimumInteritemSpacingForSectionAt section: Int) -> CGFloat {
+    func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, minimumInteritemSpacingForSectionAt section: Int) -> CGFloat {
         return 9
     }
     
-    func collectionView(_ collectionView: UICollectionView,
-                        layout collectionViewLayout: UICollectionViewLayout,
-                        insetForSectionAt section: Int) -> UIEdgeInsets {
-        let leftAndRightInset: CGFloat = 16
-        return UIEdgeInsets(top: 8, left: leftAndRightInset, bottom: 8, right: leftAndRightInset)
+    func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, insetForSectionAt section: Int) -> UIEdgeInsets {
+        return UIEdgeInsets(top: 8, left: 16, bottom: 8, right: 16)
     }
 }
+
+// MARK: - NFTCollectionViewCellDelegate
+extension CatalogDetailsScreenViewController: NFTCollectionViewCellDelegate {
+    func tapLikeButton(with id: String) {
+        ProgressHUD.show()
+        view.isUserInteractionEnabled = false
+        viewModel.toggleLike(for: id) {
+            ProgressHUD.dismiss()
+            self.view.isUserInteractionEnabled = true
+        }
+    }
+    
+    func tapCartButton(with id: String) {
+        ProgressHUD.show()
+        view.isUserInteractionEnabled = false
+        viewModel.toggleCart(for: id) {
+            ProgressHUD.dismiss()
+            self.view.isUserInteractionEnabled = true
+        }
+    }
+}
+

@@ -7,15 +7,19 @@
 
 import UIKit
 
+// MARK: - NFTModelCatalog
+/// Модель каталога NFT, представляющая данные об одной коллекции
 struct NFTModelCatalog: Codable {
-    let createdAt: String
-    let name: String
-    let cover: URL
-    let nfts: [String]
-    let description: String
-    let author: String
-    let id: String
+    let createdAt: String          // Дата создания коллекции
+    let name: String               // Название коллекции
+    let cover: URL                 // URL-адрес обложки коллекции
+    let nfts: [String]             // Массив идентификаторов NFT, входящих в коллекцию
+    let description: String        // Описание коллекции
+    let author: String             // Имя автора коллекции
+    let id: String                 // Идентификатор коллекции
 }
 
-typealias NFTsModelCatalog = [NFTModelCatalog]
-typealias NFTsModelCatalogCompletion = (Result<NFTsModelCatalog, Error>) -> Void
+// MARK: - Type Aliases
+typealias NFTsModelCatalog = [NFTModelCatalog]    // Тип для массива коллекций NFT
+typealias NFTsModelCatalogCompletion = (Result<NFTsModelCatalog, Error>) -> Void  // Завершение запроса на загрузку каталога
+
