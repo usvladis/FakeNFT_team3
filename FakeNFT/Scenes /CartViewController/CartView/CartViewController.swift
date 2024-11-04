@@ -14,6 +14,7 @@ import ProgressHUD
 final class CartViewController: UIViewController {
     
     private let viewModel = CartViewModel()
+    private let cartService = CartService.shared //В релиз версии эта строчка уберется
     
     private let tableView: UITableView = {
         let tableView = UITableView()
@@ -85,7 +86,11 @@ final class CartViewController: UIViewController {
         setupView()
         bindViewModel()
         viewModel.applySavedSortType()
-        //viewModel.loadNFTItems()
+        
+        //В релиз версии строчки ниже уберутся, нужны только для демонстрации корзины
+        cartService.addNFT(id: "a4edeccd-ad7c-4c7f-b09e-6edec02a812b")
+        cartService.addNFT(id: "3434c774-0e0f-476e-a314-24f4f0dfed86")
+        cartService.addNFT(id: "c14cf3bc-7470-4eec-8a42-5eaa65f4053c")
     }
     
     private func bindViewModel() {

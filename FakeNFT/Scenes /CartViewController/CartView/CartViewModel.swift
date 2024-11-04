@@ -36,7 +36,7 @@ final class CartViewModel {
                 case .success(let nft):
                     if let imageURLString = nft.images.first,
                        let url = URL(string: imageURLString) {
-                        let nftItem = NFTItem(id: nft.id, imageURL: url, title: nft.name, price: nft.price, rating: nft.rating)
+                        let nftItem = NFTItem(id: nft.id, imageURL: url, title: imageURLString.extractNFTName(from: imageURLString) ?? "Default", price: nft.price, rating: nft.rating)
                         
                         self?.nftItems.append(nftItem)
                         self?.onItemsUpdated?()
