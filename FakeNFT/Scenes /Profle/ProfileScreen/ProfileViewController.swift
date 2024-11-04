@@ -131,15 +131,6 @@ final class ProfileViewController: UIViewController {
         viewModel.loadProfile()
     }
     
-    override func viewWillAppear(
-        _ animated: Bool
-    ) {
-        super.viewWillAppear(animated)
-        setupBindings()
-        viewModel.loadProfile()
-    }
-    
-    
     // MARK: - Private Methods
     private func setupNavigationBar() {
         navigationItem.rightBarButtonItem = UIBarButtonItem(
