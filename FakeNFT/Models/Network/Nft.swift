@@ -5,7 +5,7 @@ struct Nft: Decodable {
     var name: String
     let images: [String]
     let rating: Int
-    let price: Float
+    let price: Double
     let originalName: String
     
     //MARK: - Decodable инициализатор для декодирования из JSON
@@ -16,7 +16,7 @@ struct Nft: Decodable {
         self.originalName = self.name // Сохраняем исходное имя при декодировании
         self.images = try container.decode([String].self, forKey: .images)
         self.rating = try container.decode(Int.self, forKey: .rating)
-        self.price = try container.decode(Float.self, forKey: .price)
+        self.price = try container.decode(Double.self, forKey: .price)
     }
     //MARK: - CodingKeys
     private enum CodingKeys: String, CodingKey {
