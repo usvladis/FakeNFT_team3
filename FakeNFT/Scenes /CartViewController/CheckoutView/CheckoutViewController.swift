@@ -8,9 +8,8 @@
 import UIKit
 
 final class CheckoutViewController: UIViewController {
-    private let paymentMethods = PaymentMethod.data()
     
-    private var selectedPaymentMethodIndex: IndexPath? = nil
+    private let viewModel: CheckoutViewModel
     
     private let collectionView: UICollectionView = {
         let layout = UICollectionViewFlowLayout()
@@ -64,6 +63,15 @@ final class CheckoutViewController: UIViewController {
         return button
     }()
     
+    init(viewModel: CheckoutViewModel) {
+        self.viewModel = viewModel
+        super.init(nibName: nil, bundle: nil)
+    }
+    
+    required init?(coder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         view.backgroundColor = .backgroudColor
@@ -73,6 +81,7 @@ final class CheckoutViewController: UIViewController {
         
         collectionView.dataSource = self
         collectionView.delegate = self
+        bindViewModel()
     }
     
     private func setupNavigationBar() {
@@ -82,11 +91,6 @@ final class CheckoutViewController: UIViewController {
         navigationController?.navigationBar.prefersLargeTitles = false
         let backButton = UIBarButtonItem(image: UIImage(named: "back_button"), style: .plain, target: self, action: #selector(handleBackButton))
         navigationItem.leftBarButtonItem = backButton
-    }
-    
-    @objc
-    private func handleBackButton() {
-        dismiss(animated: true)
     }
     
     private func setupCollectionView() {
@@ -131,12 +135,36 @@ final class CheckoutViewController: UIViewController {
         ])
     }
     
+    private func bindViewModel() {
+        agreementLabel.text = viewModel.agreementText
+        payButton.setTitle(viewModel.payButtonText, for: .normal)
+        
+        viewModel.selectedPaymentMethodIndex.bind { [weak self] _ in
+            self?.collectionView.reloadData()
+        }
+        
+        viewModel.onPaymentSuccess = { [weak self] in
+            let successViewController = SuccessPaymentViewController()
+            successViewController.modalPresentationStyle = .fullScreen
+            self?.present(successViewController, animated: false)
+        }
+        
+        viewModel.onPaymentFailure = { [weak self] errorMessage in
+            let alert = AlertService.createAlert(title: errorMessage) {
+                self?.handlePayButton()
+            }
+            self?.present(alert, animated: true)
+        }
+    }
+    
+    @objc
+    private func handleBackButton() {
+        dismiss(animated: true)
+    }
+    
     @objc
     private func handlePayButton() {
-        let successViewController = SuccessPaymentViewController()
-        successViewController.modalPresentationStyle = .fullScreen
-        
-        present(successViewController, animated: false)
+        viewModel.handlePayButton()
     }
     
     @objc
@@ -147,27 +175,40 @@ final class CheckoutViewController: UIViewController {
         
         present(navigationWebViewController, animated: true)
     }
+    
+    private func showSuccessViewController() {
+        let successViewController = SuccessPaymentViewController()
+        successViewController.modalPresentationStyle = .fullScreen
+        
+        present(successViewController, animated: false)
+    }
+    
+    private func showAlert(title: String) {
+        let alert = AlertService.createAlert(title: title) {
+            self.handlePayButton()
+        }
+        present(alert, animated: true, completion: nil)
+    }
 }
 
 extension CheckoutViewController: UICollectionViewDataSource, UICollectionViewDelegate {
     
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        return paymentMethods.count
+        return viewModel.paymentMethods.count
     }
     
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: PaymentMethodCell.identifier, for: indexPath) as? PaymentMethodCell else {
             return UICollectionViewCell()
         }
-        let method = paymentMethods[indexPath.row]
-        let isSelected = selectedPaymentMethodIndex == indexPath
+        let method = viewModel.paymentMethods[indexPath.row]
+        let isSelected = viewModel.selectedPaymentMethodIndex.value == indexPath
         cell.configure(with: method, isSelected: isSelected)
         return cell
     }
     
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
-        selectedPaymentMethodIndex = indexPath
-        collectionView.reloadData() 
+        viewModel.selectPaymentMethod(at: indexPath)
     }
 }
 

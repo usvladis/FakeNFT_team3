@@ -7,11 +7,14 @@
 
 import UIKit
 import SwiftUI
+import Kingfisher
+import ProgressHUD
 
 // MARK: - Preview
 final class CartViewController: UIViewController {
     
-    private var nftItems: [NFTItem] = NFTItem.mockData()
+    private let viewModel = CartViewModel()
+    private let cartService = CartService.shared //В релиз версии эта строчка уберется
     
     private let tableView: UITableView = {
         let tableView = UITableView()
@@ -73,31 +76,63 @@ final class CartViewController: UIViewController {
         return label
     }()
     
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        viewModel.loadNFTItems()
+    }
+    
     override func viewDidLoad() {
         super.viewDidLoad()
-        // Добавляем таргет на нажатие кнопки sortButton
-        sortButton.target = self
-        sortButton.action = #selector(sortButtonTapped)
-        
         setupView()
-        applySavedSortType()
-        updateViewVisibility()
+        bindViewModel()
+        viewModel.applySavedSortType()
         
-        tableView.dataSource = self
-        tableView.delegate = self
+        //В релиз версии строчки ниже уберутся, нужны только для демонстрации корзины
+        cartService.addNFT(id: "a4edeccd-ad7c-4c7f-b09e-6edec02a812b")
+        cartService.addNFT(id: "3434c774-0e0f-476e-a314-24f4f0dfed86")
+        cartService.addNFT(id: "c14cf3bc-7470-4eec-8a42-5eaa65f4053c")
+    }
+    
+    private func bindViewModel() {
+        viewModel.onItemsUpdated = { [weak self] in
+            DispatchQueue.main.async {
+                self?.tableView.reloadData()
+                self?.setupCartInformation()
+                self?.updateViewVisibility()
+            }
+            
+        }
+        
+        viewModel.onLoadingStatusChanged = { [weak self] isLoading in
+            DispatchQueue.main.async {
+                if isLoading {
+                    self?.showLoadingIndicator()
+                } else {
+                    self?.hideLoadingIndicator()
+                }
+            }
+        }
+        
+        viewModel.onError = { error in
+            print("Error loading NFT: \(error)")
+        }
     }
     
     private func setupView() {
-        // View setup
         view.backgroundColor = .backgroudColor
         navigationItem.rightBarButtonItem = sortButton
         navigationController?.navigationBar.barTintColor = .backgroudColor
         navigationController?.navigationBar.tintColor = .buttonColor
         
+        sortButton.target = self
+        sortButton.action = #selector(sortButtonTapped)
+        
         setupTableView()
         setupBottomView()
         setupPlaceholder()
-        setupCartInformation()
+        
+        tableView.dataSource = self
+        tableView.delegate = self
     }
     
     private func setupTableView() {
@@ -148,7 +183,7 @@ final class CartViewController: UIViewController {
     }
     
     private func updateViewVisibility() {
-        if nftItems.isEmpty {
+        if viewModel.nftItems.isEmpty {
             // Показываем плейсхолдер
             placeholderLabel.isHidden = false
             
@@ -174,15 +209,18 @@ final class CartViewController: UIViewController {
     }
     
     private func setupCartInformation() {
-        totalNFTLabel.text = "\(nftItems.count) NFT"
-        var totalPrice = nftItems.reduce(0) { $0 + $1.price }
-        totalAmountLabel.text = "\(totalPrice) ETH"
+        totalNFTLabel.text = viewModel.getTotalNFTCount()
+        totalAmountLabel.text = viewModel.getTotalPrice()
     }
     
     @objc
     func checkoutButtonTapped() {
         print("checkoutButtonTapped")
-        let checkoutViewController = CheckoutViewController()
+        // Создаем экземпляр ViewModel
+        let checkoutViewModel = CheckoutViewModel()
+        
+        // Передаем ViewModel в CheckoutViewController
+        let checkoutViewController = CheckoutViewController(viewModel: checkoutViewModel)
         let checkoutNavigationViewController = UINavigationController(rootViewController: checkoutViewController)
         checkoutNavigationViewController.modalPresentationStyle = .fullScreen
         
@@ -191,108 +229,71 @@ final class CartViewController: UIViewController {
     
     @objc
     func sortButtonTapped() {
-        // Создаем UIAlertController в стиле Action Sheet
         let alertController = UIAlertController(title: localizedString(key: "sorting"), message: nil, preferredStyle: .actionSheet)
+        alertController.addAction(UIAlertAction(title: localizedString(key: "sortingByPrice"), style: .default) { _ in self.viewModel.sortByPrice() })
+        alertController.addAction(UIAlertAction(title: localizedString(key: "sortingByRating"), style: .default) { _ in self.viewModel.sortByRating() })
+        alertController.addAction(UIAlertAction(title: localizedString(key: "sortingByName"), style: .default) { _ in self.viewModel.sortByName() })
+        alertController.addAction(UIAlertAction(title: localizedString(key: "close"), style: .cancel))
         
-        // Добавляем действие для сортировки по цене
-        let sortByPriceAction = UIAlertAction(title: localizedString(key: "sortingByPrice"), style: .default) { [weak self] _ in
-            self?.sortByPrice()
-        }
-        
-        // Добавляем действие для сортировки по рейтингу
-        let sortByRatingAction = UIAlertAction(title: localizedString(key: "sortingByRating"), style: .default) { [weak self] _ in
-            self?.sortByRating()
-        }
-        
-        // Добавляем действие для сортировки по названию
-        let sortByNameAction = UIAlertAction(title: localizedString(key: "sortingByName"), style: .default) { [weak self] _ in
-            self?.sortByName()
-        }
-        
-        // Добавляем действие для отмены
-        let closeAction = UIAlertAction(title: localizedString(key: "close"), style: .cancel)
-        
-        // Добавляем все действия в UIAlertController
-        alertController.addAction(sortByPriceAction)
-        alertController.addAction(sortByRatingAction)
-        alertController.addAction(sortByNameAction)
-        alertController.addAction(closeAction)
-        
-        // Показываем UIAlertController
-        present(alertController, animated: true, completion: nil)
+        present(alertController, animated: true)
     }
     
-    private func presentDeleteConfirmationDialog(with image: UIImage, nftId: UUID) {
-        let deleteConfirmationVC = DeleteConfirmationViewController()
-        deleteConfirmationVC.configure(with: image, nftId: nftId) // передаем картинку и id
+    private func presentDeleteConfirmationDialog(with imageURL: URL, nftId: String) {
+        let viewModel = DeleteConfirmationViewModel(
+            nftId: nftId,
+            nftImageURL: imageURL,
+            warningText: localizedString(key: "removeQuestionText"),
+            deleteButtonTitle: localizedString(key: "removeButtonTitle"),
+            cancelButtonTitle: localizedString(key: "goBackButtonTitle")
+        )
+        viewModel.onDeleteConfirmed = {[weak self] nftId in
+            self?.viewModel.deleteNFT(withId: nftId) // вызываем метод удаления NFT
+        }
+        viewModel.onCancel = {
+            // Обработка отмены
+        }
+
+        let deleteConfirmationVC = DeleteConfirmationViewController(viewModel: viewModel)
         deleteConfirmationVC.modalPresentationStyle = .overFullScreen
-        deleteConfirmationVC.modalTransitionStyle = .crossDissolve
-        deleteConfirmationVC.onDeleteConfirmed = { [weak self] nftId in
-            self?.deleteNFT(withId: nftId) // вызываем метод удаления NFT
-        }
-        present(deleteConfirmationVC, animated: true, completion: nil)
+        present(deleteConfirmationVC, animated: false, completion: nil)
     }
     
-    func deleteNFT(withId id: UUID) {
-        if let index = nftItems.firstIndex(where: { $0.id == id }) {
-            nftItems.remove(at: index)
-            tableView.reloadData()
-            setupCartInformation()
-            updateViewVisibility() // обновляем интерфейс после удаления
-        }
+    private func showLoadingIndicator() {
+        ProgressHUD.show()
+        // Скрываем плейсхолдер
+        placeholderLabel.isHidden = true
+        // Скрываем таблицу и нижнюю панель с информацией
+        navigationController?.setNavigationBarHidden(true, animated: false)
+        tableView.isHidden = true
+        bottomView.isHidden = true
+        checkoutButton.isHidden = true
+        totalNFTLabel.isHidden = true
+        totalAmountLabel.isHidden = true
     }
     
-    private func sortByPrice() {
-        nftItems.sort { $0.price < $1.price }
-        UserDefaults.standard.set("price", forKey: "selectedSortType")
-        tableView.reloadData()
-        updateViewVisibility()
-    }
-    
-    private func sortByRating() {
-        nftItems.sort { $0.rating > $1.rating }
-        UserDefaults.standard.set("rating", forKey: "selectedSortType")
-        tableView.reloadData()
-        updateViewVisibility()
-    }
-    
-    private func sortByName() {
-        nftItems.sort { $0.title < $1.title }
-        UserDefaults.standard.set("name", forKey: "selectedSortType")
-        tableView.reloadData()
-        updateViewVisibility()
-    }
-    
-    private func applySavedSortType() {
-        let savedSortType = UserDefaults.standard.string(forKey: "selectedSortType") ?? "price"
+    private func hideLoadingIndicator() {
+        ProgressHUD.dismiss()
         
-        switch savedSortType {
-        case "price":
-            sortByPrice()
-        case "rating":
-            sortByRating()
-        case "name":
-            sortByName()
-        default:
-            sortByPrice()
-        }
+        // Показать UI после завершения загрузки
+        updateViewVisibility()
     }
 }
 
 extension CartViewController: UITableViewDataSource, UITableViewDelegate {
     
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return nftItems.count
+        return viewModel.nftItems.count
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         guard let cell = tableView.dequeueReusableCell(withIdentifier: NFTItemCell.identifier, for: indexPath) as? NFTItemCell else {
             return UITableViewCell()
         }
-        let nftItem = nftItems[indexPath.row]
+        let nftItem = viewModel.nftItems[indexPath.row]
         cell.configure(with: nftItem)
+        
         cell.buttonAction = { [weak self] in
-            self?.presentDeleteConfirmationDialog(with: nftItem.image, nftId: nftItem.id)
+            self?.presentDeleteConfirmationDialog(with: nftItem.imageURL, nftId: nftItem.id)
         }
         return cell
     }
