@@ -36,6 +36,7 @@
 "close" = "Close";
 "price" = "Price";
 "addToCart" = "Add to cart";
+"collectionAuthor" = "Collection Author: ";
 "titleButtonSellerWebsite" = "Go to seller’s website";
 "toPayButtonTitle" = "To pay";
 "removeQuestionText" = "Are you sure you want \n to remove the item from the cart?";

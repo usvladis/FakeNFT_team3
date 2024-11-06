@@ -1,8 +1,8 @@
 //
-//  ДocalizedString.swift
+//  NSLocalizedString.swift
 //  FakeNFT
 //
-//  Created by Владислав Усачев on 11.10.2024.
+//  Created by Кирилл Марьясов on 12.10.2024.
 //
 
 import Foundation
