@@ -43,7 +43,8 @@
 "removeButtonTitle" = "Удалить";
 "goBackButtonTitle" = "Вернуться";
 "paymentMethodTitle" = "Выберите способ оплаты";
-"warningUserAgreement" = "Совершая покупку, вы соглашаетесь с условиями \n Пользовательского соглашения";
+"warningUserAgreement" = "Совершая покупку, вы соглашаетесь с условиями";
+"warningUserButton" = "Пользовательского соглашения";
 "pay" = "Оплатить";
 "sortingByPrice" = "По цене";
 "sortingByRating" = "По рейтингу";
@@ -54,7 +55,7 @@
 "retry" = "Повторить";
 "cartIsEmpty" = "Корзина пуста";
 "myNFT" = "Мои NFT";
-"faforiteNFT" = "Избранные NFT";
+"favoriteNFT" = "Избранные NFT";
 "aboutTheDeveloper" = "О разработчике";
 "name" = "Имя";
 "description" = "Описание";
