@@ -104,6 +104,8 @@ final class NFTCellForCollectionView: UICollectionViewCell {
         self.inCart = inCart
         self.isLike = isLike
         
+        
+        
         nameLabel.text = nft.name.components(separatedBy: " ").first ?? nft.name
         nftImageView.kf.setImage(
             with: nft.images[0],

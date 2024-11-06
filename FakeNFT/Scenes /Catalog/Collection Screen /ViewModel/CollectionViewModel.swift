@@ -35,7 +35,8 @@ final class CollectionViewModel: CollectionViewModelProtocol {
     var showErrorAlert: ((String) -> Void)?
     private let profileService = ProfileServiceImpl(networkClient: DefaultNetworkClient(), storage: ProfileStorageImpl())
     private let orderService = OrderServiceImpl(networkClient: DefaultNetworkClient())
-
+    private let cartService = CartService.shared
+    
     // MARK: - Initializer
     init(pickedCollection: NFTModelCatalog, model: CollectionModel, profile: Profile, order: Order) {
         self.collectionModel = model
@@ -106,7 +107,7 @@ final class CollectionViewModel: CollectionViewModelProtocol {
     }
     
     func getCart() -> [String] {
-        return cartNFT
+        return cartService.getAllNFTIds()
     }
     
     // MARK: - User Actions
@@ -136,12 +137,11 @@ final class CollectionViewModel: CollectionViewModelProtocol {
     func toggleCart(for nftId: String, completion: @escaping () -> Void) {
         guard var order = order else { return }
         
-        if let index = cartNFT.firstIndex(of: nftId) {
-            cartNFT.remove(at: index)
-            print("Удалили из корзины: \(nftId)")
+        let nftIds = cartService.getAllNFTIds()
+        if !nftIds.contains(nftId) {
+            cartService.addNFT(id: nftId)
         } else {
-            cartNFT.append(nftId)
-            print("Добавили в корзину: \(nftId)")
+            cartService.removeNFT(id: nftId)
         }
         
         orderService.updateOrder(nftsIds: cartNFT) { [weak self] result in
