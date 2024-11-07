@@ -6,7 +6,7 @@
 //
 
 import UIKit
-//import Kingfisher
+import Kingfisher
 
 // MARK: - NFTCollectionViewCellDelegate
 protocol NFTCollectionViewCellDelegate: AnyObject {
@@ -104,24 +104,30 @@ final class NFTCellForCollectionView: UICollectionViewCell {
         id = nftID
         self.inCart = inCart
         self.isLike = isLike
-        
-        
-        
+
         nameLabel.text = nft.name.components(separatedBy: " ").first ?? nft.name
-//        nftImageView.kf.setImage(
-//            with: nft.images[0],
-//            options: [.transition(.fade(1)), .cacheOriginalImage]
-//        )
-        
-//        nftImageView.kf.setImage(with: nft.images[0], placeholder: nil, options: [.transition(.fade(1)), .cacheOriginalImage, completionHandler,: nil)
-        
-        favoriteButton.setImage(isLike ? UIImage(named: "heart_fill") : UIImage(named: "heart"), for: .normal)
-        cartButton.setImage(
-            inCart ? UIImage(named: "CartDelete")?.withTintColor(.buttonColor, renderingMode: .alwaysOriginal) :
-                     UIImage(named: "CartAdd")?.withTintColor(.buttonColor, renderingMode: .alwaysOriginal),
+
+        if let url = URL(string: nft.images[0]) {
+            nftImageView.kf.setImage(
+                with: url,
+                options: [.transition(.fade(1)), .cacheOriginalImage]
+            )
+        } else {
+            // Обработка некорректного URL
+            nftImageView.image = UIImage(named: "placeholder")
+        }
+
+        favoriteButton.setImage(
+            isLike ? UIImage(named: "heart_fill") : UIImage(named: "heart"),
             for: .normal
         )
-        
+        cartButton.setImage(
+            inCart
+                ? UIImage(named: "CartDelete")?.withTintColor(.buttonColor, renderingMode: .alwaysOriginal)
+                : UIImage(named: "CartAdd")?.withTintColor(.buttonColor, renderingMode: .alwaysOriginal),
+            for: .normal
+        )
+
         ethLabel.text = "\(Int(nft.price)) ETH"
         updateRating(nft.rating)
     }
