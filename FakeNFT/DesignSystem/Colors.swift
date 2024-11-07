@@ -28,7 +28,7 @@ extension UIColor {
     static var backgroudColor: UIColor {
         return UIColor { traitCollection in
             return traitCollection.userInterfaceStyle == .dark ?
-                .lightGrayNight   :  // Цвет для тёмной темы
+                .blackUniversal   :  // Цвет для тёмной темы
                 .whiteUniversal  // Цвет для светлой темы
         }
     }
