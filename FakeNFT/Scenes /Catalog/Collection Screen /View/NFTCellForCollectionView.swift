@@ -105,9 +105,12 @@ final class NFTCellForCollectionView: UICollectionViewCell {
         self.inCart = inCart
         self.isLike = isLike
 
-        nameLabel.text = nft.name.components(separatedBy: " ").first ?? nft.name
+        // Извлекаем название NFT из URL изображения
+        let nftImageUrl = nft.images[0]
+        let nftName = "".extractNFTName(from: nftImageUrl) ?? nft.name
+        nameLabel.text = nftName
 
-        if let url = URL(string: nft.images[0]) {
+        if let url = URL(string: nftImageUrl) {
             nftImageView.kf.setImage(
                 with: url,
                 options: [.transition(.fade(1)), .cacheOriginalImage]
