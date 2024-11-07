@@ -6,6 +6,7 @@
 //
 
 import UIKit
+//import Kingfisher
 
 // MARK: - NFTCollectionViewCellDelegate
 protocol NFTCollectionViewCellDelegate: AnyObject {
@@ -107,10 +108,12 @@ final class NFTCellForCollectionView: UICollectionViewCell {
         
         
         nameLabel.text = nft.name.components(separatedBy: " ").first ?? nft.name
-        nftImageView.kf.setImage(
-            with: nft.images[0],
-            options: [.transition(.fade(1)), .cacheOriginalImage]
-        )
+//        nftImageView.kf.setImage(
+//            with: nft.images[0],
+//            options: [.transition(.fade(1)), .cacheOriginalImage]
+//        )
+        
+//        nftImageView.kf.setImage(with: nft.images[0], placeholder: nil, options: [.transition(.fade(1)), .cacheOriginalImage, completionHandler,: nil)
         
         favoriteButton.setImage(isLike ? UIImage(named: "heart_fill") : UIImage(named: "heart"), for: .normal)
         cartButton.setImage(

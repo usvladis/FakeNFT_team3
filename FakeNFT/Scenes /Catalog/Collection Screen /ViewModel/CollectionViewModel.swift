@@ -33,8 +33,8 @@ final class CollectionViewModel: CollectionViewModelProtocol {
     private var favoriteNFT: [String] = []
     private var cartNFT: [String] = []
     var showErrorAlert: ((String) -> Void)?
-    private let profileService = ProfileServiceImpl(networkClient: DefaultNetworkClient(), storage: ProfileStorageImpl())
-    private let orderService = OrderServiceImpl(networkClient: DefaultNetworkClient())
+    private let profileService = ProfileServiceKImplK(networkClient: DefaultNetworkClient(), storage: ProfileStorageImpl())
+    private let orderService = OrderServiceImplK(networkClient: DefaultNetworkClient())
     private let cartService = CartService.shared
     
     // MARK: - Initializer

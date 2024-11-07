@@ -1,5 +1,5 @@
 //
-//  ProfileService.swift
+//  ProfileServiceK.swift
 //  FakeNFT
 //
 //  Created by Кирилл Марьясов on 27.10.2024.
@@ -8,23 +8,23 @@
 import Foundation
 
 // MARK: - Type Aliases
-typealias ProfileCompletion = (Result<Profile, Error>) -> Void
-typealias ProfilePutCompletion = (Result<Profile, Error>) -> Void
+typealias ProfileCompletionK = (Result<Profile, Error>) -> Void
+typealias ProfilePutCompletionK = (Result<Profile, Error>) -> Void
 
-// MARK: - ProfileService Protocol
-protocol ProfileService {
-    func loadProfile(completion: @escaping ProfileCompletion)
+// MARK: - ProfileServiceK Protocol
+protocol ProfileServiceK {
+    func loadProfile(completion: @escaping ProfileCompletionK)
     func updateProfile(
         likes: [String],
         avatar: String,
         name: String,
-        completion: @escaping ProfilePutCompletion
+        completion: @escaping ProfilePutCompletionK
     )
 }
 
-// MARK: - ProfileServiceImpl
+// MARK: - ProfileServiceKImpl
 /// Реализация сервиса для загрузки и обновления профиля
-final class ProfileServiceImpl: ProfileService {
+final class ProfileServiceKImplK: ProfileServiceK {
     
     // MARK: - Properties
     private let networkClient: NetworkClient
@@ -36,8 +36,8 @@ final class ProfileServiceImpl: ProfileService {
         self.storage = storage
     }
     
-    // MARK: - ProfileService Methods
-    func loadProfile(completion: @escaping ProfileCompletion) {
+    // MARK: - ProfileServiceK Methods
+    func loadProfile(completion: @escaping ProfileCompletionK) {
         
         // Проверка, есть ли профиль в локальном хранилище
         if let profile = storage.getProfile() {
@@ -62,10 +62,10 @@ final class ProfileServiceImpl: ProfileService {
         likes: [String],
         avatar: String,
         name: String,
-        completion: @escaping ProfilePutCompletion
+        completion: @escaping ProfilePutCompletionK
     ) {
-        let dto = ProfileDtoObject(likes: likes, avatar: avatar, name: name)
-        let request = ProfilePutRequest(dto: dto)
+        let dto = ProfileDtoObjectK(likes: likes, avatar: avatar, name: name)
+        let request = ProfilePutRequestK(dto: dto)
         
         networkClient.send(request: request, type: Profile.self) { [weak self] result in
             switch result {

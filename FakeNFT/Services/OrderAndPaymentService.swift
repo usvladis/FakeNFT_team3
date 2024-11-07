@@ -8,21 +8,21 @@
 import Foundation
 
 // MARK: - Completion Type Aliases
-typealias OrderCompletion = (Result<Order, Error>) -> Void
+typealias OrderCompletionK = (Result<Order, Error>) -> Void
 typealias CurrencyListCompletion = (Result<[Currency], Error>) -> Void
 typealias PaymentConfirmationRequest = (Result<Payment, Error>) -> Void
 
 // MARK: - OrderService Protocol
-protocol OrderService {
-    func loadOrder(completion: @escaping OrderCompletion)
+protocol OrderServiceK {
+    func loadOrder(completion: @escaping OrderCompletionK)
     func loadCurrencyList(completion: @escaping CurrencyListCompletion)
-    func updateOrder(nftsIds: [String], completion: @escaping OrderCompletion)
+    func updateOrder(nftsIds: [String], completion: @escaping OrderCompletionK)
     func loadPayment(currencyId: String, completion: @escaping PaymentConfirmationRequest)
 }
 
 // MARK: - OrderServiceImpl
 /// Реализация сервиса для загрузки и управления заказами, валютами и платежами
-final class OrderServiceImpl: OrderService {
+final class OrderServiceImplK: OrderServiceK {
     
     // MARK: - Properties
     private let networkClient: NetworkClient
@@ -33,7 +33,7 @@ final class OrderServiceImpl: OrderService {
     }
     
     // MARK: - OrderService Methods
-    func loadOrder(completion: @escaping OrderCompletion) {
+    func loadOrder(completion: @escaping OrderCompletionK) {
         networkClient.send(request: NFTOrderRequest(), type: Order.self) { result in
             switch result {
             case .success(let order):
@@ -58,7 +58,7 @@ final class OrderServiceImpl: OrderService {
         }
     }
     
-    func updateOrder(nftsIds: [String], completion: @escaping OrderCompletion) {
+    func updateOrder(nftsIds: [String], completion: @escaping OrderCompletionK) {
         let newOrderModel = NewOrderModel(nfts: nftsIds)
         let request = EditOrderRequest(newOrder: newOrderModel)
         

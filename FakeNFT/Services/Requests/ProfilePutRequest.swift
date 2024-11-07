@@ -2,35 +2,47 @@
 //  ProfilePutRequest.swift
 //  FakeNFT
 //
-//  Created by Кирилл Марьясов on 27.10.2024.
+//  Created by Дмитрий Жуков on 10/29/24.
 //
 
 import Foundation
 
 struct ProfilePutRequest: NetworkRequest {
-    var endpoint: URL? {
-        URL(string: "\(RequestConstants.baseURL)/api/v1/profile/1")
-    }
-    var httpMethod: HttpMethod = .put
-    var dto: Dto?
+   var endpoint: URL? {
+       URL(string: "\(RequestConstants.baseURL)\(RequestConstants.profilePath)")
+   }
+   var httpMethod: HttpMethod = .put
+   var dto: Dto?
 }
 
 struct ProfileDtoObject: Dto {
-    let likes: [String]
-    let avatar: String
-    let name: String
+   let param1: String
+   let param2: String
+    let param3: String
+    let param4: String
     
+
     enum CodingKeys: String, CodingKey {
-        case likes = "likes"
-        case avatar = "avatar"
-        case name = "name"
+        case param1 = "name"
+        case param2 = "avatar"
+        case param3 = "description"
+        case param4 = "website"
     }
-    
+
     func asDictionary() -> [String : String] {
         [
-            CodingKeys.likes.rawValue: likes.isEmpty ? "" : likes.joined(separator:", "),
-            CodingKeys.avatar.rawValue: avatar,
-            CodingKeys.name.rawValue: name
+            CodingKeys.param1.rawValue: param1,
+            CodingKeys.param2.rawValue: param2,
+            CodingKeys.param3.rawValue: param3,
+            CodingKeys.param4.rawValue: param4
         ]
     }
 }
+
+struct ProfilePutResponse: Decodable {
+    let name: String
+    let avatar: String
+    let description: String
+    let website: String
+}
+

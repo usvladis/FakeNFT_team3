@@ -28,7 +28,7 @@ final class CatalogViewModel: CatalogViewModelProtocol {
     private let sortOptionStorage = SortOptionStorage()
     private var catalog: [NFTModelCatalog] = []
     private let networkClient = DefaultNetworkClient()
-    private let orderService = OrderServiceImpl(networkClient: DefaultNetworkClient())
+    private let orderService = OrderServiceImplK(networkClient: DefaultNetworkClient())
     var profile: Profile?
     var order: Order?
     
@@ -115,7 +115,7 @@ final class CatalogViewModel: CatalogViewModelProtocol {
         }
     }
     
-    private func loadProfile(completion: @escaping ProfileCompletion) {
+    private func loadProfile(completion: @escaping ProfileCompletionK) {
         let request = ProfileRequest()
         networkClient.send(request: request, type: Profile.self) { [weak self] result in
             guard let self = self else { return }
