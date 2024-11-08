@@ -6,6 +6,7 @@
 
 [Демонстрация экрана Корзины](https://disk.yandex.ru/i/jKsnc3BAdFFLuw)
 [демонстрация экрана Профиля](https://disk.yandex.ru/i/N6wZGOWa5hs83w)
+[демонстрация экрана Каталога](https://disk.yandex.ru/i/pXyDY-VGwHZDwQ)
 
 # Назначение и цели приложения
 
