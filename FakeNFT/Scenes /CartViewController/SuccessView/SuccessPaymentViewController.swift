@@ -71,72 +71,18 @@ final class SuccessPaymentViewController: UIViewController {
     
     @objc
     private func returnToCatalog() {
-        if shouldShowRateAlert() {
-            showRateAppAlert()
+        if RateAppManager.shared.shouldShowRateAlert() {
+            RateAppManager.shared.showRateAppAlert(on: self) {
+                self.navigateToCatalog()
+            }
         } else {
             navigateToCatalog()
         }
-    }
-    
-    private func showRateAppAlert() {
-        let alert = UIAlertController(
-            title: localizedString(key: "rateAlertTitle"),
-            message: localizedString(key: "rateAlertMessage"),
-            preferredStyle: .alert
-        )
-        
-        let rateAction = UIAlertAction(title: localizedString(key: "rateAlertOk"), style: .default) { _ in
-            if let url = URL(string: Constants.rateAlertUrl) {
-                UIApplication.shared.open(url, options: [:], completionHandler: nil)
-            }
-            self.setUserRatedApp()
-            self.navigateToCatalog()
-        }
-        
-        let laterAction = UIAlertAction(title: localizedString(key: "rateAlertLater"), style: .cancel) { _ in
-            self.incrementDeclineCounter()
-            self.navigateToCatalog()
-        }
-        
-        alert.addAction(rateAction)
-        alert.addAction(laterAction)
-        
-        present(alert, animated: true, completion: nil)
     }
     
     private func navigateToCatalog() {
         let tabBarViewController = TabBarController()
         tabBarViewController.modalPresentationStyle = .fullScreen
         present(tabBarViewController, animated: false)
-    }
-    
-    private func setUserRatedApp() {
-        UserDefaults.standard.set(true, forKey: "hasRatedApp")
-    }
-    
-    private func incrementDeclineCounter() {
-        var declineCounter = UserDefaults.standard.integer(forKey: "declineCounter")
-        declineCounter += 1
-        UserDefaults.standard.set(declineCounter, forKey: "declineCounter")
-    }
-    
-    private func shouldShowRateAlert() -> Bool {
-        let hasRatedApp = UserDefaults.standard.bool(forKey: "hasRatedApp")
-        if hasRatedApp {
-            return false
-        }
-        
-        let declineCounter = UserDefaults.standard.integer(forKey: "declineCounter")
-        
-        if declineCounter == 0 {
-            return true
-        } else if declineCounter < 2 {
-            incrementDeclineCounter()
-            return false
-        } else if declineCounter == 2 {
-            return true
-        } else {
-            return false
-        }
     }
 }
