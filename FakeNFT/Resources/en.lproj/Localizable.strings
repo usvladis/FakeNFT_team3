@@ -81,5 +81,7 @@
 "blue" = "Blue";
 "beige" = "Beige";
 "pink" = "Pink";
-
-
+"rateAlertTitle" = "Rate our app!";
+"rateAlertMessage" = "Your feedback is our motivation. Leave a few words about the app on our website!";
+"rateAlertOk" = "5 stars!";
+"rateAlertLater" = "A little later";

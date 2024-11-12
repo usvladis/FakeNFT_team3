@@ -9,4 +9,5 @@ import Foundation
 
 struct Constants {
     static let urlDev = "https://practicum.yandex.ru/ios-developer/?from=catalog"
+    static let rateAlertUrl = "https://practicum.yandex.ru/"
 }

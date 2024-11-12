@@ -81,3 +81,7 @@
 "blue" = "Blue";
 "beige" = "Beige";
 "pink" = "Pink";
+"rateAlertTitle" = "Оцените наше приложение!";
+"rateAlertMessage" = "Ваш отзыв — наша мотивация. Оставьте пару слов о приложении на нашем сайте!";
+"rateAlertOk" = "5 звёзд!";
+"rateAlertLater" = "Чуть позже";
